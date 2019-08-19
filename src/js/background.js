@@ -1,5 +1,5 @@
 const storage = chrome.storage.sync || chrome.storage.local;
-const TOKEN_FLAG = 'github-token';
+const TOKEN_FLAG = 'my-github-events-token';
 
 chrome.browserAction.onClicked.addListener((tab) => {
     browserAction_Click()

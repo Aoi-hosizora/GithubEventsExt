@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div id="content"></div>
+    <script>
+        let token = null;
+        $.ajax({
+            type: 'GET',
+            url: "https://api.github.com/users/Aoi-hosizora/events",
+            beforeSend: (xhr) => {
+                if (token)
+                    xhr.setRequestHeader("Authorization", "Token " + token);
+            },
+            success: (data) => {
+                cb(data);
+            }
+        });
+
+        function cb(data) {
+            console.log(data)
+        }
+    </script>
+</body>
+
+</html>
