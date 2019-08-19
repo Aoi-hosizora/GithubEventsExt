@@ -10,7 +10,7 @@
 <body>
     <div id="content"></div>
     <script>
-        let token = null;
+        let token = "null";
         $.ajax({
             type: 'GET',
             url: "https://api.github.com/users/Aoi-hosizora/events",
@@ -23,8 +23,71 @@
             }
         });
 
-        function cb(data) {
-            console.log(data)
+        function cb(events) {
+            if (!events) return;
+            console.log(events)
+            
+            events.forEach(event => {
+                let type = event['type'];
+                let actor = event['actor']['login'];
+                let repo = event['repo']['name'];
+                let url = event['repo']['url'];
+
+                let payload = event['payload'];
+                
+                let title = '';
+                let cmts = [];
+                let issue = '';
+                switch (type) {
+                    case 'PushEvent': {
+                        title = actor + ' pushed to ' + payload['ref'].split('/')[2] + ' at ' + repo;
+                        payload['commits'].forEach(commit => {
+                            cmts.push({
+                                'sha': commit['sha'],
+                                'commit': commit['message']
+                            })
+                        });
+                    }
+                    break;
+                    case 'WatchEvent': {
+                        title = actor + ' starred ' + repo;
+                    }
+                    break;
+                    case 'CreateEvent': {
+                        if (payload['ref_type'] == 'branch')
+                            title = actor + ' created branch ' + payload['ref'] + ' at ' + repo
+                        else if (payload['ref_type'] == 'repository')
+                            title = actor + ' created repository ' + repo;
+                    }
+                    break;
+                    case 'IssuesEvent': {
+                        title = actor + ' ' + payload['action'] + ' issue #' + payload['issue']['number'] + ' in ' + repo;
+                        issue = payload['issue']['title'] + ': ' + payload['issue']['body'];
+                    }
+                    break;
+                    case 'ForkEvent': {
+                        title = actor + ' forked ' + repo + ' to ' + payload['forkee']['full_name'];
+                    }
+                    break;
+                    case 'MemberEvent': {
+                        title = actor + ' ' + payload['action'] + ' member ' + payload['member']['login'] + ' to ' + repo; 
+                    }
+                    break;
+                }
+                console.log(title);
+                console.log(cmts);
+                console.log(issue);
+
+                /*
+                PushEvent
+                CreateEvent (repo)
+                CreateEvent (branch)
+                WatchEvent
+                MemberEvent
+                IssuesEvent
+                ForkEvent
+                */
+            });
         }
     </script>
 </body>
