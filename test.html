@@ -10,84 +10,146 @@
 <body>
     <div id="content"></div>
     <script>
-        let token = "null";
-        $.ajax({
-            type: 'GET',
-            url: "https://api.github.com/users/Aoi-hosizora/events",
-            beforeSend: (xhr) => {
-                if (token)
-                    xhr.setRequestHeader("Authorization", "Token " + token);
-            },
-            success: (data) => {
-                cb(data);
-            }
-        });
+        // let token = "99a44c43fa047213e6841715cb61744bda002ddb";
+        // let url = "https://api.github.com/users/yoruko-km/events";
+        let token = "94676c3b05b4dd838bbe6e4dfaec1d1a1549f2ff";
+        let url = "https://api.github.com/users/Aoi-hosizora/events?page=2";
+        ajax(url, token);
+        
+        function ajax(url, token) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                beforeSend: (xhr) => {
+                    if (token)
+                        xhr.setRequestHeader("Authorization", "Token " + token);
+                },
+                success: (data) => {
+                    cb(data);
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            });
+        }
 
         function cb(events) {
             if (!events) return;
             console.log(events)
             
+            var navTag = document.createElement('nav')
+            navTag.className = "my-github-events-nav"
+            navTag.innerHTML = `<ul class="my-github-events-ul"></ul>`
+            navTag.onload = () => this.parent.removeChild(navTag);
+            document.body.appendChild(navTag)
+
             events.forEach(event => {
-                let type = event['type'];
-                let actor = event['actor']['login'];
-                let repo = event['repo']['name'];
-                let url = event['repo']['url'];
+                var ret = parseApiJson(event);
+                console.log(ret);
 
-                let payload = event['payload'];
-                
-                let title = '';
-                let cmts = [];
-                let issue = '';
-                switch (type) {
-                    case 'PushEvent': {
-                        title = actor + ' pushed to ' + payload['ref'].split('/')[2] + ' at ' + repo;
-                        payload['commits'].forEach(commit => {
-                            cmts.push({
-                                'sha': commit['sha'],
-                                'commit': commit['message']
-                            })
-                        });
-                    }
-                    break;
-                    case 'WatchEvent': {
-                        title = actor + ' starred ' + repo;
-                    }
-                    break;
-                    case 'CreateEvent': {
-                        if (payload['ref_type'] == 'branch')
-                            title = actor + ' created branch ' + payload['ref'] + ' at ' + repo
-                        else if (payload['ref_type'] == 'repository')
-                            title = actor + ' created repository ' + repo;
-                    }
-                    break;
-                    case 'IssuesEvent': {
-                        title = actor + ' ' + payload['action'] + ' issue #' + payload['issue']['number'] + ' in ' + repo;
-                        issue = payload['issue']['title'] + ': ' + payload['issue']['body'];
-                    }
-                    break;
-                    case 'ForkEvent': {
-                        title = actor + ' forked ' + repo + ' to ' + payload['forkee']['full_name'];
-                    }
-                    break;
-                    case 'MemberEvent': {
-                        title = actor + ' ' + payload['action'] + ' member ' + payload['member']['login'] + ' to ' + repo; 
-                    }
-                    break;
+                var commitsTag = '', issueTag = '';
+                if (ret.commits) {
+                    ret.commits.forEach((commit) => {
+                        commitsTag += `<div> ${commit['sha'].substring(0, 6)} ${commit['commit']}</div>`;
+                    })
                 }
-                console.log(title);
-                console.log(cmts);
-                console.log(issue);
+                if (ret.issue) {
+                    if (ret.issue.length > 50) ret.issue = ret.issue.substring(0, 50) + ' ...'
+                    issueTag = `<div>${ret.issue}</div>`;
+                }
 
-                /*
+                $('.my-github-events-ul').append(`
+                    <li>
+                        <a href="${ret.user_url}" target="_blank"">${ret.user}</a> 
+                        <a href="${ret.url}" target="_blank">${ret.title}</a>
+                        ${commitsTag} ${issueTag} 
+                    </li>
+                `);
+            });
+        }
+    
+        function parseApiJson(event) {
+            
+            /*
                 PushEvent
                 CreateEvent (repo)
                 CreateEvent (branch)
                 WatchEvent
                 MemberEvent
                 IssuesEvent
+                IssueCommentEvent
                 ForkEvent
-                */
-            });
+            */
+
+            let type = event['type'];
+            let actor = event['actor']['login'];
+            let repo = event['repo']['name'];
+            let payload = event['payload'];
+
+            let url = "https://" + event['repo']['url'].replace("https://api.", "").replace("http://api.", "").replace("repos/", "");
+            let user_url = "https://" + event['actor']['url'].replace("https://api.", "").replace("http://api.", "").replace("users/", "");
+            let avatar_url = event['actor']['avatar_url'];
+
+            let title = '';
+            let commits = [];
+            let issue = '';
+            switch (type) {
+                case 'PushEvent': 
+                    title = `pushed ${payload['size']} 
+                        ${(payload['size'] == 1) ? ' commit to ' : ' commits to '} 
+                        ${payload['ref'].split('/')[2]} at ${repo}`;
+                    payload['commits'].forEach(commit => {
+                        commits.push({
+                            'sha': commit['sha'],
+                            'commit': commit['message']
+                        })
+                    });
+                break;
+                case 'WatchEvent': 
+                    title = `starred ${repo}`;
+                break;
+                case 'CreateEvent': 
+                    if (payload['ref_type'] == 'branch')
+                        title = `created branch ${payload['ref']} at ${repo}`;
+                    else if (payload['ref_type'] == 'repository')
+                        title = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
+                break;
+                case 'IssuesEvent': 
+                    title = `${payload['action']} ${payload['issue']['number']} in ${repo}`;
+                    issue = `${payload['issue']['title']}: ${payload['issue']['body']}`;
+                    url = payload['issue']['html_url'];
+                break;
+                case 'IssueCommentEvent':
+                    title = `created comment on issue #${payload['issue']['number']} ${payload['issue']['title']} in ${repo}`;
+                    issue = payload['comment']['body'];
+                    url = payload['comment']['html_url'];
+                break;
+                case 'ForkEvent': 
+                    title = `forked ${repo} to ${payload['forkee']['full_name']}`;
+                    url = payload['forkee']['html_url'];
+                break;
+                case 'MemberEvent': 
+                    title = `${payload['action']} member ${payload['member']['login']} to ${repo}`; 
+                break;
+                default:
+                    return {
+                        type: type,
+                        title: "Unknown Event",
+                        url: "https://github.com",
+                        user_url: user_url,
+                    }
+            }
+            
+            return {
+                type: type,
+                title: title,
+                url: url,
+                user: actor,
+                user_url: user_url,
+                avatar_url: avatar_url,
+                commits: commits,
+                issue: issue
+            }
         }
     </script>
 </body>
