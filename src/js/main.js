@@ -38,7 +38,7 @@ function getEvents(where, cb) {
 }
 
 /**
- * 条用 Github API 获取数据
+ * 调用 Github API 获取数据
  * @param {*} url `api.github.com/{users|repos}/xxx/events`
  * @param {*} token `str` `null`
  * @param {*} cb `callback`

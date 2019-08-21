@@ -9,17 +9,54 @@
 
 <body>
     <div id="content"></div>
+    <a id="content-more-a" href="javascript:void(0)">More...</a>
+    <div id="content-more-label">Loading...</div>
     <script>
-        // let token = "99a44c43fa047213e6841715cb61744bda002ddb";
-        // let url = "https://api.github.com/users/yoruko-km/events";
-        let token = "94676c3b05b4dd838bbe6e4dfaec1d1a1549f2ff";
-        let url = "https://api.github.com/users/Aoi-hosizora/events?page=2";
-        ajax(url, token);
+
+        (() => {
+            token = null;
+            url = "https://api.github.com/users/Aoi-hosizora/events?page=";
+            page = 1;
+                
+            // 容器
+            var navTag = document.createElement('nav')
+            navTag.className = "my-github-events-nav"
+            navTag.innerHTML = `<ul class="my-github-events-ul"></ul>`
+            navTag.onload = () => this.parent.removeChild(navTag);
+            $('#content').append(navTag)
+
+            $('#content-more-a').hide();
+            $('#content-more-label').show();
+            ajax(url, page, token, (data) => {
+                cb(data);
+            }, () => {
+                $('#content-more-a').text("Something error happened, try again...");
+            });
+        })();
+
+        /**
+         * More... 处理
+         */
+        $('#content-more-a').click(() => {
+            $('#content-more-a').text("More...")
+            $('#content-more-a').hide();
+            $('#content-more-label').show();
+            ajax(url, ++page, token, (data) => {
+                cb(data);
+            }, () => {
+                $('#content-more-a').text("Something error happened, try again...");
+                $('#content-more-label').hide();
+                $('#content-more-a').show();
+            });
+        });
         
-        function ajax(url, token) {
+        /**
+         * 异步获取数据 回调
+         */ 
+        function ajax(url, page, token, cb, err) {
             $.ajax({
                 type: 'GET',
-                url: url,
+                url: url + page,
                 beforeSend: (xhr) => {
                     if (token)
                         xhr.setRequestHeader("Authorization", "Token " + token);
@@ -27,21 +64,19 @@
                 success: (data) => {
                     cb(data);
                 },
-                error: (error) => {
-                    console.log(error);
+                error: (jqXHR, textStatus, errorThrown) => {
+                    // console.log(textStatus);
+                    err();
                 }
             });
         }
 
+        /**
+         * DOM 操作 
+         */
         function cb(events) {
             if (!events) return;
-            console.log(events)
-            
-            var navTag = document.createElement('nav')
-            navTag.className = "my-github-events-nav"
-            navTag.innerHTML = `<ul class="my-github-events-ul"></ul>`
-            navTag.onload = () => this.parent.removeChild(navTag);
-            document.body.appendChild(navTag)
+            console.log(events);
 
             events.forEach(event => {
                 var ret = parseApiJson(event);
@@ -50,24 +85,32 @@
                 var commitsTag = '', issueTag = '';
                 if (ret.commits) {
                     ret.commits.forEach((commit) => {
-                        commitsTag += `<div> ${commit['sha'].substring(0, 6)} ${commit['commit']}</div>`;
+                        commitsTag += `<div> <a href="${commit['url']}" target="_blank">${commit['sha'].substring(0, 6)}</a> ${commit['commit']}</div>`;
                     })
                 }
                 if (ret.issue) {
                     if (ret.issue.length > 50) ret.issue = ret.issue.substring(0, 50) + ' ...'
                     issueTag = `<div>${ret.issue}</div>`;
                 }
-
+                
+                // 内容
                 $('.my-github-events-ul').append(`
                     <li>
-                        <a href="${ret.user_url}" target="_blank"">${ret.user}</a> 
+                        <a href="${ret.user_url}" target="_blank">${ret.user}</a> 
                         <a href="${ret.url}" target="_blank">${ret.title}</a>
                         ${commitsTag} ${issueTag} 
                     </li>
                 `);
             });
+            
+            // TODO
+            $('#content-more-a').show();
+            $('#content-more-label').hide();
         }
     
+        /**
+         * 解析返回的 API 结果
+         */
         function parseApiJson(event) {
             
             /*
@@ -101,7 +144,8 @@
                     payload['commits'].forEach(commit => {
                         commits.push({
                             'sha': commit['sha'],
-                            'commit': commit['message']
+                            'commit': commit['message'],
+                            'url': "https://" + commit['url'].replace("https://api.", "").replace("http://api.", "").replace("commits/", "commit/").replace("repos/", "")
                         })
                     });
                 break;
@@ -115,7 +159,7 @@
                         title = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
                 break;
                 case 'IssuesEvent': 
-                    title = `${payload['action']} ${payload['issue']['number']} in ${repo}`;
+                    title = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
                     issue = `${payload['issue']['title']}: ${payload['issue']['body']}`;
                     url = payload['issue']['html_url'];
                 break;
