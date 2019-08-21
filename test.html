@@ -4,13 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
+
+    <style>
+        .content-nav.content-nav-open {
+            right: 0px;
+        }
+
+        .content-nav {
+            display: block;
+            background: #FAFBFC;
+            border-left: 1px solid #DFE2E5;
+            position: fixed;
+            overflow: visible;
+
+            overflow-y: scroll; 
+            overflow-x: auto;
+            
+            width: 350px;
+            height: 100%;
+            top: 0;
+            z-index: 1000;
+
+            right: -351px;
+            
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .my-github-events-ul {
+            list-style-type: none;
+            padding: 0px;
+            margin: 0 10px;
+        }
+
+        .my-github-events-ul li:last-of-type {
+            margin: 0 0 10px 0;
+        }
+
+        .content-more {
+            margin: 10px;
+        }
+    </style>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
-    <div id="content"></div>
-    <a id="content-more-a" href="javascript:void(0)">More...</a>
-    <div id="content-more-label">Loading...</div>
+
+    <div></div><button id="showRight">Show/Hide</button></div>
+    <nav class="content-nav content-nav-open">
+        <div id="content-more-div" class="content-more"><a id="content-more-a" href="javascript:void(0)">More...</a></div>
+        <div id="content-more-label" class="content-more">Loading...</div>
+        <div id="content"></div>
+    </nav>
+
+
     <script>
 
         (() => {
@@ -19,20 +68,27 @@
             page = 1;
                 
             // 容器
-            var navTag = document.createElement('nav')
-            navTag.className = "my-github-events-nav"
-            navTag.innerHTML = `<ul class="my-github-events-ul"></ul>`
-            navTag.onload = () => this.parent.removeChild(navTag);
-            $('#content').append(navTag)
+            var ulTag = document.createElement('ul')
+            ulTag.className = "my-github-events-ul"
+            ulTag.onload = () => this.parent.removeChild(ulTag);
+            $('#content').append(ulTag)
 
             $('#content-more-a').hide();
             $('#content-more-label').show();
-            ajax(url, page, token, (data) => {
-                cb(data);
+            ajax(url, page, token, (events) => {
+                addEvents(events);
             }, () => {
                 $('#content-more-a').text("Something error happened, try again...");
             });
         })();
+
+        $('#showRight').click(() => {
+            var nav = $('.content-nav').first();
+            if (nav.hasClass('content-nav-open'))
+                nav.removeClass('content-nav-open');
+            else
+                nav.addClass('content-nav-open');
+        });
 
         /**
          * More... 处理
@@ -41,8 +97,9 @@
             $('#content-more-a').text("More...")
             $('#content-more-a').hide();
             $('#content-more-label').show();
-            ajax(url, ++page, token, (data) => {
-                cb(data);
+            
+            ajax(url, ++page, token, (events) => {
+                addEvents(events);
             }, () => {
                 $('#content-more-a').text("Something error happened, try again...");
                 $('#content-more-label').hide();
@@ -74,7 +131,7 @@
         /**
          * DOM 操作 
          */
-        function cb(events) {
+        function addEvents(events) {
             if (!events) return;
             console.log(events);
 
@@ -85,7 +142,12 @@
                 var commitsTag = '', issueTag = '';
                 if (ret.commits) {
                     ret.commits.forEach((commit) => {
-                        commitsTag += `<div> <a href="${commit['url']}" target="_blank">${commit['sha'].substring(0, 6)}</a> ${commit['commit']}</div>`;
+                        commitsTag += `
+                            <div>
+                                <a href="${commit['url']}" target="_blank">${commit['sha'].substring(0, 6)}</a>
+                                ${commit['commit']}
+                            </div>
+                        `;
                     })
                 }
                 if (ret.issue) {
@@ -95,6 +157,7 @@
                 
                 // 内容
                 $('.my-github-events-ul').append(`
+                    <hr />
                     <li>
                         <a href="${ret.user_url}" target="_blank">${ret.user}</a> 
                         <a href="${ret.url}" target="_blank">${ret.title}</a>
@@ -129,13 +192,18 @@
             let repo = event['repo']['name'];
             let payload = event['payload'];
 
-            let url = "https://" + event['repo']['url'].replace("https://api.", "").replace("http://api.", "").replace("repos/", "");
-            let user_url = "https://" + event['actor']['url'].replace("https://api.", "").replace("http://api.", "").replace("users/", "");
+            let url = "https://" + event['repo']['url']
+                .replace("https://api.", "").replace("http://api.", "")
+                .replace("repos/", "");
+            let user_url = "https://" + event['actor']['url']
+                .replace("https://api.", "").replace("http://api.", "")
+                .replace("users/", "");
             let avatar_url = event['actor']['avatar_url'];
 
             let title = '';
             let commits = [];
             let issue = '';
+
             switch (type) {
                 case 'PushEvent': 
                     title = `pushed ${payload['size']} 
@@ -145,12 +213,14 @@
                         commits.push({
                             'sha': commit['sha'],
                             'commit': commit['message'],
-                            'url': "https://" + commit['url'].replace("https://api.", "").replace("http://api.", "").replace("commits/", "commit/").replace("repos/", "")
+                            'url': "https://" + commit['url']
+                                .replace("https://api.", "").replace("http://api.", "")
+                                .replace("commits/", "commit/").replace("repos/", "")
                         })
                     });
                 break;
                 case 'WatchEvent': 
-                    title = `starred ${repo}`;
+                    title = `starred repository ${repo}`;
                 break;
                 case 'CreateEvent': 
                     if (payload['ref_type'] == 'branch')
