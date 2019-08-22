@@ -43,7 +43,6 @@
 
         (() => {
 
-            // token = null;
             // url = "https://api.github.com/users/yoruko-km/events?page=";
             token = null;
             // url = "https://api.github.com/users/Aoi-hosizora/events?page=";
@@ -174,11 +173,8 @@
                         `;
                     })
                 }
-                if (ret.issue) {
-                    // if (ret.issue.length > 50) ret.issue = ret.issue.substring(0, 50) + ' ...'
-                    ret.issue = ret.issue.replace("<code>", "").replace("</code>", "").replace("<pre>", "").replace("</pre>", "");
-                    issueTag = `<div class="content-issue">${ret.issue}</div>`;
-                }
+                if (ret.comment) 
+                    issueTag = `<div class="content-issue">${ret.comment}</div>`;
 
                 if (ret.title)
                     ret.title = ret.title.replace(ret.title[0], ret.title[0].toUpperCase())
@@ -213,6 +209,12 @@
                     var pullReqId = mt[3];
                     titleSpanTag = `<span class="content-title">${mt.splice(0, 3).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
                 }
+                else if (ret.type == "PullRequestReviewCommentEvent") {
+                    // Created pull request review comment in pull request #undefined at angular/angular
+                    mt = mt.split(' ');
+                    var pullReqId = mt[8];
+                    titleSpanTag = `<span class="content-title">${mt.splice(0, 8).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                }
 
                 // 内容
                 $('#id-ul').append(`
@@ -237,9 +239,9 @@
         }
 
         function getSvgTag(type) {
-            let svgClass = '';
-            let svgPath = '';
-            let svgParam = 'width="12" height="16" viewBox="0 0 12 16"';
+            let svgClass = '', svgPath = '';
+            let svgHeight = 16, svgWidth = 12;
+
             switch (type) {
                 case 'PushEvent':
                     svgClass = "octicon-repo-push";
@@ -249,40 +251,50 @@
                     svgClass = "octicon-repo";
                     svgPath = "M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z";
                 break;
+                case 'CreateBranchEvent':
+                    svgClass = "octicon-git-branch";
+                    svgWidth = 10;
+                    svgPath = "M10 5c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v.3c-.02.52-.23.98-.63 1.38-.4.4-.86.61-1.38.63-.83.02-1.48.16-2 .45V4.72a1.993 1.993 0 0 0-1-3.72C.88 1 0 1.89 0 3a2 2 0 0 0 1 1.72v6.56c-.59.35-1 .99-1 1.72 0 1.11.89 2 2 2 1.11 0 2-.89 2-2 0-.53-.2-1-.53-1.36.09-.06.48-.41.59-.47.25-.11.56-.17.94-.17 1.05-.05 1.95-.45 2.75-1.25S8.95 7.77 9 6.73h-.02C9.59 6.37 10 5.73 10 5zM2 1.8c.66 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2C1.35 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2zm0 12.41c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm6-8c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z";
+                break;
                 case 'WatchEvent':
                     svgClass = "octicon-star";
-                    svgParam = 'width="14" height="16" viewBox="0 0 14 16"';
+                    svgWidth = 14;
                     svgPath ="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z";
                 break;
                 case 'MemberEvent':
                     svgClass = "octicon-organization";
-                    svgParam = 'width="16" height="16" viewBox="0 0 16 16"';
+                    svgWidth = 16;
                     svgPath = "M16 12.999c0 .439-.45 1-1 1H7.995c-.539 0-.994-.447-.995-.999H1c-.54 0-1-.561-1-1 0-2.634 3-4 3-4s.229-.409 0-1c-.841-.621-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.442.58 2.5 3c.058 2.41-.159 2.379-1 3-.229.59 0 1 0 1s1.549.711 2.42 2.088C9.196 9.369 10 8.999 10 8.999s.229-.409 0-1c-.841-.62-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.437.581 2.495 3c.059 2.41-.158 2.38-1 3-.229.59 0 1 0 1s3.005 1.366 3.005 4z";
                 break;
                 case 'IssuesEvent':
                     svgClass = "octicon-issue-opened";
-                    svgParam = 'width="14" height="16" viewBox="0 0 14 16"';
+                    svgWidth = 14;
                     svgPath = "M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z";
                 break;
                 case 'IssueCommentEvent':
                     svgClass = "octicon-comment";
-                    svgParam = 'width="16" height="16" viewBox="0 0 16 16"';
+                    svgWidth = 16;
                     svgPath = "M14 1H2c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h2v3.5L7.5 11H14c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zm0 9H7l-2 2v-2H2V2h12v8z";
                 break;
                 case 'ForkEvent':
                     svgClass = "octicon-repo-forked";
-                    svgParam = 'width="10" height="16" viewBox="0 0 10 16"';
+                    svgWidth = 10;
                     svgPath = "M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z";
                 break;
                 case 'PullRequestEvent':
                     svgClass = "octicon-git-pull-request";
-                    svgParam = 'width="12" height="16" viewBox="0 0 12 16"';
+                    svgWidth = 12;
                     svgPath = "M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z";
                 break;
+                case 'PullRequestReviewCommentEvent':
+                    svgClass = "octicon-eye";
+                    svgWidth = 16;
+                    svgPath = "M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z";
             }
             let svg = `
                 <svg class="octicon ${svgClass}" 
-                    version="1.1" aria-hidden="true" ${svgParam}>
+                    version="1.1" aria-hidden="true"
+                    width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
                     
                     <path class="octicon-path" fill-rule="evenodd" d="${svgPath}"></path>
                 </svg>
@@ -296,15 +308,16 @@
         function parseApiJson(event) {
             
             /*
-                PushEvent               octicon octicon-repo-push
-                CreateEvent (repo)      octicon octicon-repo
-                CreateEvent (branch)    octicon octicon-git-branch
-                WatchEvent              octicon octicon-star
-                MemberEvent             octicon octicon-organization
-                IssuesEvent             octicon octicon-issue-opened
-                IssueCommentEvent       octicon octicon-comment
-                ForkEvent               octicon octicon-repo-forked
-                PullRequestEvent        octicon octicon-git-pull-request
+                PushEvent                       octicon octicon-repo-push
+                CreateEvent (repo)              octicon octicon-repo                -> CreateEvent
+                CreateEvent (branch)            octicon octicon-git-branch          -> CreateBranchEvent
+                WatchEvent                      octicon octicon-star
+                MemberEvent                     octicon octicon-organization
+                IssuesEvent                     octicon octicon-issue-opened
+                IssueCommentEvent               octicon octicon-comment
+                ForkEvent                       octicon octicon-repo-forked
+                PullRequestEvent                octicon octicon-git-pull-request
+                PullRequestReviewCommentEvent   octicon octicon-eye
             */
 
             let type = event['type'];
@@ -326,7 +339,7 @@
 
             let title = '';
             let commits = [];
-            let issue = '';
+            let comment = '';
 
             switch (type) {
                 case 'PushEvent': 
@@ -347,19 +360,21 @@
                     title = `starred repository ${repo}`;
                 break;
                 case 'CreateEvent': 
-                    if (payload['ref_type'] == 'branch')
+                    if (payload['ref_type'] == 'branch') {
+                        type = "CreateBranchEvent"
                         title = `created branch ${payload['ref']} at ${repo}`;
+                    }
                     else if (payload['ref_type'] == 'repository')
                         title = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
                 break;
                 case 'IssuesEvent': 
                     title = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
-                    issue = `${payload['issue']['title']}: ${payload['issue']['body']}`;
+                    comment = `${payload['issue']['title']}: ${payload['issue']['body']}`;
                     comment_url = payload['issue']['html_url'];
                 break;
                 case 'IssueCommentEvent':
                     title = `created comment on issue #${payload['issue']['number']} "${payload['issue']['title']}" in ${repo}`;
-                    issue = payload['comment']['body'];
+                    comment = payload['comment']['body'];
                     comment_url = payload['comment']['html_url'];
                 break;
                 case 'ForkEvent': 
@@ -374,15 +389,22 @@
                 case 'MemberEvent': 
                     title = `${payload['action']} member ${payload['member']['login']} to ${repo}`; 
                 break;
+                case 'PullRequestReviewCommentEvent':
+                    title = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
+                    pullreq_url = payload['comment']['html_url'];
+                    comment = payload['comment']['body'];
+                break;
                 default:
                     return {
                         type: type,
                         title: "Unknown Event",
                         url: "https://github.com",
+                        avatar_url: avatar_url,
                         user_url: user_url,
                     }
             }
             
+            comment = comment.replace(/<.*>/g, '');
             return {
                 type: type,
                 title: title,
@@ -394,7 +416,7 @@
                 user_url: user_url,
                 avatar_url: avatar_url,
                 commits: commits,
-                issue: issue
+                comment: comment
             }
         }
     </script>

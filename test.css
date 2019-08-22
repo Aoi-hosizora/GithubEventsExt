@@ -61,6 +61,38 @@
     min-height: calc(100% - 64px - 62px);
 }
 
+.content-issue {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    font-size: 11px;
+    color: gray;
+}
+
+.commit-div {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 11px;
+    color: gray;
+}
+
+/* Head */
+
+#id-head {
+    height: 64px;
+    background: #373E43;
+    padding: 12px 5px 5px 12px;
+}
+
+#id-head, #id-head a:-webkit-any-link {
+    color: white;
+}
+
 .avator-div .avator-icon {
     height: 24px;
     display:inline-block;
@@ -77,33 +109,6 @@
 
 .avator-div {
     margin-bottom: 5px;
-}
-
-.content-issue {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient:vertical;
-    text-overflow:ellipsis;
-    overflow:hidden;
-    font-size: 11px;
-    color: gray;
-}
-
-.commit-div {
-    font-size: 11px;
-    color: gray;
-}
-
-/* Head */
-
-#id-head {
-    height: 64px;
-    background: #373E43;
-    padding: 12px 5px 5px 12px;
-}
-
-#id-head, #id-head a:-webkit-any-link {
-    color: white;
 }
 
 .avator-item-icon {
@@ -177,4 +182,25 @@
     font-size: 13px;
 
     transform: rotate(90deg);
+}
+
+/* Scrollbar */
+
+#id-nav::-webkit-scrollbar {
+    width: 8px;
+}
+
+#id-nav::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+#id-nav::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgb(168, 168, 168);
+}
+
+#id-nav::-webkit-scrollbar-thumb:hover {
+    border-radius: 4px;
+    background-color: gray;
 }
