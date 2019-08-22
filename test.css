@@ -9,11 +9,9 @@
 
 /* Nav */
 
-.content-nav.content-nav-open {
-    right: 0px;
-}
-
-.content-nav {
+#id-nav {
+    min-width: 200px;
+    /* overflow: visible; */
     display: block;
     background: #FAFBFC;
     border-left: 1px solid #DFE2E5;
@@ -31,16 +29,17 @@
     height: 100%;
     top: 0;
     z-index: 1000;
+}
 
+.content-nav.content-nav-open {
+    right: 0px;
+}
+
+.content-nav {
     right: calc(-300px - 1px);
 }
 
 /* Ul */
-
-#id-nav {
-    min-width: 200px;
-    /* overflow: visible; */
-}
 
 #id-ul {
     list-style-type: none;
@@ -214,10 +213,15 @@
 
 #id-resize-handler {
     cursor: col-resize;
-    position: absolute;
+    position: fixed;
 
     z-index: 90;
-    width: 10px;
+
+    /* width: 8px; */
+    /* left: -4px; */
+    height: 100%;
+    width: 5px;
+    /* TODO */
     left: 0px;
     bottom: 0px;
     top: 0px;
