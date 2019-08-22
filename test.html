@@ -6,186 +6,32 @@
     <title>Test</title>
 
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <style>
-
-        /* Nav */
-
-        .content-nav.content-nav-open {
-            right: 0px;
-        }
-        
-        .content-nav {
-            display: block;
-            background: #FAFBFC;
-            border-left: 1px solid #DFE2E5;
-            position: fixed;
-            overflow: visible;
-
-            font-style: normal;
-            font-family: sans-serif;
-            font-size: 13px;
-
-            overflow-y: scroll; 
-            overflow-x: auto;
-            
-            width: 300px;
-            height: 100%;
-            top: 0;
-            z-index: 1000;
-
-            right: calc(-300px - 1px);
-            
-            -webkit-transition: all 0.3s ease;
-            -moz-transition: all 0.3s ease;
-            transition: all 0.3s ease;
-        }
-
-        .trans {
-            -webkit-transition: all 0.3s ease;
-            -moz-transition: all 0.3s ease;
-            transition: all 0.3s ease;
-        }
-
-        /* Line */
-
-        .my-github-events-ul {
-            list-style-type: none;
-            padding: 0px;
-            margin: 0 10px;
-        }
-
-        .my-github-events-ul li {
-            word-break: break-all;
-        }
-
-        .my-github-events-ul li:last-child {
-            margin: 0 0 7px 0;
-        }
-
-        .my-github-events-ul li:first-child {
-            margin: 7px 0 0 0;
-        }
-
-        /* Content */
-
-        .avator_div .avator_round_icon {
-            height: 24px;
-            display:inline-block;
-            vertical-align: middle;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .avator_div .avator_link {
-            margin-left: 3px;
-        }
-
-        .avator_div {
-            margin-bottom: 5px;
-        }
-
-        .issue-line {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient:vertical;
-            text-overflow:ellipsis;
-            overflow:hidden;
-        }
-
-        /* Head */
-
-        #content-head {
-            height: 64px;
-            background: #373E43;
-            padding: 12px 5px 5px 12px;
-        }
-
-        #content-head, #content-head a:-webkit-any-link {
-            color: white;
-        }
-
-        /* Foot */
-
-        #content-foot {
-            background: #F1F8FF;
-            border: 1px solid #C8E1FF;
-            border-right: none;
-
-            margin: 0 0 -1px -1px;
-            padding: 6px 0 4px 0;
-        }
-
-        #content-foot a, #content-foot div {
-            display: block;
-            text-align: center;
-        }
-
-        /* Toggle */
-        
-        .content-toggle {
-            position: fixed;
-            text-align: center;
-
-            width: 30px;
-            height: 80px;
-            top: calc(50% - 45px);
-            left: calc(100% - 30px);
-
-            line-height: 1;
-            z-index: 1000000001;
-            cursor: pointer;
-            background-color: #F2F5F7;
-            box-shadow: rgba(118, 118, 118, 0.11) 2px 0px 5px 0px;
-            border: 1px solid #E0E4E7;
-            border-right: none;
-            padding: 6px;
-            border-radius: 5px;
-        }
-
-        .content-toggle-hide {
-            left: calc(100%);
-        }
-
-        .content-toggle i {
-            display: inline-block;
-            position: relative;
-            top: 5px;
-            left: -5px;
-        }
-
-        .content-toggle span {
-            display: inline-block;
-            position: relative;
-            /* text-align: left; */
-            top: 28px;
-            left: -13px;
-            font-size: 13px;
-
-            transform: rotate(90deg);
-        }
-
-    </style>
+    <link rel="stylesheet" href="./test.css">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
 
-    <div class="content-toggle content-toggle-hide trans " id="content-toggle">
+    <!-- content-toggle content-toggle-hide -->
+    <div class="content-toggle content-toggle-hide content-trans" id="id-toggle">
         <i class="fa fa-chevron-left"></i>
         <span>Events</span>
     </div>
 
-    <nav class="content-nav trans">
-        <div id="content-head">
-            <a id="content-ping" href="javascript:void(0)"><i class="fa fa-thumb-tack"></i></a>
+    <!-- content-nav content-nav-open -->
+    <nav class="content-nav content-trans" id="id-nav">
+        <div id="id-head">
+            <a id="id-ping" href="javascript:void(0)">
+                <i class="fa fa-thumb-tack"></i>
+            </a>
         </div>
-        <div id="content"></div>
-        <div id="content-foot">
-            <div id="content-more-div"><a id="content-more-a" href="javascript:void(0)">More...</a></div>
-            <div id="content-loading-label">Loading...</div>
+        <div id="id-content"></div>
+        <div id="id-foot">
+            <div id="id-more-div">
+                <a id="id-more-a" href="javascript:void(0)">More...</a>
+            </div>
+            <div id="id-loading-label">Loading...</div>
         </div>
     </nav>
 
@@ -203,9 +49,9 @@
                 
             // 容器
             var ulTag = document.createElement('ul');
-            ulTag.className = "my-github-events-ul";
+            ulTag.id = "id-ul";
             ulTag.onload = () => this.parent.removeChild(ulTag);
-            $('#content').append(ulTag);
+            $('#id-content').append(ulTag);
 
             // Label
             showLoading(true);
@@ -222,19 +68,21 @@
             });
         })();
 
-        $('#content-toggle').click(() => {
+        // TODO
+        $('#id-toggle').click(() => {
             isClose = false;
             closeNav(isClose);
         });
 
-        $('#content-ping').click(() => {
+        // TODO
+        $('#id-ping').click(() => {
             isClose = true;
             closeNav(isClose);
         });
         /**
          * More... 处理
          */
-        $('#content-more-a').click(() => {
+        $('#id-more-a').click(() => {
             showLoading(true);
             
             ajax(url, ++page, token, (events) => {
@@ -250,18 +98,21 @@
          */ 
         function showLoading(isLoading, isError=false) {
             if (isLoading) {
-                $('#content-more-div').hide();
-                $('#content-loading-label').show();
+                $('#id-more-div').hide();
+                $('#id-loading-label').show();
             }
             else {
-                $('#content-more-a').text(
+                $('#id-more-a').text(
                     isError ? "Something error happened, try again..." : "More..."
                 )
-                $('#content-loading-label').hide();
-                $('#content-more-div').show();
+                $('#id-loading-label').hide();
+                $('#id-more-div').show();
             }
         }
 
+        /**
+         * 关闭 右侧栏
+         */
         function closeNav(closeFlag) {
             var nav = $('.content-nav').first();
             var toggle = $('.content-toggle').first();
@@ -297,7 +148,7 @@
         }
 
         /**
-         * DOM 操作 
+         * !!! DOM 操作 
          */
         function addEvents(events) {
             if (!events) return;
@@ -310,30 +161,34 @@
                 if (ret.commits) {
                     ret.commits.forEach((commit) => {
                         commitsTag += `
-                            <div>
-                                <a href="${commit['url']}" target="_blank">${commit['sha'].substring(0, 6)}</a>
-                                ${commit['commit']}
+                            <div class="commit-div">
+                                <a href="${commit['url']}" target="_blank" class="commit-sha">${commit['sha'].substring(0, 6)}</a>
+                                <span class="commit-title"> ${commit['commit']}</span>
                             </div>
                         `;
                     })
                 }
                 if (ret.issue) {
                     // if (ret.issue.length > 50) ret.issue = ret.issue.substring(0, 50) + ' ...'
-                    issueTag = `<div class="issue-line">${ret.issue}</div>`;
+                    issueTag = `<div class="content-issue">${ret.issue}</div>`;
                 }
 
                 if (ret.title)
                     ret.title = ret.title.replace(ret.title[0], ret.title[0].toUpperCase())
                 
+                var mt = ret.title.split(' ');
+                var mr = mt[mt.length - 1];
+                mt = mt.slice(0, mt.length - 1).join(' ');
+                
                 // 内容
-                $('.my-github-events-ul').append(`
+                $('#id-ul').append(`
                     ${firstFlag == true ? '' : '<hr />'}
                     <li>
-                        <div class="avator_div">
-                            <img src="${ret.avatar_url}" alt="user_avatar" class="avator_round_icon"/>
-                            <span class="avator_link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
+                        <div class="avator-div">
+                            <img src="${ret.avatar_url}" alt="user-avatar" class="avator-icon"/>
+                            <span class="avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
                         </div>
-                        <a href="${ret.url}" target="_blank">${ret.title}</a>
+                        <span class="content-title">${mt} </span><a href="${ret.url}" target="_blank" class="content-repo">${mr}</a>
                         ${commitsTag} ${issueTag} 
                     </li>
                 `);
