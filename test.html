@@ -40,6 +40,12 @@
             transition: all 0.3s ease;
         }
 
+        .trans {
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
         /* Line */
 
         .my-github-events-ul {
@@ -100,6 +106,66 @@
             color: white;
         }
 
+        /* Foot */
+
+        #content-foot {
+            background: #F1F8FF;
+            border: 1px solid #C8E1FF;
+            border-right: none;
+
+            margin: 0 0 -1px -1px;
+            padding: 6px 0 4px 0;
+        }
+
+        #content-foot a, #content-foot div {
+            display: block;
+            text-align: center;
+        }
+
+        /* Toggle */
+        
+        .content-toggle {
+            position: fixed;
+            text-align: center;
+
+            width: 30px;
+            height: 80px;
+            top: calc(50% - 45px);
+            left: calc(100% - 30px);
+
+            line-height: 1;
+            z-index: 1000000001;
+            cursor: pointer;
+            background-color: #F2F5F7;
+            box-shadow: rgba(118, 118, 118, 0.11) 2px 0px 5px 0px;
+            border: 1px solid #E0E4E7;
+            border-right: none;
+            padding: 6px;
+            border-radius: 5px;
+        }
+
+        .content-toggle-hide {
+            left: calc(100%);
+        }
+
+        .content-toggle i {
+            display: inline-block;
+            position: relative;
+            top: 5px;
+            left: -5px;
+        }
+
+        .content-toggle span {
+            display: inline-block;
+            position: relative;
+            /* text-align: left; */
+            top: 28px;
+            left: -13px;
+            font-size: 13px;
+
+            transform: rotate(90deg);
+        }
+
     </style>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -107,15 +173,20 @@
 
 <body>
 
-    <button id="showRight">Show/Hide</button></div>
+    <div class="content-toggle content-toggle-hide trans " id="content-toggle">
+        <i class="fa fa-chevron-left"></i>
+        <span>Events</span>
+    </div>
 
-    <nav class="content-nav">
+    <nav class="content-nav trans">
         <div id="content-head">
             <a id="content-ping" href="javascript:void(0)"><i class="fa fa-thumb-tack"></i></a>
+        </div>
+        <div id="content"></div>
+        <div id="content-foot">
             <div id="content-more-div"><a id="content-more-a" href="javascript:void(0)">More...</a></div>
             <div id="content-loading-label">Loading...</div>
         </div>
-        <div id="content"></div>
     </nav>
 
     <h1 style="margin: 2000px"></h1>
@@ -151,11 +222,15 @@
             });
         })();
 
-        $('#showRight').click(() => {
-            isClose = !isClose;
+        $('#content-toggle').click(() => {
+            isClose = false;
             closeNav(isClose);
         });
 
+        $('#content-ping').click(() => {
+            isClose = true;
+            closeNav(isClose);
+        });
         /**
          * More... 处理
          */
@@ -189,10 +264,15 @@
 
         function closeNav(closeFlag) {
             var nav = $('.content-nav').first();
-            if (closeFlag)
+            var toggle = $('.content-toggle').first();
+            if (closeFlag) {
                 nav.removeClass('content-nav-open');
-            else
+                toggle.removeClass('content-toggle-hide');
+            }
+            else {
+                toggle.addClass('content-toggle-hide');
                 nav.addClass('content-nav-open');
+            }
         }
         
         /**
@@ -241,6 +321,9 @@
                     // if (ret.issue.length > 50) ret.issue = ret.issue.substring(0, 50) + ' ...'
                     issueTag = `<div class="issue-line">${ret.issue}</div>`;
                 }
+
+                if (ret.title)
+                    ret.title = ret.title.replace(ret.title[0], ret.title[0].toUpperCase())
                 
                 // 内容
                 $('.my-github-events-ul').append(`
@@ -250,7 +333,7 @@
                             <img src="${ret.avatar_url}" alt="user_avatar" class="avator_round_icon"/>
                             <span class="avator_link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
                         </div>
-                        <a href="${ret.url}" target="_blank">${ret.title.replace(ret.title[0], ret.title[0].toUpperCase())}</a>
+                        <a href="${ret.url}" target="_blank">${ret.title}</a>
                         ${commitsTag} ${issueTag} 
                     </li>
                 `);
