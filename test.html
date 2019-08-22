@@ -14,13 +14,11 @@
 
 <body>
 
-    <!-- content-toggle content-toggle-hide -->
     <div class="content-toggle content-toggle-hide content-trans" id="id-toggle">
         <i class="fa fa-chevron-left"></i>
         <span>Events</span>
     </div>
 
-    <!-- content-nav content-nav-open -->
     <nav class="content-nav content-trans" id="id-nav">
         <div id="id-head">
             <a id="id-ping" href="javascript:void(0)">
@@ -34,7 +32,9 @@
             </div>
             <div id="id-loading-label">Loading...</div>
         </div>
+        <div id="id-resize-handler"></div>
     </nav>
+
 
     <h1 style="margin: 2000px"></h1>
 
@@ -57,6 +57,9 @@
             ulTag.id = "id-ul";
             ulTag.onload = () => this.parent.removeChild(ulTag);
             $('#id-content').append(ulTag);
+            
+            // Resize
+            bindResize();
 
             // Label
             showLoading(true);
@@ -373,7 +376,8 @@
                     comment_url = payload['issue']['html_url'];
                 break;
                 case 'IssueCommentEvent':
-                    title = `created comment on issue #${payload['issue']['number']} "${payload['issue']['title']}" in ${repo}`;
+                    // title = `created comment on issue #${payload['issue']['number']} "${payload['issue']['title']}" in ${repo}`;
+                    title = `created comment on issue #${payload['issue']['number']} in ${repo}`;
                     comment = payload['comment']['body'];
                     comment_url = payload['comment']['html_url'];
                 break;
@@ -383,7 +387,8 @@
                     url = payload['forkee']['html_url'];
                 break;
                 case 'PullRequestEvent':
-                    title = `${payload['action']} pull request #${payload['number']} "${payload['pull_request']['title']}" at ${repo}`;
+                    // title = `${payload['action']} pull request #${payload['number']} "${payload['pull_request']['title']}" at ${repo}`;
+                    title = `${payload['action']} pull request #${payload['number']} at ${repo}`;
                     pullreq_url = payload['pull_request']['html_url'];
                 break;
                 case 'MemberEvent': 
@@ -417,6 +422,51 @@
                 avatar_url: avatar_url,
                 commits: commits,
                 comment: comment
+            }
+        }
+
+        /**
+         * 拖动修改大小
+         */
+        function bindResize() {
+            var hnd = document.getElementById('id-resize-handler');
+            var el = document.getElementById('id-nav');
+            var x = 0, w = 0;
+
+            $(hnd).mousedown((e) => {
+                console.log(e.clientX);
+                console.log(el.offsetWidth);
+                
+                x = e.clientX;
+                w = el.offsetWidth;
+
+                x += w
+
+                // TODO
+                hnd.setCapture ? (
+                    hnd.setCapture(),
+                    hnd.onmousemove = (ev) => {
+                        // mouseMove(ev || event);
+                        mouseMove(ev);
+                    },
+                    hnd.onmouseup = mouseUp
+                ) : (
+                    $(document).bind("mousemove", mouseMove).bind("mouseup", mouseUp)
+                );
+                e.preventDefault();
+            })
+
+            function mouseMove(e) {
+                el.style.width = x - e.clientX + 'px';
+            }
+
+            function mouseUp(e) {
+                hnd.releaseCapture ? (
+                    hnd.releaseCapture(),
+                    hnd.onmousemove = hnd.onmouseup = null
+                ) : (
+                    $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
+                )
             }
         }
     </script>

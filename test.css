@@ -37,6 +37,11 @@
 
 /* Ul */
 
+#id-nav {
+    min-width: 200px;
+    /* overflow: visible; */
+}
+
 #id-ul {
     list-style-type: none;
     padding: 0px;
@@ -203,4 +208,17 @@
 #id-nav::-webkit-scrollbar-thumb:hover {
     border-radius: 4px;
     background-color: gray;
+}
+
+/* Resize */
+
+#id-resize-handler {
+    cursor: col-resize;
+    position: absolute;
+
+    z-index: 90;
+    width: 10px;
+    left: 0px;
+    bottom: 0px;
+    top: 0px;
 }
