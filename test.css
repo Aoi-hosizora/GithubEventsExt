@@ -85,6 +85,13 @@
     -webkit-box-orient:vertical;
     text-overflow:ellipsis;
     overflow:hidden;
+    font-size: 11px;
+    color: gray;
+}
+
+.commit-div {
+    font-size: 11px;
+    color: gray;
 }
 
 /* Head */
