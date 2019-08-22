@@ -106,6 +106,20 @@
     color: white;
 }
 
+.avator-item-icon {
+    background: #E1E4E8;
+    border-radius: 50%;    
+    color: #24292e;
+    float: right;
+    
+    height: 26px;
+    width: 26px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+}
+
 /* Foot */
 
 #id-foot {
