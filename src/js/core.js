@@ -61,7 +61,6 @@ function addEvents(events) {
         // 拆分
         mt = ret.mainTitle.split(' ');
         mr = mt[mt.length - 1];
-
         switch (ret.type) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
@@ -129,7 +128,7 @@ function addEvents(events) {
                     </span>
                 `;
                 break;
-                case 'CreateBranchEvent':
+            case 'CreateBranchEvent':
                 // Created branch add-license-1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
                 var branch = mt[2];
                 titleSpanTag = `
@@ -140,7 +139,7 @@ function addEvents(events) {
                     </span>
                 `;
                 break;
-                case 'CreateTagEvent':
+            case 'CreateTagEvent':
                 // Created tag 1.1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
                 var tag = mt[2];
                 titleSpanTag = `
@@ -151,8 +150,20 @@ function addEvents(events) {
                     </span>
                 `;
                 break;
+            case 'ReleaseEvent':
+                // Published release 1.1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
+                var tag = mt[2];
+                titleSpanTag = `
+                    <span class="ah-content-title">
+                        ${mt.splice(0, 2).join(' ')} 
+                        <a href="${ret.branchtag_url}" target="_blank">${tag}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
+                break;
             default:
-                titleSpanTag = `<span class="ah-content-title">${mt.join(' ')} </span>`;
+                titleSpanTag = `<span class="ah-content-title">${mt.slice(0, mt.length - 1)
+                    .join(' ')} </span>`;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +214,8 @@ function parseApiJson(event) {
         PullRequestEvent                octicon octicon-git-pull-request
         PullRequestReviewCommentEvent   octicon octicon-eye
         CommitCommentEvent              octicon octicon-comment
+        ReleaseEvent                    octicon octicon-tag
+        DeleteEvent                     octicon octicon-x
     */
 
     let type = event['type'];
@@ -230,7 +243,7 @@ function parseApiJson(event) {
     // issue pullreq title
     let isprTitle = '';
     // issue pullreq body
-    let isprBody = '';
+    let issue_pullreq_release_body = '';
 
     switch (type) {
         case 'PushEvent':
@@ -267,13 +280,13 @@ function parseApiJson(event) {
             mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['issue']['html_url'];
             isprTitle = payload['issue']['title'];
-            isprBody = payload['issue']['body'];
+            issue_pullreq_release_body = payload['issue']['body'];
             break;
         case 'IssueCommentEvent':
             mainTitle = `created comment on issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['comment']['html_url'];
             isprTitle = payload['issue']['title'];
-            isprBody = payload['comment']['body'];
+            issue_pullreq_release_body = payload['comment']['body'];
             break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
@@ -284,7 +297,7 @@ function parseApiJson(event) {
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
             pullreq_url = payload['pull_request']['html_url'];
             isprTitle = payload['pull_request']['title'];
-            isprBody = payload['pull_request']['body'];
+            issue_pullreq_release_body = payload['pull_request']['body'];
             break;
         case 'MemberEvent':
             mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
@@ -293,12 +306,20 @@ function parseApiJson(event) {
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
             pullreq_url = payload['comment']['html_url'];
             isprTitle = payload['pull_request']['title'];
-            isprBody = payload['comment']['body'];
+            issue_pullreq_release_body = payload['comment']['body'];
             break;
         case 'CommitCommentEvent':
             mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
             comment_url = payload['comment']['html_url'];
-            isprBody = payload['comment']['body'];
+            issue_pullreq_release_body = payload['comment']['body'];
+            break;
+        case 'ReleaseEvent':
+            mainTitle = `${payload['action']} release ${payload['release']['tag_name']} at ${repo}`;
+            branchtag_url = payload['release']['html_url'];
+            issue_pullreq_release_body = payload['release']['body'];
+            break;
+        case 'DeleteEvent':
+            mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
             break;
         default:
             ret = {
@@ -313,7 +334,7 @@ function parseApiJson(event) {
             return ret;
     }
 
-    isprBody = isprBody.replace(/<.*>/g, '');
+    issue_pullreq_release_body = issue_pullreq_release_body.replace(/<.*>/g, '');
     return {
         type: type,
         mainTitle: mainTitle,
@@ -327,7 +348,7 @@ function parseApiJson(event) {
         avatar_url: avatar_url,
         commits: commits,
         issue: isprTitle,
-        body: isprBody,
+        body: issue_pullreq_release_body,
         createTime: createTime
     }
 }

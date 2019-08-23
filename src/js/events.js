@@ -104,7 +104,7 @@ function _regMouse() {
  * 布局刷新事件
  */
 function _regRefresh() {
-    
+
     window.onresize = () => {
         refreshPadding();
     };

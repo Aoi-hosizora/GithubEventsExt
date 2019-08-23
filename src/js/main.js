@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Loading Ext Start");
 
     // 获得 repo | user
-    urlType = checkURL();    
+    urlType = checkURL();
 
     if (urlType) {
         // HTML 标签
@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 获取数据
             getDataAjax();
         })
-    }
-    else
+    } else
         console.log("Loading Ext Finish (Url Not For Events)");
 })
 
@@ -124,13 +123,13 @@ function injectJs(urlType) {
  */
 function initData(st, urlType) {
 
-    if (urlType.type == 'user') 
+    if (urlType.type == 'user')
         url = `https://api.github.com/users/${urlType.username}/events?page=`;
     else if (urlType.type == 'repo')
         url = `https://api.github.com/repos/${urlType.username}/${urlType.repo}/events?page=`;
-    
-        console.log(url);
-        
+
+    // console.log(url);
+
     page = 1;
     firstFlag = true;
 
@@ -185,7 +184,7 @@ function getDataAjax() {
 function checkURL() {
 
     var preserveKeyWord = [
-        '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications', 
+        '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
         'new', 'login', 'organizations', 'settings'
     ];
 
@@ -197,7 +196,7 @@ function checkURL() {
 
     // console.log(url);
     // console.log(url.length);
-    
+
     if (url.length == 0) return null;
     if (preserveKeyWord.includes(url[0])) return null;
 
@@ -214,7 +213,7 @@ function checkURL() {
 
         repo_url = document.URL.split('/');
         repo_url = repo_url.slice(0, 5).join('/')
-    
+
         return {
             type: 'repo',
             username: url[0],
