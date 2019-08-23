@@ -12,15 +12,14 @@ function addEvents(events) {
         // console.log(ret);
 
         var commitsTag = '',
-            isprCommentTag = '',
-            isprTitleTag = '';
+            isprTitleTag = '',
+            isprCommentTag = '';
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 预处理数据
         /////////////////////////////////////////////////////////////////////////////////////////
 
         // Git commit
-
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
@@ -45,24 +44,24 @@ function addEvents(events) {
         if (ret.body)
             isprCommentTag = `<div class="content-comment">${ret.body}</div>`;
 
-        var mt = [],
-            mr = '';
-
-        if (ret.mainTitle) {
-            ret.mainTitle = ret.mainTitle.replace(ret.mainTitle[0], ret.mainTitle[0].toUpperCase())
-
-            mt = ret.mainTitle.split(' ');
-            mr = mt[mt.length - 1];
-            mt = mt.slice(0, mt.length - 1).join(' ');
-        }
-
         /////////////////////////////////////////////////////////////////////////////////////////
         // 拆分主标题
         /////////////////////////////////////////////////////////////////////////////////////////
 
-        var titleSpanTag = '';
+        // 拆分临时数据
+        var mt = [], // title 其他部分
+            mr = ''; // repo 部分
 
-        mt = mt.split(' ');
+        var titleSpanTag = ''; // 最终标签
+
+        // 首字母大写
+        if (ret.mainTitle)
+            ret.mainTitle = ret.mainTitle.replace(ret.mainTitle[0], ret.mainTitle[0].toUpperCase())
+
+        // 拆分
+        mt = ret.mainTitle.split(' ');
+        mr = mt[mt.length - 1];
+
         switch (ret.type) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
@@ -139,15 +138,18 @@ function addEvents(events) {
         /////////////////////////////////////////////////////////////////////////////////////////
 
         $('#id-ul').append(`
-                    ${firstFlag == true ? '' : '<hr />'}
+                    ${firstFlag == true ? '' : '<hr style="margin: 8px 0;"/>'}
                     <li>
                         <div class="avator-div">
+
                             <img src="${ret.avatar_url}" alt="" class="avator-icon"/>
                             <span class="avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
                         
                             <span class="avator-item-icon" title="${ret.type}">
                                 ${getSvgTag(ret.type)}
                             </span>
+                            <span class="create-at-time">Create at ${ret.createTime}</span>
+                            
                         </div>
                         ${titleSpanTag}
                         <a href="${ret.url}" target="_blank" class="content-repo">${mr}</a>
@@ -184,6 +186,7 @@ function parseApiJson(event) {
     let actor = event['actor']['login'];
     let repo = event['repo']['name'];
     let payload = event['payload'];
+    let createTime = UTC2Local(event['created_at']);
 
     let url = "https://" + event['repo']['url']
         .replace("https://api.", "").replace("http://api.", "")
@@ -268,13 +271,16 @@ function parseApiJson(event) {
             isprBody = payload['comment']['body'];
             break;
         default:
-            return {
+            ret = {
                 type: type,
-                    mainTitle: "Unknown Event",
-                    url: "https://github.com",
-                    avatar_url: avatar_url,
-                    user_url: user_url,
+                mainTitle: "Unknown Event",
+                url: "https://github.com",
+                avatar_url: avatar_url,
+                user: user,
+                user_url: user_url,
+                createTime: createTime
             }
+            return ret;
     }
 
     isprBody = isprBody.replace(/<.*>/g, '');
@@ -290,7 +296,8 @@ function parseApiJson(event) {
         avatar_url: avatar_url,
         commits: commits,
         issue: isprTitle,
-        body: isprBody
+        body: isprBody,
+        createTime: createTime
     }
 }
 
@@ -318,4 +325,32 @@ function ajax(url, page, token, cb, err) {
             err();
         }
     });
+}
+
+/**
+ * UTC -> Local Time
+ * @param {*} utc 
+ */
+function UTC2Local(utc) {
+    if (!utc) return '';
+
+    // 
+    var date2 = new Date(utc);
+
+    var year = date2.getFullYear();
+    var mon = formatFunc(date2.getMonth() + 1);
+    var day = formatFunc(date2.getDate());
+    var hour = formatFunc(date2.getHours());
+    var min = formatFunc(date2.getMinutes());
+    var dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min;
+
+    return dateStr;
+
+    /**
+     * 格式化数字
+     * @param {*} num 
+     */
+    function formatFunc(num) {
+        return num > 9 ? num : '0' + num
+    }
 }

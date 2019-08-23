@@ -137,6 +137,14 @@
     left: 30px;
 }
 
+.create-at-time {
+    display: block;
+    text-align: right;
+    font-size: 10.5px;
+    margin: 5px 4px -5px 0;
+    color: gray;
+}
+
 /* #id-feedback i {
     color: gray;
 }
@@ -199,7 +207,7 @@
 
     height: 26px;
     width: 26px;
-    margin-top: -2px;
+    margin: -2px -2px 0 0;
 
     display: flex;
     justify-content: center;
