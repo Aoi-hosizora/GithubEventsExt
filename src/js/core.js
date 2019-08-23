@@ -12,21 +12,12 @@ function addEvents(events) {
         // console.log(ret);
 
         var commitsTag = '',
-            commentTag = '',
-            issueTitleTag = '';
+            isprCommentTag = '',
+            isprTitleTag = '';
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 预处理数据
         /////////////////////////////////////////////////////////////////////////////////////////
-
-        // Issue 标题
-        if (ret.issue) {
-            issueTitleTag = `
-            <div class="content-issue-title">
-                <span>${ret.issue}</span>
-            </div>
-            `;
-        }
 
         // Git commit
 
@@ -41,10 +32,19 @@ function addEvents(events) {
             })
         }
 
-        // 返回体，评论等
+        // Issue PullReq 标题
+        if (ret.issue) {
+            isprTitleTag = `
+            <div class="content-issue-title">
+                <span>${ret.issue}</span>
+            </div>
+            `;
+        }
 
+        // Issue PullReq 评论
         if (ret.body)
-            commentTag = `<div class="content-comment">${ret.body}</div>`;
+            isprCommentTag = `<div class="content-comment">${ret.body}</div>`;
+
         var mt = [],
             mr = '';
 
@@ -56,7 +56,9 @@ function addEvents(events) {
             mt = mt.slice(0, mt.length - 1).join(' ');
         }
 
-        // 拆分 主标题
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // 拆分主标题
+        /////////////////////////////////////////////////////////////////////////////////////////
 
         var titleSpanTag = '';
 
@@ -65,32 +67,68 @@ function addEvents(events) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
                 var forker = mt[1];
-                titleSpanTag = `<span class="content-title">${mt[0]} <a href="${ret.forker_url}" target="_blank">${forker}</a> ${mt.slice(2, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt[0]} 
+                        <a href="${ret.forker_url}" target="_blank">${forker}</a> 
+                        ${mt.slice(2, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             case 'IssueCommentEvent':
                 // Created comment on issue #32258 "yarn setup not working in aio" in angular/angular
                 var issueId = mt[4];
-                titleSpanTag = `<span class="content-title">${mt.splice(0, 4).join(' ')} <a href="${ret.comment_url}" target="_blank">${issueId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt.splice(0, 4).join(' ')} 
+                        <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             case 'IssuesEvent':
                 // Opened issue #32264 in angular/angular
                 var issueId = mt[2];
-                titleSpanTag = `<span class="content-title">${mt.splice(0, 2).join(' ')} <a href="${ret.comment_url}" target="_blank">${issueId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt.splice(0, 2).join(' ')} 
+                        <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             case 'PullRequestEvent':
                 // Opened pull request #32267 "docs: fixed animations reference links to api" at angular/angular
                 var pullReqId = mt[3];
-                titleSpanTag = `<span class="content-title">${mt.splice(0, 3).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt.splice(0, 3).join(' ')} 
+                        <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             case 'PullRequestReviewCommentEvent':
                 // Created pull request review comment in pull request #undefined at angular/angular
                 var pullReqId = mt[8];
-                titleSpanTag = `<span class="content-title">${mt.splice(0, 8).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt.splice(0, 8).join(' ')} 
+                        <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             case 'CommitCommentEvent':
                 // Created a comment at commit #904a201 in angular/angular
                 var pullReqId = mt[5];
-                titleSpanTag = `<span class="content-title">${mt.splice(0, 5).join(' ')} <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+                titleSpanTag = `
+                    <span class="content-title">
+                        ${mt.splice(0, 5).join(' ')} 
+                        <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
                 break;
             default:
                 titleSpanTag = `<span class="content-title">${mt.join(' ')} </span>`;
@@ -114,7 +152,7 @@ function addEvents(events) {
                         ${titleSpanTag}
                         <a href="${ret.url}" target="_blank" class="content-repo">${mr}</a>
                         ${commitsTag} 
-                        ${issueTitleTag} ${commentTag} 
+                        ${isprTitleTag} ${isprCommentTag} 
                     </li>
                 `);
 

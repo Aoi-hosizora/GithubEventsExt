@@ -101,9 +101,12 @@ function initData() {
     url = "https://api.github.com/repos/angular/angular/events?page=";
 
     page = 1;
-    isPin = true;
     firstFlag = true;
+
+    isPin = true;
     gwidth = 280;
+
+    feedback_url = "https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/issues";
 }
 
 // 初始化界面

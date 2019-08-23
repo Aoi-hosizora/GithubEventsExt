@@ -40,10 +40,10 @@ function _regClick() {
         isShow = isPin;
     });
 
-    // 弹出 TODO
+    // 反馈
     $('#id-feedback').click(() => {
         // TODO
-        window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
+        window.open(feedback_url)
     });
 }
 
@@ -89,7 +89,7 @@ function _regMouse() {
             $('#id-pin').children('svg').children('path').attr("fill", "#fff");
     });
 
-    // 设置高亮
+    // 反馈高亮
     $('#id-feedback').mousemove((e) => {
         $('#id-feedback').children('svg').children('path').attr("fill", "#fff");
     });
