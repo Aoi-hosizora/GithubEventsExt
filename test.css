@@ -38,6 +38,10 @@
     right: calc(-300px - 1px);
 }
 
+.content-nav-shadow {
+    box-shadow: rgba(118, 118, 118, 0.11) 0px 0px 3px 2px;
+}
+
 /* Ul */
 
 #id-ul {
@@ -102,7 +106,7 @@
 #id-head {
     height: 64px;
     background: #373E43;
-    padding: 12px 5px 5px 12px;
+    padding: 10px 12px;
 }
 
 #id-head,

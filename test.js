@@ -6,7 +6,7 @@
     url = "https://api.github.com/repos/angular/angular/events?page=";
 
     page = 1;
-    isClose = false;
+    isPin = true;
     firstFlag = true;
 
     // 容器
@@ -16,13 +16,22 @@
     $('#id-content').append(ulTag);
 
     // Resize
-    bindResize();
+    // bindResize();
 
     // Label
     showLoading(true);
 
+    // pin
+    setPinIcon(isPin);
+
     // 展开
-    closeNav(isClose);
+    if (isPin)
+        closeNav(false);
+    else {
+        closeNav(true);
+        setPinIcon(isPin, true);
+    }
+
 
     // 异步获取
     ajax(url, page, token, (events) => {
@@ -33,17 +42,46 @@
     });
 })();
 
-// TODO
 $('#id-toggle').click(() => {
-    isClose = false;
-    closeNav(isClose);
+    closeNav(false);
 });
 
-// TODO
-$('#id-ping').click(() => {
-    isClose = true;
-    closeNav(isClose);
+$('#id-pin').click(() => {
+    isPin = !isPin;
+    setPinIcon(isPin);
+    isShow = isPin;
 });
+
+(() => {
+    isShow = false;
+
+    $('#id-nav').mouseleave((e) => {
+        isShow = isPin;
+        // TODO
+        if (!isPin && !isShow) {
+            setTimeout(() => {
+                if (!isShow)
+                    closeNav(true);
+            }, 1000);
+        }
+    });
+
+    $('#id-nav').mouseenter((e) => {
+        isShow = true;
+    });
+    
+    $('#id-toggle').mouseenter((e) => {
+        closeNav(false);
+    });
+
+    $('#id-pin').mouseenter((e) => {
+        setPinIcon(isPin, false);
+    });
+
+    $('#id-pin').mouseleave((e) => {
+        setPinIcon(isPin, true);
+    });
+})();
 
 /**
  * More... 处理
@@ -61,6 +99,8 @@ $('#id-more-a').click(() => {
 
 /**
  * 显示 Loading / More
+ * @param {*} isLoading 
+ * @param {*} isError -> `Something error happened, try again...`
  */
 function showLoading(isLoading, isError = false) {
     if (isLoading) {
@@ -77,6 +117,7 @@ function showLoading(isLoading, isError = false) {
 
 /**
  * 关闭 右侧栏
+ * @param {*} closeFlag 
  */
 function closeNav(closeFlag) {
 
@@ -86,11 +127,32 @@ function closeNav(closeFlag) {
     if (closeFlag) {
         nav.removeClass('content-nav-open');
         toggle.removeClass('content-toggle-hide');
-        $('#id-nav').css("right", `calc(-${nav.width()}px - 10px)`);
+        // $('#id-nav').css("right", `calc(-${nav.width()}px - 10px)`);
     } else {
         toggle.addClass('content-toggle-hide');
         nav.addClass('content-nav-open');
-        $('#id-nav').css("right", `0`);
+        // $('#id-nav').css("right", `0`);
+    }
+}
+
+/**
+ * 设置 置顶
+ * @param {*} isPin 
+ * @param {*} isGray 
+ */
+function setPinIcon(isPin, isGray=false) {
+    if (isPin) {
+        $('#id-pin').children('i').css("transform", "")
+        $('#id-pin').children('i').css("color", "white")
+        $('#id-nav').addClass('content-nav-shadow');
+    } else {
+        $('#id-pin').children('i').css("transform", "rotate(45deg)")
+        $('#id-nav').removeClass('content-nav-shadow');
+        if (isGray) {
+            $('#id-pin').children('i').css("color", "gray")
+        } else {
+            $('#id-pin').children('i').css("color", "white")
+        }
     }
 }
 
