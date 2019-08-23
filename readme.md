@@ -5,7 +5,7 @@
 ### Environment
 + `Chrome 76.0.3809.100`
 
-### Environment
+### Functions
 + [x] Show Repo Events
 + [x] Show User Events
 + [x] Show different title and url of different events
@@ -31,14 +31,14 @@
 
 ![HoverIcon](./assets/HoverIcon.jpg)
 
-### 
-+ Add element className is beginning with `ah-`
-+ Add element id is beginning with `ahid-`
+### Tips
++ All element classNames start with `.ah-`
++ All element ids start with `#ahid-`
 
 ### Screenshot
 ![mainExt](./assets/mainExt.jpg)
 
-### Problem
+### Problems
 + Resize is too slow
 + Could not distinguish user event and org event
 + ...
