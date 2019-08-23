@@ -14,8 +14,13 @@
                 "http://github.com/*",
                 "https://github.com/*"
             ],
-            "js": ["src/js/main.js"],
-            "css": ["src/css/main.css"],
+            "js": [
+                "src/js/main.js",
+                "src/lib/js/jquery-3.4.1.min.js"
+            ],
+            "css": [
+                "src/css/main.css"
+            ],
             "run_at": "document_start"
         }
     ],

@@ -22,16 +22,18 @@
     showLoading(true);
 
     // pin
-    setPinIcon(isPin);
+    setPin(isPin);
 
     // 展开
     if (isPin)
         closeNav(false);
     else {
         closeNav(true);
-        setPinIcon(isPin, true);
+        setPin(isPin, true);
     }
 
+    // title-icon
+    $('#id-repo-icon').html(getSvgTag('CreateEvent', "#fff"));
 
     // 异步获取
     ajax(url, page, token, (events) => {
@@ -48,8 +50,12 @@ $('#id-toggle').click(() => {
 
 $('#id-pin').click(() => {
     isPin = !isPin;
-    setPinIcon(isPin);
+    setPin(isPin);
     isShow = isPin;
+});
+
+$('#id-popup').click(() => {
+    window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
 });
 
 (() => {
@@ -69,17 +75,17 @@ $('#id-pin').click(() => {
     $('#id-nav').mouseenter((e) => {
         isShow = true;
     });
-    
+
     $('#id-toggle').mouseenter((e) => {
         closeNav(false);
     });
 
     $('#id-pin').mouseenter((e) => {
-        setPinIcon(isPin, false);
+        setPin(isPin, false);
     });
 
     $('#id-pin').mouseleave((e) => {
-        setPinIcon(isPin, true);
+        setPin(isPin, true);
     });
 })();
 
@@ -140,14 +146,18 @@ function closeNav(closeFlag) {
  * @param {*} isPin 
  * @param {*} isGray 
  */
-function setPinIcon(isPin, isGray=false) {
+function setPin(isPin, isGray = false) {
     if (isPin) {
         $('#id-pin').children('i').css("transform", "")
         $('#id-pin').children('i').css("color", "white")
         $('#id-nav').addClass('content-nav-shadow');
+        $('header').css("padding-right", $('#id-nav').width() + 15);
+        $('header').removeClass('p-responsive');
     } else {
         $('#id-pin').children('i').css("transform", "rotate(45deg)")
         $('#id-nav').removeClass('content-nav-shadow');
+        $('header').css("padding-right", "");
+        // $('header').addClass('p-responsive');
         if (isGray) {
             $('#id-pin').children('i').css("color", "gray")
         } else {
@@ -271,7 +281,7 @@ function addEvents(events) {
     });
 }
 
-function getSvgTag(type) {
+function getSvgTag(type, color = "") {
     let svgClass = '',
         svgPath = '';
     let svgHeight = 16,
@@ -331,7 +341,7 @@ function getSvgTag(type) {
                     version="1.1" aria-hidden="true"
                     width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
                     
-                    <path class="octicon-path" fill-rule="evenodd" d="${svgPath}"></path>
+                    <path class="octicon-path" fill-rule="evenodd" d="${svgPath}" ${color ? `fill="${color}"` : ""}></path>
                 </svg>
             `
     return svg;
