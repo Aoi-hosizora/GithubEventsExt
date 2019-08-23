@@ -8,6 +8,7 @@
     page = 1;
     isPin = true;
     firstFlag = true;
+    gwidth = 280;
 
     // 容器
     var ulTag = document.createElement('ul');
@@ -15,8 +16,6 @@
     ulTag.onload = () => this.parent.removeChild(ulTag);
     $('#id-content').append(ulTag);
 
-    // Resize
-    // bindResize();
 
     // Label
     showLoading(true);
@@ -31,6 +30,10 @@
         closeNav(true);
         setPin(isPin);
     }
+
+    // Resize
+    bindResize();
+    refreshPadding();
 
     // title-icon
     $('#id-repo-icon').html(getSvgTag('CreateEvent', "#fff"));
@@ -55,8 +58,17 @@ $('#id-pin').click(() => {
 });
 
 $('#id-popup').click(() => {
+    // TODO
     window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
 });
+
+window.onresize = () => {
+    refreshPadding();
+};
+
+document.onloadend = () => {
+    refreshPadding();
+}
 
 (() => {
     isShow = false;
@@ -85,12 +97,12 @@ $('#id-popup').click(() => {
     });
 
     $('#id-pin').mouseleave((e) => {
-        if (!isPin) 
+        if (!isPin)
             $('#id-pin').children('svg').children('path').attr("fill", "#999");
         else
             $('#id-pin').children('svg').children('path').attr("fill", "#fff");
-    });   
-    
+    });
+
     $('#id-popup').mousemove((e) => {
         $('#id-popup').children('svg').children('path').attr("fill", "#fff");
     });
@@ -139,18 +151,20 @@ function showLoading(isLoading, isError = false) {
  * @param {*} closeFlag 
  */
 function closeNav(closeFlag) {
+    $('#id-nav').width(gwidth);
+    refreshPadding();
 
     var nav = $('.content-nav').first();
     var toggle = $('.content-toggle').first();
 
     if (closeFlag) {
+        $('#id-nav').css("right", `-${gwidth}px`);
         nav.removeClass('content-nav-open');
         toggle.removeClass('content-toggle-hide');
-        // $('#id-nav').css("right", `calc(-${nav.width()}px - 10px)`);
     } else {
+        $('#id-nav').css("right", `0`);
         toggle.addClass('content-toggle-hide');
         nav.addClass('content-nav-open');
-        // $('#id-nav').css("right", `0`);
     }
 }
 
@@ -162,16 +176,18 @@ function setPin(isPin) {
     if (isPin) {
         $('#id-pin').children('svg').css("transform", "");
         $('#id-nav').addClass('content-nav-shadow');
-        $('header').css("padding-right", $('#id-nav').width() + 15);
-        $('header').removeClass('p-responsive');
         $('#id-pin').children('svg').children('path').attr("fill", "#fff");
     } else {
         $('#id-pin').children('svg').css("transform", "rotate(45deg)");
         $('#id-nav').removeClass('content-nav-shadow');
-        $('header').css("padding-right", "");
         $('#id-pin').children('svg').children('path').attr("fill", "#999");
-        // $('header').addClass('p-responsive');
     }
+    refreshPadding();
+}
+
+function refreshPadding() {
+    // $('header').removeClass('p-responsive');
+    $('html').css("margin-right", isPin ? gwidth : 0);
 }
 
 /**
@@ -229,13 +245,16 @@ function addEvents(events) {
         }
         if (ret.body)
             commentTag = `<div class="content-comment">${ret.body}</div>`;
+        var mt = [],
+            mr = '';
 
-        if (ret.mainTitle)
+        if (ret.mainTitle) {
             ret.mainTitle = ret.mainTitle.replace(ret.mainTitle[0], ret.mainTitle[0].toUpperCase())
 
-        var mt = ret.mainTitle.split(' ');
-        var mr = mt[mt.length - 1];
-        mt = mt.slice(0, mt.length - 1).join(' ');
+            mt = ret.mainTitle.split(' ');
+            mr = mt[mt.length - 1];
+            mt = mt.slice(0, mt.length - 1).join(' ');
+        }
 
         var titleSpanTag = `<span class="content-title">${mt} </span>`;
 
@@ -264,8 +283,12 @@ function addEvents(events) {
             mt = mt.split(' ');
             var pullReqId = mt[8];
             titleSpanTag = `<span class="content-title">${mt.splice(0, 8).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+        } else if (ret.type == 'CommitCommentEvent') {
+            // Created a comment at commit #904a201 in angular/angular
+            mt = mt.split(' ');
+            var pullReqId = mt[5];
+            titleSpanTag = `<span class="content-title">${mt.splice(0, 5).join(' ')} <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
         }
-
         // 内容
         $('#id-ul').append(`
                     ${firstFlag == true ? '' : '<hr />'}
@@ -325,6 +348,7 @@ function getSvgTag(type, color = "") {
             svgPath = "M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z";
             break;
         case 'IssueCommentEvent':
+        case 'CommitCommentEvent':
             svgClass = "octicon-comment";
             svgWidth = 16;
             svgPath = "M14 1H2c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h2v3.5L7.5 11H14c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zm0 9H7l-2 2v-2H2V2h12v8z";
@@ -343,6 +367,7 @@ function getSvgTag(type, color = "") {
             svgClass = "octicon-eye";
             svgWidth = 16;
             svgPath = "M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z";
+            break;
     }
     let svg = `
                 <svg class="octicon ${svgClass}" 
@@ -371,6 +396,7 @@ function parseApiJson(event) {
         ForkEvent                       octicon octicon-repo-forked
         PullRequestEvent                octicon octicon-git-pull-request
         PullRequestReviewCommentEvent   octicon octicon-eye
+        CommitCommentEvent
     */
 
     let type = event['type'];
@@ -455,10 +481,15 @@ function parseApiJson(event) {
             isprTitle = payload['pull_request']['title'];
             isprBody = payload['comment']['body'];
             break;
+        case 'CommitCommentEvent':
+            mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
+            comment_url = payload['comment']['html_url'];
+            isprBody = payload['comment']['body'];
+            break;
         default:
             return {
                 type: type,
-                    title: "Unknown Event",
+                    mainTitle: "Unknown Event",
                     url: "https://github.com",
                     avatar_url: avatar_url,
                     user_url: user_url,
@@ -488,8 +519,9 @@ function parseApiJson(event) {
 function bindResize() {
     var hnd = document.getElementById('id-resize-handler');
     var el = document.getElementById('id-nav');
+    var jel = $('#id-nav');
 
-    $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px - 10px)`);
+    $('#id-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
 
     var x = 0,
         w = 0;
@@ -515,7 +547,9 @@ function bindResize() {
     })
 
     function mouseMove(e) {
-        el.style.width = x - e.clientX + 'px';
+        jel.width(x - e.clientX + 'px');
+        refreshPadding();
+        gwidth = jel.width();
     }
 
     function mouseUp(e) {
@@ -525,6 +559,7 @@ function bindResize() {
         ) : (
             $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
         )
-        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px - 10px)`);
+        mouseMove(e);
+        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px)`);
     }
 }

@@ -16,6 +16,9 @@
             ],
             "js": [
                 "src/lib/js/jquery-3.4.1.min.js",
+                "src/js/util.js",
+                "src/js/ui.js",
+                "src/js/events.js",
                 "src/js/main.js"
             ],
             "css": [
