@@ -29,7 +29,7 @@
         closeNav(false);
     else {
         closeNav(true);
-        setPin(isPin, true);
+        setPin(isPin);
     }
 
     // title-icon
@@ -81,12 +81,25 @@ $('#id-popup').click(() => {
     });
 
     $('#id-pin').mouseenter((e) => {
-        setPin(isPin, false);
+        $('#id-pin').children('svg').children('path').attr("fill", "#fff");
     });
 
     $('#id-pin').mouseleave((e) => {
-        setPin(isPin, true);
+        if (!isPin) 
+            $('#id-pin').children('svg').children('path').attr("fill", "#999");
+        else
+            $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+    });   
+    
+    $('#id-popup').mousemove((e) => {
+        $('#id-popup').children('svg').children('path').attr("fill", "#fff");
     });
+
+    $('#id-popup').mouseleave((e) => {
+        $('#id-popup').children('svg').children('path').attr("fill", "#999");
+    });
+
+
 })();
 
 /**
@@ -143,26 +156,21 @@ function closeNav(closeFlag) {
 
 /**
  * 设置 置顶
- * @param {*} isPin 
- * @param {*} isGray 
+ * @param {*} isPin
  */
-function setPin(isPin, isGray = false) {
+function setPin(isPin) {
     if (isPin) {
-        $('#id-pin').children('i').css("transform", "")
-        $('#id-pin').children('i').css("color", "white")
+        $('#id-pin').children('svg').css("transform", "");
         $('#id-nav').addClass('content-nav-shadow');
         $('header').css("padding-right", $('#id-nav').width() + 15);
         $('header').removeClass('p-responsive');
+        $('#id-pin').children('svg').children('path').attr("fill", "#fff");
     } else {
-        $('#id-pin').children('i').css("transform", "rotate(45deg)")
+        $('#id-pin').children('svg').css("transform", "rotate(45deg)");
         $('#id-nav').removeClass('content-nav-shadow');
         $('header').css("padding-right", "");
+        $('#id-pin').children('svg').children('path').attr("fill", "#999");
         // $('header').addClass('p-responsive');
-        if (isGray) {
-            $('#id-pin').children('i').css("color", "gray")
-        } else {
-            $('#id-pin').children('i').css("color", "white")
-        }
     }
 }
 

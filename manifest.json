@@ -15,8 +15,8 @@
                 "https://github.com/*"
             ],
             "js": [
-                "src/js/main.js",
-                "src/lib/js/jquery-3.4.1.min.js"
+                "src/lib/js/jquery-3.4.1.min.js",
+                "src/js/main.js"
             ],
             "css": [
                 "src/css/main.css"

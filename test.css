@@ -125,25 +125,25 @@
 #id-pin,
 #id-popup {
     position: absolute;
-    top: 22px;
+    top: 25px;
     font-size: 12px;
 }
 
 #id-pin {
-    left: 12px;
+    left: 14px;
 }
 
 #id-popup {
-    left: 28px;
+    left: 32px;
 }
 
-#id-popup i {
+/* #id-popup i {
     color: gray;
 }
 
 #id-popup i:hover {
     color: white;
-}
+} */
 
 #id-title {
     margin-top: 6px;
@@ -246,18 +246,18 @@
     left: calc(100%);
 }
 
-.content-toggle i {
+.content-toggle svg {
     display: inline-block;
     position: relative;
     top: 5px;
-    left: -5px;
+    left: -3px;
 }
 
 .content-toggle span {
     display: inline-block;
     position: relative;
-    top: 28px;
-    left: -13px;
+    top: 22px;
+    left: -12px;
     font-size: 13px;
 
     transform: rotate(90deg);
