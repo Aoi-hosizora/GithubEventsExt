@@ -276,7 +276,7 @@ function parseApiJson(event) {
                 mainTitle: "Unknown Event",
                 url: "https://github.com",
                 avatar_url: avatar_url,
-                user: user,
+                user: actor,
                 user_url: user_url,
                 createTime: createTime
             }

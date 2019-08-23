@@ -44,6 +44,8 @@
     white-space: nowrap;
 }
 
+#ahid-user-icon,
+#ahid-user-icon svg,
 #ahid-repo-icon,
 #ahid-repo-icon svg {
     display: inline-block;

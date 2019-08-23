@@ -7,30 +7,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log("Loading Ext Start");
 
-    // HTML 标签
-    injectJs(urlType);
+    // 获得 repo | user
+    urlType = checkURL();    
 
-    getStorage((st) => {
+    if (urlType) {
+        // HTML 标签
+        injectJs(urlType);
 
-        // 初始化 Ext 数据
-        initData(st);
-        // 初始化 Ext 界面
-        initUI(urlType);
+        getStorage((st) => {
 
-        // 注册事件
-        regEvent();
+            // 初始化 Ext 数据
+            initData(st, urlType);
+            // 初始化 Ext 界面
+            initUI(urlType);
 
-        console.log("Loading Ext Finish");
+            // 注册事件
+            regEvent();
 
-        // 获取数据
-        getDataAjax();
-    })
+            console.log("Loading Ext Finish");
+
+            // 获取数据
+            getDataAjax();
+        })
+    }
+    else
+        console.log("Loading Ext Finish (Url Not For Events)");
 })
 
 /**
  * 添加 HTML
+ * @param {*} urlType 
  */
-function injectJs() {
+function injectJs(urlType) {
 
     // div (toggle)
     var divTag = document.createElement('div');
@@ -45,6 +53,21 @@ function injectJs() {
     divTag.onload = () => this.parent.removeChild(this);
 
     // nav
+
+    var ahid_title_as = '';
+
+    if (urlType.type == 'repo')
+        ahid_title_as = `
+            <span id="ahid-repo-icon"></span>
+            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank">${urlType.username}</a> /
+            <a id="ahid-title-repo" class="ah-title-head-a" href="${urlType.repo_url}" target="_blank">${urlType.repo}</a>
+        `;
+    else if (urlType.type == 'user')
+        ahid_title_as = `
+            <span id="ahid-user-icon"></span>
+            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank">${urlType.username}</a>
+        `;
+
     var navTag = document.createElement('nav');
     navTag.className = 'ah-content-nav ah-content-trans';
     navTag.id = 'ahid-nav';
@@ -61,12 +84,10 @@ function injectJs() {
             </svg>
         </a>
         <div id="ahid-title">
-            <span id="ahid-repo-icon"></span>
-            <a id="ahid-title-user" class="ah-title-head-a" href="#">${'Aoi-Hosizora'}</a> /
-            <a id="ahid-title-repo" class="ah-title-head-a" href="#">${'Biji_Baibuti'}</a>
+            ${ahid_title_as}
         </div>
         <div id="ahid-subtitle">
-            <span>${'Events'}</span>
+            <span>${(urlType.type == 'repo') ? 'Repo' : 'User'} Events</span>
         </div>
     </div>
 
@@ -101,14 +122,15 @@ function injectJs() {
 /**
  * 初始化数据
  */
-function initData(st) {
+function initData(st, urlType) {
 
-    // TODO
-
-    // url = "https://api.github.com/users/yoruko-km/events?page=";
-    url = "https://api.github.com/users/Aoi-hosizora/events?page=";
-    // url = "https://api.github.com/repos/angular/angular/events?page=";
-
+    if (urlType.type == 'user') 
+        url = `https://api.github.com/users/${urlType.username}/events?page=`;
+    else if (urlType.type == 'repo')
+        url = `https://api.github.com/repos/${urlType.username}/${urlType.repo}/events?page=`;
+    
+        console.log(url);
+        
     page = 1;
     firstFlag = true;
 
@@ -140,6 +162,7 @@ function initUI() {
 
     // title-icon
     $('#ahid-repo-icon').html(getSvgTag('CreateEvent', "#fff"));
+    $('#ahid-user-icon').html(getSvgTag('MemberEvent', "#fff"));
 }
 
 /**
@@ -154,6 +177,53 @@ function getDataAjax() {
     }, () => {
         showLoading(false, true);
     });
+}
+
+/**
+ * 检查 URL，返回信息
+ */
+function checkURL() {
+
+    var preserveKeyWord = [
+        '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications', 
+        'new', 'login', 'organizations', 'settings'
+    ];
+
+    var url = document.URL
+        .replace(/[https:\/\/|http:\/\/]*[.*\.]*github\.com\//, "")
+        .replace("#", "")
+
+    url = url.split('/');
+
+    // console.log(url);
+    // console.log(url.length);
+    
+    if (url.length == 0) return null;
+    if (preserveKeyWord.includes(url[0])) return null;
+
+    if (url.length == 1) {
+        return {
+            type: 'user',
+            username: url[0],
+            user_url: document.URL
+        }
+    } else if (url.length >= 2) {
+        // https://github.com/Aoi-hosizora/NNS_Android/blob/master/.metadata
+        user_url = document.URL.split('/');
+        user_url = user_url.slice(0, 4).join('/')
+
+        repo_url = document.URL.split('/');
+        repo_url = repo_url.slice(0, 5).join('/')
+    
+        return {
+            type: 'repo',
+            username: url[0],
+            repo: url[1],
+            user_url: user_url,
+            repo_url: repo_url
+        }
+    }
+    return null;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
