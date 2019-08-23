@@ -3,16 +3,23 @@
  * @param {*} events 
  */
 function addEvents(events) {
+
     if (!events) return;
     console.log(events);
+
     events.forEach(event => {
         var ret = parseApiJson(event);
-        console.log(ret);
+        // console.log(ret);
 
         var commitsTag = '',
             commentTag = '',
             issueTitleTag = '';
 
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // 预处理数据
+        /////////////////////////////////////////////////////////////////////////////////////////
+
+        // Issue 标题
         if (ret.issue) {
             issueTitleTag = `
             <div class="content-issue-title">
@@ -20,6 +27,8 @@ function addEvents(events) {
             </div>
             `;
         }
+
+        // Git commit
 
         if (ret.commits) {
             ret.commits.forEach((commit) => {
@@ -31,6 +40,9 @@ function addEvents(events) {
                         `;
             })
         }
+
+        // 返回体，评论等
+
         if (ret.body)
             commentTag = `<div class="content-comment">${ret.body}</div>`;
         var mt = [],
@@ -43,6 +55,8 @@ function addEvents(events) {
             mr = mt[mt.length - 1];
             mt = mt.slice(0, mt.length - 1).join(' ');
         }
+
+        // 拆分 主标题
 
         var titleSpanTag = '';
 
@@ -81,15 +95,19 @@ function addEvents(events) {
             default:
                 titleSpanTag = `<span class="content-title">${mt.join(' ')} </span>`;
         }
-        // 内容
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // 插入内容
+        /////////////////////////////////////////////////////////////////////////////////////////
+
         $('#id-ul').append(`
                     ${firstFlag == true ? '' : '<hr />'}
                     <li>
                         <div class="avator-div">
-                            <img src="${ret.avatar_url}" alt="user-avatar" class="avator-icon"/>
+                            <img src="${ret.avatar_url}" alt="" class="avator-icon"/>
                             <span class="avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
                         
-                            <span class="avator-item-icon">
+                            <span class="avator-item-icon" title="${ret.type}">
                                 ${getSvgTag(ret.type)}
                             </span>
                         </div>
@@ -240,6 +258,11 @@ function parseApiJson(event) {
 
 /**
  * 异步获取数据 回调
+ * @param {*} url `xxx?page=`
+ * @param {*} page 
+ * @param {*} token 
+ * @param {*} cb `(data) => {}`
+ * @param {*} err  `() => {}`
  */
 function ajax(url, page, token, cb, err) {
     $.ajax({

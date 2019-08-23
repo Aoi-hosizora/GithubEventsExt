@@ -3,76 +3,20 @@
  */
 function regEvent() {
 
-    $('#id-toggle').click(() => {
-        closeNav(false);
-    });
+    _regClick();
+    _regMouse();
+    _regRefresh();
+}
 
-    $('#id-pin').click(() => {
-        isPin = !isPin;
-        setPin(isPin);
-        isShow = isPin;
-    });
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#id-popup').click(() => {
-        // TODO
-        window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
-    });
+/**
+ * 点击事件
+ */
+function _regClick() {
 
-    window.onresize = () => {
-        refreshPadding();
-    };
-
-    document.onloadend = () => {
-        refreshPadding();
-    }
-
-    (() => {
-        isShow = false;
-
-        $('#id-nav').mouseleave((e) => {
-            isShow = isPin;
-            // TODO
-            if (!isPin && !isShow) {
-                setTimeout(() => {
-                    if (!isShow)
-                        closeNav(true);
-                }, 1000);
-            }
-        });
-
-        $('#id-nav').mouseenter((e) => {
-            isShow = true;
-        });
-
-        $('#id-toggle').mouseenter((e) => {
-            closeNav(false);
-        });
-
-        $('#id-pin').mouseenter((e) => {
-            $('#id-pin').children('svg').children('path').attr("fill", "#fff");
-        });
-
-        $('#id-pin').mouseleave((e) => {
-            if (!isPin)
-                $('#id-pin').children('svg').children('path').attr("fill", "#999");
-            else
-                $('#id-pin').children('svg').children('path').attr("fill", "#fff");
-        });
-
-        $('#id-popup').mousemove((e) => {
-            $('#id-popup').children('svg').children('path').attr("fill", "#fff");
-        });
-
-        $('#id-popup').mouseleave((e) => {
-            $('#id-popup').children('svg').children('path').attr("fill", "#999");
-        });
-
-
-    })();
-
-    /**
-     * More... 处理
-     */
+    // More 处理
     $('#id-more-a').click(() => {
         showLoading(true);
 
@@ -84,4 +28,87 @@ function regEvent() {
         });
     });
 
+    // 展开
+    $('#id-toggle').click(() => {
+        closeNav(false);
+    });
+
+    // 置顶
+    $('#id-pin').click(() => {
+        isPin = !isPin;
+        setPin(isPin);
+        isShow = isPin;
+    });
+
+    // 弹出 TODO
+    $('#id-feedback').click(() => {
+        // TODO
+        window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
+    });
+}
+
+/**
+ * 鼠标事件
+ */
+function _regMouse() {
+    isShow = false;
+
+    // 移出
+    $('#id-nav').mouseleave((e) => {
+        isShow = isPin;
+        // TODO
+        if (!isPin && !isShow) {
+            setTimeout(() => {
+                if (!isShow)
+                    closeNav(true);
+            }, 1000);
+        }
+    });
+
+    // 移入
+    $('#id-nav').mouseenter((e) => {
+        isShow = true;
+    });
+
+    // 移入
+    $('#id-toggle').mouseenter((e) => {
+        closeNav(false);
+    });
+
+    ////////////////////////////////////////
+
+    // 置顶高亮
+    $('#id-pin').mouseenter((e) => {
+        $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+    });
+
+    $('#id-pin').mouseleave((e) => {
+        if (!isPin)
+            $('#id-pin').children('svg').children('path').attr("fill", "#999");
+        else
+            $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+    });
+
+    // 设置高亮
+    $('#id-feedback').mousemove((e) => {
+        $('#id-feedback').children('svg').children('path').attr("fill", "#fff");
+    });
+
+    $('#id-feedback').mouseleave((e) => {
+        $('#id-feedback').children('svg').children('path').attr("fill", "#999");
+    });
+}
+
+/**
+ * 布局刷新事件
+ */
+function _regRefresh() {
+    
+    window.onresize = () => {
+        refreshPadding();
+    };
+
+    document.onloadend = () => {
+        refreshPadding();
+    }
 }

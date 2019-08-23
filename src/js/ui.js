@@ -71,60 +71,8 @@ function getSvgTag(type, color = "") {
     return svg;
 }
 
-/**
- * 拖动修改大小
- * 代码待改
- */
-function bindResize() {
-    var hnd = document.getElementById('id-resize-handler');
-    var el = document.getElementById('id-nav');
-    var jel = $('#id-nav');
-
-    $('#id-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
-
-    var x = 0,
-        w = 0;
-
-    $(hnd).mousedown((e) => {
-        x = e.clientX;
-        w = el.offsetWidth;
-
-        x += w
-
-        // TODO
-        hnd.setCapture ? (
-            hnd.setCapture(),
-            hnd.onmousemove = (ev) => {
-                // mouseMove(ev || event);
-                mouseMove(ev);
-            },
-            hnd.onmouseup = mouseUp
-        ) : (
-            $(document).bind("mousemove", mouseMove).bind("mouseup", mouseUp)
-        );
-        e.preventDefault();
-    })
-
-    function mouseMove(e) {
-        jel.width(x - e.clientX + 'px');
-        refreshPadding();
-        gwidth = jel.width();
-    }
-
-    function mouseUp(e) {
-        hnd.releaseCapture ? (
-            hnd.releaseCapture(),
-            hnd.onmousemove = hnd.onmouseup = null
-        ) : (
-            $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
-        )
-        mouseMove(e);
-        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px)`);
-    }
-}
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * 显示 Loading / More
@@ -189,4 +137,59 @@ function setPin(isPin) {
 function refreshPadding() {
     // $('header').removeClass('p-responsive');
     $('html').css("margin-right", isPin ? gwidth : 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * 拖动修改大小
+ * 代码待改
+ */
+function bindResize() {
+    var hnd = document.getElementById('id-resize-handler');
+    var el = document.getElementById('id-nav');
+    var jel = $('#id-nav');
+
+    $('#id-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
+
+    var x = 0,
+        w = 0;
+
+    $(hnd).mousedown((e) => {
+        x = e.clientX;
+        w = el.offsetWidth;
+
+        x += w
+
+        // TODO
+        hnd.setCapture ? (
+            hnd.setCapture(),
+            hnd.onmousemove = (ev) => {
+                // mouseMove(ev || event);
+                mouseMove(ev);
+            },
+            hnd.onmouseup = mouseUp
+        ) : (
+            $(document).bind("mousemove", mouseMove).bind("mouseup", mouseUp)
+        );
+        e.preventDefault();
+    })
+
+    function mouseMove(e) {
+        jel.width(x - e.clientX + 'px');
+        refreshPadding();
+        gwidth = jel.width();
+    }
+
+    function mouseUp(e) {
+        hnd.releaseCapture ? (
+            hnd.releaseCapture(),
+            hnd.onmousemove = hnd.onmouseup = null
+        ) : (
+            $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
+        )
+        mouseMove(e);
+        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px)`);
+    }
 }

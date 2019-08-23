@@ -57,7 +57,7 @@ $('#id-pin').click(() => {
     isShow = isPin;
 });
 
-$('#id-popup').click(() => {
+$('#id-feedback').click(() => {
     // TODO
     window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
 });
@@ -103,12 +103,12 @@ document.onloadend = () => {
             $('#id-pin').children('svg').children('path').attr("fill", "#fff");
     });
 
-    $('#id-popup').mousemove((e) => {
-        $('#id-popup').children('svg').children('path').attr("fill", "#fff");
+    $('#id-feedback').mousemove((e) => {
+        $('#id-feedback').children('svg').children('path').attr("fill", "#fff");
     });
 
-    $('#id-popup').mouseleave((e) => {
-        $('#id-popup').children('svg').children('path').attr("fill", "#999");
+    $('#id-feedback').mouseleave((e) => {
+        $('#id-feedback').children('svg').children('path').attr("fill", "#999");
     });
 
 
