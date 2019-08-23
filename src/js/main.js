@@ -33,24 +33,22 @@ function injectJs() {
     navTag.innerHTML = `
     <div id="id-head">
         <a id="id-pin" href="javascript:void(0)">
-            <!-- <i class="fa fa-thumb-tack"></i> -->
             <svg width=9 height=14 viewBox="0 0 384 512">
                 <path d="M298.028 214.267L285.793 96H328c13.255 0 24-10.745 24-24V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v48c0 13.255 10.745 24 24 24h42.207L85.972 214.267C37.465 236.82 0 277.261 0 328c0 13.255 10.745 24 24 24h136v104.007c0 1.242.289 2.467.845 3.578l24 48c2.941 5.882 11.364 5.893 14.311 0l24-48a8.008 8.008 0 0 0 .845-3.578V352h136c13.255 0 24-10.745 24-24-.001-51.183-37.983-91.42-85.973-113.733z"></path>
             </svg>
         </a>
         <a id="id-popup" href="javascript:void(0)">
-            <!-- <i class="fa fa-cog"></i> -->
             <svg width=14 height=14 viewBox="0 0 512 512">
                 <path fill="#999" d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path>
             </svg>
         </a>
         <div id="id-title">
             <span id="id-repo-icon"></span>
-            <a id="id-title-user" class="content-a" href="javascript:void(0)">AoiHosizora</a> /
+            <a id="id-title-user" class="content-a" href="javascript:void(0">Aoi-Hosizora</a> /
             <a id="id-title-repo" class="content-a" href="javascript:void(0)">Biji_Baibuti</a>
         </div>
         <div id="id-subtitle">
-            <span>Test</span>
+            <span>Events</span>
         </div>
     </div>
 
@@ -79,26 +77,25 @@ function core() {
         token = null;
         // url = "https://api.github.com/users/Aoi-hosizora/events?page=";
         url = "https://api.github.com/repos/angular/angular/events?page=";
-    
+
         page = 1;
         isPin = true;
         firstFlag = true;
-    
+        gwidth = 280;
+
         // 容器
         var ulTag = document.createElement('ul');
         ulTag.id = "id-ul";
         ulTag.onload = () => this.parent.removeChild(ulTag);
         $('#id-content').append(ulTag);
-    
-        // Resize
-        // bindResize();
-    
+
+
         // Label
         showLoading(true);
-    
+
         // pin
         setPin(isPin);
-    
+
         // 展开
         if (isPin)
             closeNav(false);
@@ -106,10 +103,14 @@ function core() {
             closeNav(true);
             setPin(isPin);
         }
-    
+
+        // Resize
+        bindResize();
+        refreshPadding();
+
         // title-icon
         $('#id-repo-icon').html(getSvgTag('CreateEvent', "#fff"));
-    
+
         // 异步获取
         ajax(url, page, token, (events) => {
             addEvents(events);
@@ -118,24 +119,33 @@ function core() {
             showLoading(false, true);
         });
     })();
-    
+
     $('#id-toggle').click(() => {
         closeNav(false);
     });
-    
+
     $('#id-pin').click(() => {
         isPin = !isPin;
         setPin(isPin);
         isShow = isPin;
     });
-    
+
     $('#id-popup').click(() => {
+        // TODO
         window.open('https://github.com/Aoi-hosizora/GithubEvents_ChromeExt');
     });
-    
+
+    window.onresize = () => {
+        refreshPadding();
+    };
+
+    document.onloadend = () => {
+        refreshPadding();
+    }
+
     (() => {
         isShow = false;
-    
+
         $('#id-nav').mouseleave((e) => {
             isShow = isPin;
             // TODO
@@ -146,43 +156,43 @@ function core() {
                 }, 1000);
             }
         });
-    
+
         $('#id-nav').mouseenter((e) => {
             isShow = true;
         });
-    
+
         $('#id-toggle').mouseenter((e) => {
             closeNav(false);
         });
-    
+
         $('#id-pin').mouseenter((e) => {
             $('#id-pin').children('svg').children('path').attr("fill", "#fff");
         });
-    
+
         $('#id-pin').mouseleave((e) => {
-            if (!isPin) 
+            if (!isPin)
                 $('#id-pin').children('svg').children('path').attr("fill", "#999");
             else
                 $('#id-pin').children('svg').children('path').attr("fill", "#fff");
-        });   
-        
+        });
+
         $('#id-popup').mousemove((e) => {
             $('#id-popup').children('svg').children('path').attr("fill", "#fff");
         });
-    
+
         $('#id-popup').mouseleave((e) => {
             $('#id-popup').children('svg').children('path').attr("fill", "#999");
         });
-    
-    
+
+
     })();
-    
+
     /**
      * More... 处理
      */
     $('#id-more-a').click(() => {
         showLoading(true);
-    
+
         ajax(url, ++page, token, (events) => {
             addEvents(events);
             showLoading(false, false);
@@ -190,7 +200,7 @@ function core() {
             showLoading(false, true);
         });
     });
-    
+
     /**
      * 显示 Loading / More
      * @param {*} isLoading 
@@ -208,46 +218,51 @@ function core() {
             $('#id-more-div').show();
         }
     }
-    
+
     /**
      * 关闭 右侧栏
      * @param {*} closeFlag 
      */
     function closeNav(closeFlag) {
-    
+        $('#id-nav').width(gwidth);
+        refreshPadding();
+
         var nav = $('.content-nav').first();
         var toggle = $('.content-toggle').first();
-    
+
         if (closeFlag) {
+            $('#id-nav').css("right", `-${gwidth}px`);
             nav.removeClass('content-nav-open');
             toggle.removeClass('content-toggle-hide');
-            // $('#id-nav').css("right", `calc(-${nav.width()}px - 10px)`);
         } else {
+            $('#id-nav').css("right", `0`);
             toggle.addClass('content-toggle-hide');
             nav.addClass('content-nav-open');
-            // $('#id-nav').css("right", `0`);
         }
     }
-    
+
     /**
      * 设置 置顶
      * @param {*} isPin
      */
     function setPin(isPin) {
-        $('header').removeClass('p-responsive');
         if (isPin) {
             $('#id-pin').children('svg').css("transform", "");
             $('#id-nav').addClass('content-nav-shadow');
-            $('header').css("padding-right", $('#id-nav').width() + 15);
             $('#id-pin').children('svg').children('path').attr("fill", "#fff");
         } else {
             $('#id-pin').children('svg').css("transform", "rotate(45deg)");
             $('#id-nav').removeClass('content-nav-shadow');
-            $('header').css("padding-right", "");
             $('#id-pin').children('svg').children('path').attr("fill", "#999");
         }
+        refreshPadding();
     }
-    
+
+    function refreshPadding() {
+        // $('header').removeClass('p-responsive');
+        $('html').css("margin-right", isPin ? gwidth : 0);
+    }
+
     /**
      * 异步获取数据 回调
      */
@@ -268,7 +283,7 @@ function core() {
             }
         });
     }
-    
+
     /**
      * !!! DOM 操作 
      */
@@ -278,11 +293,11 @@ function core() {
         events.forEach(event => {
             var ret = parseApiJson(event);
             console.log(ret);
-    
+
             var commitsTag = '',
                 commentTag = '',
                 issueTitleTag = '';
-    
+
             if (ret.issue) {
                 issueTitleTag = `
                 <div class="content-issue-title">
@@ -290,7 +305,7 @@ function core() {
                 </div>
                 `;
             }
-    
+
             if (ret.commits) {
                 ret.commits.forEach((commit) => {
                     commitsTag += `
@@ -303,16 +318,19 @@ function core() {
             }
             if (ret.body)
                 commentTag = `<div class="content-comment">${ret.body}</div>`;
-    
-            if (ret.mainTitle)
+            var mt = [],
+                mr = '';
+
+            if (ret.mainTitle) {
                 ret.mainTitle = ret.mainTitle.replace(ret.mainTitle[0], ret.mainTitle[0].toUpperCase())
-    
-            var mt = ret.mainTitle.split(' ');
-            var mr = mt[mt.length - 1];
-            mt = mt.slice(0, mt.length - 1).join(' ');
-    
+
+                mt = ret.mainTitle.split(' ');
+                mr = mt[mt.length - 1];
+                mt = mt.slice(0, mt.length - 1).join(' ');
+            }
+
             var titleSpanTag = `<span class="content-title">${mt} </span>`;
-    
+
             if (ret.type == 'ForkEvent') {
                 // Forked angular/angular to coulonxyz/angular
                 mt = mt.split(' ');
@@ -338,8 +356,12 @@ function core() {
                 mt = mt.split(' ');
                 var pullReqId = mt[8];
                 titleSpanTag = `<span class="content-title">${mt.splice(0, 8).join(' ')} <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
+            } else if (ret.type == 'CommitCommentEvent') {
+                // Created a comment at commit #904a201 in angular/angular
+                mt = mt.split(' ');
+                var pullReqId = mt[5];
+                titleSpanTag = `<span class="content-title">${mt.splice(0, 5).join(' ')} <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> ${mt.slice(1, mt.length).join(' ')}</span>`;
             }
-    
             // 内容
             $('#id-ul').append(`
                         ${firstFlag == true ? '' : '<hr />'}
@@ -358,17 +380,17 @@ function core() {
                             ${issueTitleTag} ${commentTag} 
                         </li>
                     `);
-    
+
             firstFlag = false;
         });
     }
-    
+
     function getSvgTag(type, color = "") {
         let svgClass = '',
             svgPath = '';
         let svgHeight = 16,
             svgWidth = 12;
-    
+
         switch (type) {
             case 'PushEvent':
                 svgClass = "octicon-repo-push";
@@ -399,6 +421,7 @@ function core() {
                 svgPath = "M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z";
                 break;
             case 'IssueCommentEvent':
+            case 'CommitCommentEvent':
                 svgClass = "octicon-comment";
                 svgWidth = 16;
                 svgPath = "M14 1H2c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h2v3.5L7.5 11H14c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zm0 9H7l-2 2v-2H2V2h12v8z";
@@ -417,6 +440,7 @@ function core() {
                 svgClass = "octicon-eye";
                 svgWidth = 16;
                 svgPath = "M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z";
+                break;
         }
         let svg = `
                     <svg class="octicon ${svgClass}" 
@@ -428,12 +452,12 @@ function core() {
                 `
         return svg;
     }
-    
+
     /**
      * 解析返回的 API 结果
      */
     function parseApiJson(event) {
-    
+
         /*
             PushEvent                       octicon octicon-repo-push
             CreateEvent (repo)              octicon octicon-repo                -> CreateEvent
@@ -445,13 +469,14 @@ function core() {
             ForkEvent                       octicon octicon-repo-forked
             PullRequestEvent                octicon octicon-git-pull-request
             PullRequestReviewCommentEvent   octicon octicon-eye
+            CommitCommentEvent
         */
-    
+
         let type = event['type'];
         let actor = event['actor']['login'];
         let repo = event['repo']['name'];
         let payload = event['payload'];
-    
+
         let url = "https://" + event['repo']['url']
             .replace("https://api.", "").replace("http://api.", "")
             .replace("repos/", "");
@@ -459,19 +484,19 @@ function core() {
             .replace("https://api.", "").replace("http://api.", "")
             .replace("users/", "");
         let avatar_url = event['actor']['avatar_url'];
-    
+
         let comment_url = "";
         let forker_url = "";
         let pullreq_url = "";
-    
+
         let mainTitle = '';
         let commits = [];
-    
+
         // issue pullreq title
         let isprTitle = '';
         // issue pullreq body
         let isprBody = '';
-    
+
         switch (type) {
             case 'PushEvent':
                 mainTitle = `pushed ${payload['size']} 
@@ -529,16 +554,21 @@ function core() {
                 isprTitle = payload['pull_request']['title'];
                 isprBody = payload['comment']['body'];
                 break;
+            case 'CommitCommentEvent':
+                mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
+                comment_url = payload['comment']['html_url'];
+                isprBody = payload['comment']['body'];
+                break;
             default:
                 return {
                     type: type,
-                        title: "Unknown Event",
+                        mainTitle: "Unknown Event",
                         url: "https://github.com",
                         avatar_url: avatar_url,
                         user_url: user_url,
                 }
         }
-    
+
         isprBody = isprBody.replace(/<.*>/g, '');
         return {
             type: type,
@@ -555,25 +585,26 @@ function core() {
             body: isprBody
         }
     }
-    
+
     /**
      * 拖动修改大小
      */
     function bindResize() {
         var hnd = document.getElementById('id-resize-handler');
         var el = document.getElementById('id-nav');
-    
-        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px - 10px)`);
-    
+        var jel = $('#id-nav');
+
+        $('#id-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
+
         var x = 0,
             w = 0;
-    
+
         $(hnd).mousedown((e) => {
             x = e.clientX;
             w = el.offsetWidth;
-    
+
             x += w
-    
+
             // TODO
             hnd.setCapture ? (
                 hnd.setCapture(),
@@ -587,11 +618,13 @@ function core() {
             );
             e.preventDefault();
         })
-    
+
         function mouseMove(e) {
-            el.style.width = x - e.clientX + 'px';
+            jel.width(x - e.clientX + 'px');
+            refreshPadding();
+            gwidth = jel.width();
         }
-    
+
         function mouseUp(e) {
             hnd.releaseCapture ? (
                 hnd.releaseCapture(),
@@ -599,7 +632,8 @@ function core() {
             ) : (
                 $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
             )
-            $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px - 10px)`);
+            mouseMove(e);
+            $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px)`);
         }
     }
 }
