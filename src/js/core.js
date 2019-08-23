@@ -216,6 +216,7 @@ function parseApiJson(event) {
         CommitCommentEvent              octicon octicon-comment
         ReleaseEvent                    octicon octicon-tag
         DeleteEvent                     octicon octicon-x
+        PublicEvent                     octicon octicon-lock
     */
 
     let type = event['type'];
@@ -320,6 +321,9 @@ function parseApiJson(event) {
             break;
         case 'DeleteEvent':
             mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
+            break;
+        case 'PublicEvent':
+            mainTitle = `make repository ${event['public'] ? 'public' : 'private'} at ${repo}`;
             break;
         default:
             ret = {

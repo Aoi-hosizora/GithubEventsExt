@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Github Events Viewer",
-    "version": "0.0.1",
+    "version": "0.1.1",
     "description": "Let browser show github users and repos activity events",
 	"icons": {
 		"16": "img/icon16.png",
