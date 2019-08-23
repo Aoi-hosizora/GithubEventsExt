@@ -129,6 +129,28 @@ function addEvents(events) {
                     </span>
                 `;
                 break;
+                case 'CreateBranchEvent':
+                // Created branch add-license-1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
+                var branch = mt[2];
+                titleSpanTag = `
+                    <span class="ah-content-title">
+                        ${mt.splice(0, 2).join(' ')} 
+                        <a href="${ret.branchtag_url}" target="_blank">${branch}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
+                break;
+                case 'CreateTagEvent':
+                // Created tag 1.1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
+                var tag = mt[2];
+                titleSpanTag = `
+                    <span class="ah-content-title">
+                        ${mt.splice(0, 2).join(' ')} 
+                        <a href="${ret.branchtag_url}" target="_blank">${tag}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
+                    </span>
+                `;
+                break;
             default:
                 titleSpanTag = `<span class="ah-content-title">${mt.join(' ')} </span>`;
         }
@@ -172,6 +194,7 @@ function parseApiJson(event) {
         PushEvent                       octicon octicon-repo-push
         CreateEvent (repo)              octicon octicon-repo                -> CreateEvent
         CreateEvent (branch)            octicon octicon-git-branch          -> CreateBranchEvent
+        CreateEvent (tag)               octicon octicon-tag                 -> CreateTagEvent
         WatchEvent                      octicon octicon-star
         MemberEvent                     octicon octicon-organization
         IssuesEvent                     octicon octicon-issue-opened
@@ -179,7 +202,7 @@ function parseApiJson(event) {
         ForkEvent                       octicon octicon-repo-forked
         PullRequestEvent                octicon octicon-git-pull-request
         PullRequestReviewCommentEvent   octicon octicon-eye
-        CommitCommentEvent
+        CommitCommentEvent              octicon octicon-comment
     */
 
     let type = event['type'];
@@ -199,6 +222,7 @@ function parseApiJson(event) {
     let comment_url = "";
     let forker_url = "";
     let pullreq_url = "";
+    let branchtag_url = '';
 
     let mainTitle = '';
     let commits = [];
@@ -230,8 +254,14 @@ function parseApiJson(event) {
             if (payload['ref_type'] == 'branch') {
                 type = "CreateBranchEvent"
                 mainTitle = `created branch ${payload['ref']} at ${repo}`;
-            } else if (payload['ref_type'] == 'repository')
+                branchtag_url = `${url}/tree/${payload['ref']}`;
+            } else if (payload['ref_type'] == 'tag') {
+                type = "CreateTagEvent"
+                mainTitle = `created tag ${payload['ref']} at ${repo}`;
+                branchtag_url = `${url}/tree/${payload['ref']}`;
+            } else if (payload['ref_type'] == 'repository') {
                 mainTitle = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
+            }
             break;
         case 'IssuesEvent':
             mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
@@ -291,6 +321,7 @@ function parseApiJson(event) {
         comment_url: comment_url,
         forker_url: forker_url,
         pullreq_url: pullreq_url,
+        branchtag_url: branchtag_url,
         user: actor,
         user_url: user_url,
         avatar_url: avatar_url,
@@ -322,7 +353,7 @@ function ajax(url, page, token, cb, err) {
         },
         error: (jqXHR, textStatus, errorThrown) => {
             console.log(textStatus);
-           
+
             err();
         }
     });
