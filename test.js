@@ -44,6 +44,7 @@ $('#id-ping').click(() => {
     isClose = true;
     closeNav(isClose);
 });
+
 /**
  * More... 处理
  */
@@ -125,24 +126,34 @@ function addEvents(events) {
         console.log(ret);
 
         var commitsTag = '',
-            issueTag = '';
+            commentTag = '',
+            issueTitleTag = '';
+
+        if (ret.issue) {
+            issueTitleTag = `
+            <div class="content-issue-title">
+                <span>${ret.issue}</span>
+            </div>
+            `;
+        }
+
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
                             <div class="commit-div">
-                                <a href="${commit['url']}" target="_blank" class="commit-sha">${commit['sha'].substring(0, 6)}</a>
+                                <a href="${commit['url']}" target="_blank" class="commit-sha">${commit['sha'].substring(0, 7)}</a>
                                 <span class="commit-title"> ${commit['commit']}</span>
                             </div>
                         `;
             })
         }
-        if (ret.comment)
-            issueTag = `<div class="content-issue">${ret.comment}</div>`;
+        if (ret.body)
+            commentTag = `<div class="content-comment">${ret.body}</div>`;
 
-        if (ret.title)
-            ret.title = ret.title.replace(ret.title[0], ret.title[0].toUpperCase())
+        if (ret.mainTitle)
+            ret.mainTitle = ret.mainTitle.replace(ret.mainTitle[0], ret.mainTitle[0].toUpperCase())
 
-        var mt = ret.title.split(' ');
+        var mt = ret.mainTitle.split(' ');
         var mr = mt[mt.length - 1];
         mt = mt.slice(0, mt.length - 1).join(' ');
 
@@ -189,7 +200,8 @@ function addEvents(events) {
                         </div>
                         ${titleSpanTag}
                         <a href="${ret.url}" target="_blank" class="content-repo">${mr}</a>
-                        ${commitsTag} ${issueTag} 
+                        ${commitsTag} 
+                        ${issueTitleTag} ${commentTag} 
                     </li>
                 `);
 
@@ -298,13 +310,17 @@ function parseApiJson(event) {
     let forker_url = "";
     let pullreq_url = "";
 
-    let title = '';
+    let mainTitle = '';
     let commits = [];
-    let comment = '';
+
+    // issue pullreq title
+    let isprTitle = '';
+    // issue pullreq body
+    let isprBody = '';
 
     switch (type) {
         case 'PushEvent':
-            title = `pushed ${payload['size']} 
+            mainTitle = `pushed ${payload['size']} 
                         ${(payload['size'] == 1) ? ' commit to ' : ' commits to '} 
                         ${payload['ref'].split('/')[2]} at ${repo}`;
             payload['commits'].forEach(commit => {
@@ -318,43 +334,46 @@ function parseApiJson(event) {
             });
             break;
         case 'WatchEvent':
-            title = `starred repository ${repo}`;
+            mainTitle = `starred repository ${repo}`;
             break;
         case 'CreateEvent':
             if (payload['ref_type'] == 'branch') {
                 type = "CreateBranchEvent"
-                title = `created branch ${payload['ref']} at ${repo}`;
+                mainTitle = `created branch ${payload['ref']} at ${repo}`;
             } else if (payload['ref_type'] == 'repository')
-                title = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
+                mainTitle = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
             break;
         case 'IssuesEvent':
-            title = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
-            comment = `${payload['issue']['title']}: ${payload['issue']['body']}`;
+            mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['issue']['html_url'];
+            isprTitle = payload['issue']['title'];
+            isprBody = payload['issue']['body'];
             break;
         case 'IssueCommentEvent':
-            // title = `created comment on issue #${payload['issue']['number']} "${payload['issue']['title']}" in ${repo}`;
-            title = `created comment on issue #${payload['issue']['number']} in ${repo}`;
-            comment = payload['comment']['body'];
+            mainTitle = `created comment on issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['comment']['html_url'];
+            isprTitle = payload['issue']['title'];
+            isprBody = payload['comment']['body'];
             break;
         case 'ForkEvent':
-            title = `forked ${repo} to ${payload['forkee']['full_name']}`;
-            forker_url = url;
+            mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
             url = payload['forkee']['html_url'];
+            forker_url = url;
             break;
         case 'PullRequestEvent':
-            // title = `${payload['action']} pull request #${payload['number']} "${payload['pull_request']['title']}" at ${repo}`;
-            title = `${payload['action']} pull request #${payload['number']} at ${repo}`;
+            mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
             pullreq_url = payload['pull_request']['html_url'];
+            isprTitle = payload['pull_request']['title'];
+            isprBody = payload['pull_request']['body'];
             break;
         case 'MemberEvent':
-            title = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
+            mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
             break;
         case 'PullRequestReviewCommentEvent':
-            title = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
+            mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
             pullreq_url = payload['comment']['html_url'];
-            comment = payload['comment']['body'];
+            isprTitle = payload['pull_request']['title'];
+            isprBody = payload['comment']['body'];
             break;
         default:
             return {
@@ -366,10 +385,10 @@ function parseApiJson(event) {
             }
     }
 
-    comment = comment.replace(/<.*>/g, '');
+    isprBody = isprBody.replace(/<.*>/g, '');
     return {
         type: type,
-        title: title,
+        mainTitle: mainTitle,
         url: url,
         comment_url: comment_url,
         forker_url: forker_url,
@@ -378,7 +397,8 @@ function parseApiJson(event) {
         user_url: user_url,
         avatar_url: avatar_url,
         commits: commits,
-        comment: comment
+        issue: isprTitle,
+        body: isprBody
     }
 }
 
