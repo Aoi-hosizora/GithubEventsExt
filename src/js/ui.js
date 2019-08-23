@@ -191,5 +191,7 @@ function bindResize() {
         )
         mouseMove(e);
         $('#ahid-resize-handler').css("left", `calc(100% - ${$('#ahid-nav').width()}px)`);
+    
+        setStorage('gwidth', gwidth);
     }
 }

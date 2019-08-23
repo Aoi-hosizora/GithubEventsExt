@@ -321,7 +321,8 @@ function ajax(url, page, token, cb, err) {
             cb(data);
         },
         error: (jqXHR, textStatus, errorThrown) => {
-            // console.log(textStatus);
+            console.log(textStatus);
+           
             err();
         }
     });

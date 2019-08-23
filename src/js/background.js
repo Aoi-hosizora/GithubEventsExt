@@ -1,5 +1,6 @@
 const storage = chrome.storage.sync || chrome.storage.local;
-const TOKEN_FLAG = 'my-github-events-token';
+
+const TOKEN_FLAG = 'ah-github-events-token';
 
 chrome.browserAction.onClicked.addListener((tab) => {
     browserAction_Click()
@@ -13,8 +14,7 @@ function browserAction_Click() {
                 addToken();
             else
                 alert('You can click extension icon to set a token.')
-        }
-        else 
+        } else
             removeToken();
     });
 }
@@ -28,8 +28,7 @@ function addToken() {
         storage.set(obj, () => {
             alert("Your Github token has been set successfully. Reload the Github page to see changes.");
         })
-    }
-    else
+    } else
         alert("You have entered an empty token.");
 }
 

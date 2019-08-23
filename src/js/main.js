@@ -1,22 +1,30 @@
+const storage = chrome.storage.sync || chrome.storage.local;
+const PIN_FLAG = 'ah-is-pin';
+const GWIDTH_FLAG = 'ah-g-width';
+const TOKEN_FLAG = 'ah-github-events-token';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     console.log("Loading Ext Start");
 
     // HTML 标签
-    injectJs();
+    injectJs(urlType);
 
-    // 初始化 Ext 数据
-    initData();
-    // 初始化 Ext 界面
-    initUI(); 
-    
-    // 注册事件
-    regEvent();
+    getStorage((st) => {
 
-    console.log("Loading Ext Finish");
+        // 初始化 Ext 数据
+        initData(st);
+        // 初始化 Ext 界面
+        initUI(urlType);
 
-    // 获取数据
-    getData();
+        // 注册事件
+        regEvent();
+
+        console.log("Loading Ext Finish");
+
+        // 获取数据
+        getDataAjax();
+    })
 })
 
 /**
@@ -54,11 +62,11 @@ function injectJs() {
         </a>
         <div id="ahid-title">
             <span id="ahid-repo-icon"></span>
-            <a id="ahid-title-user" class="ah-title-head-a" href="#">Aoi-Hosizora</a> /
-            <a id="ahid-title-repo" class="ah-title-head-a" href="#">Biji_Baibuti</a>
+            <a id="ahid-title-user" class="ah-title-head-a" href="#">${'Aoi-Hosizora'}</a> /
+            <a id="ahid-title-repo" class="ah-title-head-a" href="#">${'Biji_Baibuti'}</a>
         </div>
         <div id="ahid-subtitle">
-            <span>Events</span>
+            <span>${'Events'}</span>
         </div>
     </div>
 
@@ -76,7 +84,7 @@ function injectJs() {
     </div>
     `;
     navTag.onload = () => this.parent.removeChild(this);
-    
+
     // ul
     var ulTag = document.createElement('ul');
     ulTag.id = "ahid-ul";
@@ -93,23 +101,24 @@ function injectJs() {
 /**
  * 初始化数据
  */
-function initData() {
+function initData(st) {
+
+    // TODO
 
     // url = "https://api.github.com/users/yoruko-km/events?page=";
-    token = null;
-    // url = "https://api.github.com/users/Aoi-hosizora/events?page=";
-    url = "https://api.github.com/repos/angular/angular/events?page=";
+    url = "https://api.github.com/users/Aoi-hosizora/events?page=";
+    // url = "https://api.github.com/repos/angular/angular/events?page=";
 
     page = 1;
     firstFlag = true;
 
-    isPin = true;
-    gwidth = 280;
+    isPin = st.pin;
+    gwidth = st.gw;
+    token = st.token;
 
     feedback_url = "https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/issues";
 }
 
-// 初始化界面
 function initUI() {
 
     // Label
@@ -136,7 +145,7 @@ function initUI() {
 /**
  * 数据获取，DOM 操作
  */
-function getData() {
+function getDataAjax() {
 
     // 异步获取
     ajax(url, page, token, (events) => {
@@ -145,4 +154,58 @@ function getData() {
     }, () => {
         showLoading(false, true);
     });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * 加载数据 TODO
+ * @param {*} fb `(st) => {}`
+ */
+function getStorage(fb) {
+    storage.get(PIN_FLAG, (storedData) => {
+        var pin_flag = storedData[PIN_FLAG];
+
+        storage.get(GWIDTH_FLAG, (storedData) => {
+            var gwidth_flag = storedData[GWIDTH_FLAG];
+
+            storage.get(TOKEN_FLAG, (storedData) => {
+                var token_flag = storedData[TOKEN_FLAG];
+
+                // console.log(pin_flag)
+                // console.log(gwidth_flag)
+                // console.log(token_flag)
+
+                fb({
+                    pin: pin_flag,
+                    gw: gwidth_flag,
+                    token: token_flag
+                });
+
+            });
+        });
+    });
+}
+
+/**
+ * 保存数据
+ * @param {*} flag `pin` `gwidth`
+ * @param {*} value 
+ */
+function setStorage(flag, value) {
+
+    const obj = {}
+
+    if (flag == 'pin') {
+        obj[PIN_FLAG] = value;
+        storage.set(obj, () => {
+            // console.log(obj[PIN_FLAG]);
+        });
+    } else if (flag == 'gwidth') {
+        obj[GWIDTH_FLAG] = value;
+        storage.set(obj, () => {
+            // console.log(obj[GWIDTH_FLAG]);
+        });
+    }
 }

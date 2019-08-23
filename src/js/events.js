@@ -36,6 +36,7 @@ function _regClick() {
     // 置顶
     $('#ahid-pin').click(() => {
         isPin = !isPin;
+        setStorage('pin', isPin);
         setPin(isPin);
         isShow = isPin;
     });
