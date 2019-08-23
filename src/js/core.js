@@ -23,9 +23,9 @@ function addEvents(events) {
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
-                            <div class="commit-div">
-                                <a href="${commit['url']}" target="_blank" class="commit-sha">${commit['sha'].substring(0, 7)}</a>
-                                <span class="commit-title"> ${commit['commit']}</span>
+                            <div class="ah-commit-div">
+                                <a href="${commit['url']}" target="_blank" class="ah-commit-sha">${commit['sha'].substring(0, 7)}</a>
+                                <span class="ah-commit-title"> ${commit['commit']}</span>
                             </div>
                         `;
             })
@@ -34,7 +34,7 @@ function addEvents(events) {
         // Issue PullReq 标题
         if (ret.issue) {
             isprTitleTag = `
-            <div class="content-issue-title">
+            <div class="ah-issue-title">
                 <span>${ret.issue}</span>
             </div>
             `;
@@ -42,7 +42,7 @@ function addEvents(events) {
 
         // Issue PullReq 评论
         if (ret.body)
-            isprCommentTag = `<div class="content-comment">${ret.body}</div>`;
+            isprCommentTag = `<div class="ah-content-comment">${ret.body}</div>`;
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 拆分主标题
@@ -67,7 +67,7 @@ function addEvents(events) {
                 // Forked angular/angular to coulonxyz/angular
                 var forker = mt[1];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt[0]} 
                         <a href="${ret.forker_url}" target="_blank">${forker}</a> 
                         ${mt.slice(2, mt.length).join(' ')}
@@ -78,7 +78,7 @@ function addEvents(events) {
                 // Created comment on issue #32258 "yarn setup not working in aio" in angular/angular
                 var issueId = mt[4];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt.splice(0, 4).join(' ')} 
                         <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -89,7 +89,7 @@ function addEvents(events) {
                 // Opened issue #32264 in angular/angular
                 var issueId = mt[2];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt.splice(0, 2).join(' ')} 
                         <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -100,7 +100,7 @@ function addEvents(events) {
                 // Opened pull request #32267 "docs: fixed animations reference links to api" at angular/angular
                 var pullReqId = mt[3];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt.splice(0, 3).join(' ')} 
                         <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -111,7 +111,7 @@ function addEvents(events) {
                 // Created pull request review comment in pull request #undefined at angular/angular
                 var pullReqId = mt[8];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt.splice(0, 8).join(' ')} 
                         <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -122,7 +122,7 @@ function addEvents(events) {
                 // Created a comment at commit #904a201 in angular/angular
                 var pullReqId = mt[5];
                 titleSpanTag = `
-                    <span class="content-title">
+                    <span class="ah-content-title">
                         ${mt.splice(0, 5).join(' ')} 
                         <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -130,29 +130,29 @@ function addEvents(events) {
                 `;
                 break;
             default:
-                titleSpanTag = `<span class="content-title">${mt.join(' ')} </span>`;
+                titleSpanTag = `<span class="ah-content-title">${mt.join(' ')} </span>`;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 插入内容
         /////////////////////////////////////////////////////////////////////////////////////////
 
-        $('#id-ul').append(`
+        $('#ahid-ul').append(`
                     ${firstFlag == true ? '' : '<hr style="margin: 8px 0;"/>'}
                     <li>
-                        <div class="avator-div">
+                        <div class="ah-avator-div">
 
-                            <img src="${ret.avatar_url}" alt="" class="avator-icon"/>
-                            <span class="avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
+                            <img src="${ret.avatar_url}" alt="" class="ah-avator-icon"/>
+                            <span class="ah-avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
                         
-                            <span class="avator-item-icon" title="${ret.type}">
+                            <span class="ah-avator-item-icon" title="${ret.type}">
                                 ${getSvgTag(ret.type)}
                             </span>
-                            <span class="create-at-time">Create at ${ret.createTime}</span>
+                            <span class="ah-content-cttime">Create at ${ret.createTime}</span>
                             
                         </div>
                         ${titleSpanTag}
-                        <a href="${ret.url}" target="_blank" class="content-repo">${mr}</a>
+                        <a href="${ret.url}" target="_blank" class="ah-content-repo">${mr}</a>
                         ${commitsTag} 
                         ${isprTitleTag} ${isprCommentTag} 
                     </li>

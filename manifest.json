@@ -22,7 +22,9 @@
                 "src/js/main.js"
             ],
             "css": [
-                "src/css/main.css"
+                "src/css/core.css",
+                "src/css/head.css",
+                "src/css/tail.css"
             ],
             "run_at": "document_start"
         }

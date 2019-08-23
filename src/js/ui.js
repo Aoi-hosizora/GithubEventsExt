@@ -81,14 +81,14 @@ function getSvgTag(type, color = "") {
  */
 function showLoading(isLoading, isError = false) {
     if (isLoading) {
-        $('#id-more-div').hide();
-        $('#id-loading-label').show();
+        $('#ahid-more-div').hide();
+        $('#ahid-loading-label').show();
     } else {
-        $('#id-more-a').text(
+        $('#ahid-more-a').text(
             isError ? "Something error happened, try again..." : "More..."
         )
-        $('#id-loading-label').hide();
-        $('#id-more-div').show();
+        $('#ahid-loading-label').hide();
+        $('#ahid-more-div').show();
     }
 }
 
@@ -97,20 +97,20 @@ function showLoading(isLoading, isError = false) {
  * @param {*} closeFlag 
  */
 function closeNav(closeFlag) {
-    $('#id-nav').width(gwidth);
+    $('#ahid-nav').width(gwidth);
     refreshPadding();
 
-    var nav = $('.content-nav').first();
-    var toggle = $('.content-toggle').first();
+    var nav = $('.ah-content-nav').first();
+    var toggle = $('.ah-content-toggle').first();
 
     if (closeFlag) {
-        $('#id-nav').css("right", `-${gwidth}px`);
-        nav.removeClass('content-nav-open');
-        toggle.removeClass('content-toggle-hide');
+        $('#ahid-nav').css("right", `-${gwidth}px`);
+        nav.removeClass('ah-content-nav-open');
+        toggle.removeClass('ah-content-toggle-hide');
     } else {
-        $('#id-nav').css("right", `0`);
-        toggle.addClass('content-toggle-hide');
-        nav.addClass('content-nav-open');
+        $('#ahid-nav').css("right", `0`);
+        toggle.addClass('ah-content-toggle-hide');
+        nav.addClass('ah-content-nav-open');
     }
 }
 
@@ -120,13 +120,13 @@ function closeNav(closeFlag) {
  */
 function setPin(isPin) {
     if (isPin) {
-        $('#id-pin').children('svg').css("transform", "");
-        $('#id-nav').addClass('content-nav-shadow');
-        $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+        $('#ahid-pin').children('svg').css("transform", "");
+        $('#ahid-nav').addClass('ah-content-nav-shadow');
+        $('#ahid-pin').children('svg').children('path').attr("fill", "#fff");
     } else {
-        $('#id-pin').children('svg').css("transform", "rotate(45deg)");
-        $('#id-nav').removeClass('content-nav-shadow');
-        $('#id-pin').children('svg').children('path').attr("fill", "#999");
+        $('#ahid-pin').children('svg').css("transform", "rotate(45deg)");
+        $('#ahid-nav').removeClass('ah-content-nav-shadow');
+        $('#ahid-pin').children('svg').children('path').attr("fill", "#999");
     }
     refreshPadding();
 }
@@ -147,11 +147,11 @@ function refreshPadding() {
  * 代码待改
  */
 function bindResize() {
-    var hnd = document.getElementById('id-resize-handler');
-    var el = document.getElementById('id-nav');
-    var jel = $('#id-nav');
+    var hnd = document.getElementById('ahid-resize-handler');
+    var el = document.getElementById('ahid-nav');
+    var jel = $('#ahid-nav');
 
-    $('#id-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
+    $('#ahid-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
 
     var x = 0,
         w = 0;
@@ -190,6 +190,6 @@ function bindResize() {
             $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp)
         )
         mouseMove(e);
-        $('#id-resize-handler').css("left", `calc(100% - ${$('#id-nav').width()}px)`);
+        $('#ahid-resize-handler').css("left", `calc(100% - ${$('#ahid-nav').width()}px)`);
     }
 }

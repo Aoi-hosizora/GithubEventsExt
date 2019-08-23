@@ -17,7 +17,7 @@ function regEvent() {
 function _regClick() {
 
     // More 处理
-    $('#id-more-a').click(() => {
+    $('#ahid-more-a').click(() => {
         showLoading(true);
 
         ajax(url, ++page, token, (events) => {
@@ -29,19 +29,19 @@ function _regClick() {
     });
 
     // 展开
-    $('#id-toggle').click(() => {
+    $('#ahid-toggle').click(() => {
         closeNav(false);
     });
 
     // 置顶
-    $('#id-pin').click(() => {
+    $('#ahid-pin').click(() => {
         isPin = !isPin;
         setPin(isPin);
         isShow = isPin;
     });
 
     // 反馈
-    $('#id-feedback').click(() => {
+    $('#ahid-feedback').click(() => {
         // TODO
         window.open(feedback_url)
     });
@@ -54,7 +54,7 @@ function _regMouse() {
     isShow = false;
 
     // 移出
-    $('#id-nav').mouseleave((e) => {
+    $('#ahid-nav').mouseleave((e) => {
         isShow = isPin;
         // TODO
         if (!isPin && !isShow) {
@@ -66,36 +66,36 @@ function _regMouse() {
     });
 
     // 移入
-    $('#id-nav').mouseenter((e) => {
+    $('#ahid-nav').mouseenter((e) => {
         isShow = true;
     });
 
     // 移入
-    $('#id-toggle').mouseenter((e) => {
+    $('#ahid-toggle').mouseenter((e) => {
         closeNav(false);
     });
 
     ////////////////////////////////////////
 
     // 置顶高亮
-    $('#id-pin').mouseenter((e) => {
-        $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+    $('#ahid-pin').mouseenter((e) => {
+        $('#ahid-pin').children('svg').children('path').attr("fill", "#fff");
     });
 
-    $('#id-pin').mouseleave((e) => {
+    $('#ahid-pin').mouseleave((e) => {
         if (!isPin)
-            $('#id-pin').children('svg').children('path').attr("fill", "#999");
+            $('#ahid-pin').children('svg').children('path').attr("fill", "#999");
         else
-            $('#id-pin').children('svg').children('path').attr("fill", "#fff");
+            $('#ahid-pin').children('svg').children('path').attr("fill", "#fff");
     });
 
     // 反馈高亮
-    $('#id-feedback').mousemove((e) => {
-        $('#id-feedback').children('svg').children('path').attr("fill", "#fff");
+    $('#ahid-feedback').mousemove((e) => {
+        $('#ahid-feedback').children('svg').children('path').attr("fill", "#fff");
     });
 
-    $('#id-feedback').mouseleave((e) => {
-        $('#id-feedback').children('svg').children('path').attr("fill", "#999");
+    $('#ahid-feedback').mouseleave((e) => {
+        $('#ahid-feedback').children('svg').children('path').attr("fill", "#999");
     });
 }
 
