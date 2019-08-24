@@ -72,12 +72,12 @@ function injectJs(urlType) {
     navTag.id = 'ahid-nav';
     navTag.innerHTML = `
     <div id="ahid-head">
-        <a id="ahid-pin" href="#" title="Pin">
+        <a id="ahid-pin" href="javascript:void(0)" title="Pin">
             <svg width=9 height=14 viewBox="0 0 384 512">
                 <path d="M298.028 214.267L285.793 96H328c13.255 0 24-10.745 24-24V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v48c0 13.255 10.745 24 24 24h42.207L85.972 214.267C37.465 236.82 0 277.261 0 328c0 13.255 10.745 24 24 24h136v104.007c0 1.242.289 2.467.845 3.578l24 48c2.941 5.882 11.364 5.893 14.311 0l24-48a8.008 8.008 0 0 0 .845-3.578V352h136c13.255 0 24-10.745 24-24-.001-51.183-37.983-91.42-85.973-113.733z"></path>
             </svg>
         </a>
-        <a id="ahid-feedback" href="#" title="Feedback">
+        <a id="ahid-feedback" href="javascript:void(0)" title="Feedback">
             <svg width=14 height=14 viewBox="0 0 24 24">
                 <path fill="#999" d="M20,2L4,2c-1.1,0 -1.99,0.9 -1.99,2L2,22l4,-4h14c1.1,0 2,-0.9 2,-2L22,4c0,-1.1 -0.9,-2 -2,-2zM13,14h-2v-2h2v2zM13,10h-2L11,6h2v4z"></path>
             </svg>
@@ -95,7 +95,7 @@ function injectJs(urlType) {
 
         <div id="ahid-foot">
             <div id="ahid-more-div">
-                <a id="ahid-more-a" href="#">More...</a>
+                <a id="ahid-more-a" href="javascript:void(0)">More...</a>
             </div>
             <div id="ahid-loading-label">Loading...</div>
         </div>
@@ -190,6 +190,7 @@ function checkURL() {
 
     var url = document.URL
         .replace(/[https:\/\/|http:\/\/]*[.*\.]*github\.com\//, "")
+        .replace(/\?.*/, '')
         .replace("#", "")
 
     url = url.split('/');
@@ -201,18 +202,18 @@ function checkURL() {
     if (preserveKeyWord.includes(url[0])) return null;
 
     if (url.length == 1) {
+        // https://github.com/Aoi-hosizora?tab=repositories
         return {
             type: 'user',
             username: url[0],
-            user_url: document.URL
+            user_url: `https://github.com/${url}`
         }
     } else if (url.length >= 2) {
         // https://github.com/Aoi-hosizora/NNS_Android/blob/master/.metadata
-        user_url = document.URL.split('/');
-        user_url = user_url.slice(0, 4).join('/')
 
-        repo_url = document.URL.split('/');
-        repo_url = repo_url.slice(0, 5).join('/')
+        user_url = `https://github.com/${url[0]}`
+
+        repo_url = `https://github.com/${url[0]}/${url[1]}`
 
         return {
             type: 'repo',

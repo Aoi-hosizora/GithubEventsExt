@@ -61,6 +61,7 @@ function addEvents(events) {
         // 拆分
         mt = ret.mainTitle.split(' ');
         mr = mt[mt.length - 1];
+        mt = mt.slice(0, mt.length - 1);
         switch (ret.type) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
@@ -162,8 +163,7 @@ function addEvents(events) {
                 `;
                 break;
             default:
-                titleSpanTag = `<span class="ah-content-title">${mt.slice(0, mt.length - 1)
-                    .join(' ')} </span>`;
+                titleSpanTag = `<span class="ah-content-title">${mt.join(' ')} </span>`;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////
