@@ -9,6 +9,7 @@
 + [x] Show Repo Events
 + [x] Show User Events
 + [x] Show different title and url of different events
++ [x] Set token to access user private repos
 + [ ] Error reminder
 + [ ] ...
 
@@ -34,9 +35,29 @@
 ### Tips
 + All element classNames start with `.ah-`
 + All element ids start with `#ahid-`
++ Setup user token
+    + visit https://github.com/settings/tokens to get token
+    + click the ext icon to set or remove token
++ Display
+
+> Content showing in the reference blank is for: ( `.ah-ipr-title` )
+> + issue title
+> + pull request title
+> + release title
+>
+> Content showing in the sub title is for: ( `.ah-ipr-body` )
+> + issue & issue comment body
+> + pull request & pull request review comment body
+> + commit comment body
+> + release body
+>
+> ( Detail code see the function `parseApiJson()` in [core.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/core.js#L253) )
+>
+> ![tipsDemo](./assets/tipsDemo.jpg)
 
 ### Screenshot
 ![mainExt](./assets/mainExt.jpg)
+![tokenSetting](./assets/tokenSetting.jpg)
 
 ### Problems
 + Resize is too slow

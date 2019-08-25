@@ -23,26 +23,34 @@ function addEvents(events) {
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
-                            <div class="ah-commit-div">
-                                <a href="${commit['url']}" target="_blank" class="ah-commit-sha">${commit['sha'].substring(0, 7)}</a>
-                                <span class="ah-commit-title"> ${commit['commit']}</span>
-                            </div>
-                        `;
+                    <div class="ah-commit-div">
+                        <a href="${commit['url']}" target="_blank" class="ah-commit-sha">
+                            ${commit['sha'].substring(0, 7)}
+                        </a>
+                        <span class="ah-commit-title" title="${commit['commit']}"> 
+                            ${commit['commit']}
+                        </span>
+                    </div>
+                `;
             })
         }
 
-        // Issue PullReq 标题
-        if (ret.issue) {
+        // Issue PullReq Release 标题
+        if (ret.iprtitle) {
             isprTitleTag = `
-            <div class="ah-issue-title">
-                <span>${ret.issue}</span>
-            </div>
+                <div class="ah-ipr-title" title="${ret.iprtitle}">
+                    ${ret.iprtitle}
+                </div>
             `;
         }
 
-        // Issue PullReq 评论
+        // Issue PullReq Commit 评论 & Release 体
         if (ret.body)
-            isprCommentTag = `<div class="ah-content-comment">${ret.body}</div>`;
+            isprCommentTag = `
+                <div class="ah-ipr-body" title="${ret.body}">
+                    ${ret.body}
+                </div>
+            `;
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 拆分主标题
@@ -242,9 +250,9 @@ function parseApiJson(event) {
     let commits = [];
 
     // issue pullreq title
-    let isprTitle = '';
+    let issue_pullreq_release_title = '';
     // issue pullreq body
-    let issue_pullreq_release_body = '';
+    let issue_pullreq_commit_release_body = '';
 
     switch (type) {
         case 'PushEvent':
@@ -280,14 +288,14 @@ function parseApiJson(event) {
         case 'IssuesEvent':
             mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['issue']['html_url'];
-            isprTitle = payload['issue']['title'];
-            issue_pullreq_release_body = payload['issue']['body'];
+            issue_pullreq_release_title = payload['issue']['title'];
+            issue_pullreq_commit_release_body = payload['issue']['body'];
             break;
         case 'IssueCommentEvent':
             mainTitle = `created comment on issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['comment']['html_url'];
-            isprTitle = payload['issue']['title'];
-            issue_pullreq_release_body = payload['comment']['body'];
+            issue_pullreq_release_title = payload['issue']['title'];
+            issue_pullreq_commit_release_body = payload['comment']['body'];
             break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
@@ -297,8 +305,8 @@ function parseApiJson(event) {
         case 'PullRequestEvent':
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
             pullreq_url = payload['pull_request']['html_url'];
-            isprTitle = payload['pull_request']['title'];
-            issue_pullreq_release_body = payload['pull_request']['body'];
+            issue_pullreq_release_title = payload['pull_request']['title'];
+            issue_pullreq_commit_release_body = payload['pull_request']['body'];
             break;
         case 'MemberEvent':
             mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
@@ -306,18 +314,19 @@ function parseApiJson(event) {
         case 'PullRequestReviewCommentEvent':
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
             pullreq_url = payload['comment']['html_url'];
-            isprTitle = payload['pull_request']['title'];
-            issue_pullreq_release_body = payload['comment']['body'];
+            issue_pullreq_release_title = payload['pull_request']['title'];
+            issue_pullreq_commit_release_body = payload['comment']['body'];
             break;
         case 'CommitCommentEvent':
             mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
             comment_url = payload['comment']['html_url'];
-            issue_pullreq_release_body = payload['comment']['body'];
+            issue_pullreq_commit_release_body = payload['comment']['body'];
             break;
         case 'ReleaseEvent':
             mainTitle = `${payload['action']} release ${payload['release']['tag_name']} at ${repo}`;
             branchtag_url = payload['release']['html_url'];
-            issue_pullreq_release_body = payload['release']['body'];
+            issue_pullreq_release_title = payload['release']['name'];
+            issue_pullreq_commit_release_body = payload['release']['body'];
             break;
         case 'DeleteEvent':
             mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
@@ -338,7 +347,7 @@ function parseApiJson(event) {
             return ret;
     }
 
-    issue_pullreq_release_body = issue_pullreq_release_body.replace(/<.*>/g, '');
+    issue_pullreq_commit_release_body = issue_pullreq_commit_release_body.replace(/<.*>/g, '');
     return {
         type: type,
         mainTitle: mainTitle,
@@ -351,8 +360,8 @@ function parseApiJson(event) {
         user_url: user_url,
         avatar_url: avatar_url,
         commits: commits,
-        issue: isprTitle,
-        body: issue_pullreq_release_body,
+        iprtitle: issue_pullreq_release_title,
+        body: issue_pullreq_commit_release_body,
         createTime: createTime
     }
 }
