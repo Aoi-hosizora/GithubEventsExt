@@ -121,10 +121,12 @@ function closeNav(closeFlag) {
         $('#ahid-nav').css("right", `-${gwidth}px`);
         nav.removeClass('ah-content-nav-open');
         toggle.removeClass('ah-content-toggle-hide');
+        $('#ahid-resize-handler').hide();
     } else {
         $('#ahid-nav').css("right", `0`);
         toggle.addClass('ah-content-toggle-hide');
         nav.addClass('ah-content-nav-open');
+        $('#ahid-resize-handler').show();
     }
 }
 

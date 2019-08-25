@@ -5,7 +5,7 @@
 function addEvents(events) {
 
     if (!events) return;
-    console.log(events);
+    // console.log(events);
 
     events.forEach(event => {
         var ret = parseApiJson(event);
@@ -249,10 +249,10 @@ function parseApiJson(event) {
     let mainTitle = '';
     let commits = [];
 
-    // issue pullreq title
-    let issue_pullreq_release_title = '';
-    // issue pullreq body
-    let issue_pullreq_commit_release_body = '';
+    // issue pullreq release title
+    let ipr_title = '';
+    // issue pullreq release commit body
+    let ipr_body = '';
 
     switch (type) {
         case 'PushEvent':
@@ -288,14 +288,14 @@ function parseApiJson(event) {
         case 'IssuesEvent':
             mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['issue']['html_url'];
-            issue_pullreq_release_title = payload['issue']['title'];
-            issue_pullreq_commit_release_body = payload['issue']['body'];
+            ipr_title = payload['issue']['title'];
+            ipr_body = payload['issue']['body'];
             break;
         case 'IssueCommentEvent':
             mainTitle = `created comment on issue #${payload['issue']['number']} in ${repo}`;
             comment_url = payload['comment']['html_url'];
-            issue_pullreq_release_title = payload['issue']['title'];
-            issue_pullreq_commit_release_body = payload['comment']['body'];
+            ipr_title = payload['issue']['title'];
+            ipr_body = payload['comment']['body'];
             break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
@@ -305,8 +305,8 @@ function parseApiJson(event) {
         case 'PullRequestEvent':
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
             pullreq_url = payload['pull_request']['html_url'];
-            issue_pullreq_release_title = payload['pull_request']['title'];
-            issue_pullreq_commit_release_body = payload['pull_request']['body'];
+            ipr_title = payload['pull_request']['title'];
+            ipr_body = payload['pull_request']['body'];
             break;
         case 'MemberEvent':
             mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
@@ -314,19 +314,19 @@ function parseApiJson(event) {
         case 'PullRequestReviewCommentEvent':
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
             pullreq_url = payload['comment']['html_url'];
-            issue_pullreq_release_title = payload['pull_request']['title'];
-            issue_pullreq_commit_release_body = payload['comment']['body'];
+            ipr_title = payload['pull_request']['title'];
+            ipr_body = payload['comment']['body'];
             break;
         case 'CommitCommentEvent':
             mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
             comment_url = payload['comment']['html_url'];
-            issue_pullreq_commit_release_body = payload['comment']['body'];
+            ipr_body = payload['comment']['body'];
             break;
         case 'ReleaseEvent':
             mainTitle = `${payload['action']} release ${payload['release']['tag_name']} at ${repo}`;
             branchtag_url = payload['release']['html_url'];
-            issue_pullreq_release_title = payload['release']['name'];
-            issue_pullreq_commit_release_body = payload['release']['body'];
+            ipr_title = payload['release']['name'];
+            ipr_body = payload['release']['body'];
             break;
         case 'DeleteEvent':
             mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
@@ -347,7 +347,7 @@ function parseApiJson(event) {
             return ret;
     }
 
-    issue_pullreq_commit_release_body = issue_pullreq_commit_release_body.replace(/<.*>/g, '');
+    ipr_body = ipr_body.replace(/<.*>/g, '');
     return {
         type: type,
         mainTitle: mainTitle,
@@ -360,8 +360,8 @@ function parseApiJson(event) {
         user_url: user_url,
         avatar_url: avatar_url,
         commits: commits,
-        iprtitle: issue_pullreq_release_title,
-        body: issue_pullreq_commit_release_body,
+        iprtitle: ipr_title,
+        body: ipr_body,
         createTime: createTime
     }
 }
@@ -386,7 +386,7 @@ function ajax(url, page, token, cb, err) {
             cb(data);
         },
         error: (jqXHR, textStatus, errorThrown) => {
-            console.log(textStatus);
+            console.log("Aoihosizora Github Event Ext:" + textStatus);
 
             err();
         }

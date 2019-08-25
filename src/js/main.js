@@ -5,7 +5,7 @@ const TOKEN_FLAG = 'ah-github-events-token';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    console.log("Loading Ext Start");
+    // console.log("Loading Ext Start");
 
     // 获得 repo | user
     urlType = checkURL();
@@ -24,13 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // 注册事件
             regEvent();
 
-            console.log("Loading Ext Finish");
+            // console.log("Loading Ext Finish");
 
             // 获取数据
             getDataAjax();
         })
-    } else
-        console.log("Loading Ext Finish (Url Not For Events)");
+    } 
+    // else
+        // console.log("Loading Ext Finish (Url Not For Events)");
 })
 
 /**
@@ -185,7 +186,8 @@ function checkURL() {
 
     var preserveKeyWord = [
         '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
-        'new', 'login', 'organizations', 'settings', 'search'
+        'new', 'login', 'organizations', 'settings',
+        'search', 'orgs'
     ];
 
     var url = document.URL
