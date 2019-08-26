@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // 获取数据
             getDataAjax();
         })
-    } 
+    }
     // else
-        // console.log("Loading Ext Finish (Url Not For Events)");
+    // console.log("Loading Ext Finish (Url Not For Events)");
 })
 
 /**
@@ -45,10 +45,10 @@ function injectJs(urlType) {
     divTag.className = 'ah-content-toggle ah-content-toggle-hide ah-content-trans';
     divTag.id = 'ahid-toggle';
     divTag.innerHTML = `
-    <svg width=10 height=14 viewBox="0 0 320 512">
-        <path fill="#999999" d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"></path>
-    </svg>
-    <span>Events</span>
+        <svg width=10 height=14 viewBox="0 0 320 512">
+            <path fill="#999999" d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"></path>
+        </svg>
+        <span>Events</span>
     `;
     divTag.onload = () => this.parent.removeChild(this);
 
@@ -58,14 +58,19 @@ function injectJs(urlType) {
 
     if (urlType.type == 'repo')
         ahid_title_as = `
-            <span id="ahid-repo-icon"></span>
-            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank">${urlType.username}</a> /
-            <a id="ahid-title-repo" class="ah-title-head-a" href="${urlType.repo_url}" target="_blank">${urlType.repo}</a>
+            <span id="ahid-repo-icon" class="ah-title-icon"></span>
+            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a> /
+            <a id="ahid-title-repo" class="ah-title-head-a" href="${urlType.repo_url}" target="_blank" title="${urlType.repo}">${urlType.repo}</a>
         `;
     else if (urlType.type == 'user')
         ahid_title_as = `
-            <span id="ahid-user-icon"></span>
-            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank">${urlType.username}</a>
+            <span id="ahid-user-icon" class="ah-title-icon"></span>
+            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a>
+        `;
+    else if (urlType.type == 'org')
+        ahid_title_as = `
+            <span id="ahid-org-icon" class="ah-title-icon"></span>
+            <a id="ahid-title-org" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a>
         `;
 
     var navTag = document.createElement('nav');
@@ -87,7 +92,8 @@ function injectJs(urlType) {
             ${ahid_title_as}
         </div>
         <div id="ahid-subtitle">
-            <span>${(urlType.type == 'repo') ? 'Repo' : 'User'} Events</span>
+            <span id="ahid-event-icon" class="ah-title-icon"></span>
+            <span>${urlType.type.replace(urlType.type[0], urlType.type[0].toUpperCase())} Events</span>
         </div>
     </div>
 
@@ -114,6 +120,12 @@ function injectJs(urlType) {
     document.body.append(divTag);
     document.body.append(navTag);
     $('#ahid-content').append(ulTag);
+    
+    // title-icon
+    $('#ahid-repo-icon').html(getSvgTag('CreateEvent', "#fff", 0.8));
+    $('#ahid-user-icon').html(getSvgTag('People', "#fff", 0.8));
+    $('#ahid-org-icon').html(getSvgTag('MemberEvent', "#fff", 0.8));
+    $('#ahid-event-icon').html(getSvgTag('Graph', "#fff", 0.8));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +140,8 @@ function initData(st, urlType) {
         url = `https://api.github.com/users/${urlType.username}/events?page=`;
     else if (urlType.type == 'repo')
         url = `https://api.github.com/repos/${urlType.username}/${urlType.repo}/events?page=`;
+    else if (urlType.type == 'org')
+        url = `https://api.github.com/orgs/${urlType.username}/events?page=`;
 
     // console.log(url);
 
@@ -159,10 +173,6 @@ function initUI() {
     // Resize
     bindResize();
     refreshPadding();
-
-    // title-icon
-    $('#ahid-repo-icon').html(getSvgTag('CreateEvent', "#fff"));
-    $('#ahid-user-icon').html(getSvgTag('MemberEvent', "#fff"));
 }
 
 /**
@@ -205,18 +215,16 @@ function checkURL() {
 
     if (url.length == 1) {
         // https://github.com/Aoi-hosizora?tab=repositories
+        var type = $('.org-name').length > 0 ? "org" : "user";
         return {
-            type: 'user',
+            type: type,
             username: url[0],
             user_url: `https://github.com/${url}`
         }
     } else if (url.length >= 2) {
         // https://github.com/Aoi-hosizora/NNS_Android/blob/master/.metadata
-
         user_url = `https://github.com/${url[0]}`
-
         repo_url = `https://github.com/${url[0]}/${url[1]}`
-
         return {
             type: 'repo',
             username: url[0],

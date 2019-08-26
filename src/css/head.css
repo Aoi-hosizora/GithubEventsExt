@@ -32,6 +32,12 @@
 /* title */
 
 #ahid-title {
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+#ahid-subtitle {
+    font-size: 10px;
     margin-top: 4px;
 }
 
@@ -44,13 +50,15 @@
     white-space: nowrap;
 }
 
-#ahid-user-icon,
-#ahid-user-icon svg,
-#ahid-repo-icon,
-#ahid-repo-icon svg {
+.ah-title-icon {
+    margin-right: 1px;
+}
+
+.ah-title-icon,
+.ah-title-icon svg {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 2px;
+    margin-top: -1px;
 }
 
 .ah-title-head-a {

@@ -65,22 +65,37 @@
 
 /* Content */
 
+.labeltag {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid rgba(27,31,35,.15);
+    border-radius: 2px;
+
+    line-height: 1;
+}
+
 #ahid-content {
     border-left: 1px solid #DFE2E5;
     min-height: calc(100% - 30px);
 }
 
-.ah-content-cttime {
-    display: block;
+.ah-content-pt {
     font-size: 10.5px;
-    
-    margin: 6px 2px -6px 0px;
-    /* margin: 5px 2px -5px 0;
-    text-align: right;
-    padding-right: 5px;
-    border-right: 2px solid rgb(197, 197, 197);  */
+    margin: 5px 0px -4px 0px;
 
     color: gray;
+}
+
+.ah-content-cttime {
+    display: inline;    
+    text-align: left;
+}
+
+.ah-content-private {
+    display: flex;
+    float: right;
+    padding: 2px 3px;
+    margin-left: 2px;
 }
 
 .ah-ipr-body {

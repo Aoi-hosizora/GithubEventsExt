@@ -2,8 +2,10 @@
  * 获得 Event SVG
  * @param {*} type 
  * @param {*} color #fff
+ * @param {*} rate 1
+ * @param {*} className
  */
-function getSvgTag(type, color = "") {
+function getSvgTag(type, color = "", rate = 1, className = "") {
     let svgClass = '',
         svgPath = '';
     let svgHeight = 16,
@@ -57,7 +59,6 @@ function getSvgTag(type, color = "") {
             break;
         case 'PullRequestEvent':
             svgClass = "octicon-git-pull-request";
-            svgWidth = 12;
             svgPath = "M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z";
             break;
         case 'PullRequestReviewCommentEvent':
@@ -73,11 +74,39 @@ function getSvgTag(type, color = "") {
             svgClass = "octicon-lock";
             svgPath = "M4 13H3v-1h1v1zm8-6v7c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h1V4c0-2.2 1.8-4 4-4s4 1.8 4 4v2h1c.55 0 1 .45 1 1zM3.8 6h4.41V4c0-1.22-.98-2.2-2.2-2.2-1.22 0-2.2.98-2.2 2.2v2H3.8zM11 7H2v7h9V7zM4 8H3v1h1V8zm0 2H3v1h1v-1z";
             break;
+
+            //////////////////////////////////////////////////////
+            // Not For Event
+
+        case 'People': // For #ahid-user-icon
+            svgClass = "octicon-perple";
+            svgPath = "M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z";
+            break;
+
+        case 'Graph': // For #ahid-event-icon
+            svgClass = "octicon-graph";
+            svgWidth = 16;
+            svgPath = "M16 14v1H0V0h1v14h15zM5 13H3V8h2v5zm4 0H7V3h2v10zm4 0h-2V6h2v7z";
+            break;
     }
+
+    let width = svgWidth,
+        height = svgHeight;
+
+    if (rate < 1) {
+        width = Math.floor(width * rate);
+        height = Math.floor(height * rate);
+    }
+
+    if (className)
+        svgClass = className;
+    else
+        svgClass = `octicon ${svgClass}`;
+
     let svg = `
-                <svg class="octicon ${svgClass}" 
+                <svg class="${svgClass}" 
                     version="1.1" aria-hidden="true"
-                    width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
+                    width="${width}" height="${height}" viewBox="0 0 ${svgWidth} ${svgHeight}">
                     
                     <path class="octicon-path" fill-rule="evenodd" d="${svgPath}" ${color ? `fill="${color}"` : ""}></path>
                 </svg>

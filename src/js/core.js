@@ -7,6 +7,16 @@ function addEvents(events) {
     if (!events) return;
     // console.log(events);
 
+    // 判断 org repo
+    var eventFlag = $('#ahid-subtitle span+span').text().toLowerCase();
+    if (eventFlag.indexOf('org') == -1 && eventFlag.indexOf('user') == -1)
+        if (eventFlag.indexOf('repo') != -1) {
+            if (events[0]) {
+                var orgFlag = events[0]['org'] != undefined;
+                $('#ahid-subtitle span+span').text(`${orgFlag ? 'Org' : 'User'} Repo Event`);
+            }
+        }
+
     events.forEach(event => {
         var ret = parseApiJson(event);
         // console.log(ret);
@@ -183,14 +193,23 @@ function addEvents(events) {
                     <li>
                         <div class="ah-avator-div">
 
-                            <img src="${ret.avatar_url}" alt="" class="ah-avator-icon"/>
-                            <span class="ah-avator-link"><a href="${ret.user_url}" target="_blank">${ret.user}</a></span>
-                        
-                            <span class="ah-avator-item-icon" title="${ret.type}">
-                                ${getSvgTag(ret.type)}
-                            </span>
-                            <span class="ah-content-cttime">Create at ${ret.createTime}</span>
-                            
+                            <div class="ah-content-avatar">
+                                <img src="${ret.avatar_url}" alt="" class="ah-avator-icon"/>
+                                <span class="ah-avator-link">
+                                    <a href="${ret.user_url}" target="_blank">${ret.user}</a>
+                                </span>
+                                <span class="ah-avator-item-icon" title="${ret.type}">
+                                    ${getSvgTag(ret.type)}
+                                </span>
+                            </div>
+
+                            <div class="ah-content-pt">
+                                <span class="ah-content-cttime">${ret.createTime}</span>
+                                ${
+                                    ret.isPublicFlag ? '' :
+                                        '<span class="ah-content-private labeltag">Private</span>'
+                                }
+                            </div>
                         </div>
                         ${titleSpanTag}
                         <a href="${ret.url}" target="_blank" class="ah-content-repo">${mr}</a>
@@ -233,6 +252,8 @@ function parseApiJson(event) {
     let payload = event['payload'];
     let createTime = UTC2Local(event['created_at']);
 
+    let isPublicFlag = event['public'];
+
     let url = "https://" + event['repo']['url']
         .replace("https://api.", "").replace("http://api.", "")
         .replace("repos/", "");
@@ -251,14 +272,16 @@ function parseApiJson(event) {
 
     // issue pullreq release title
     let ipr_title = '';
-    // issue pullreq release commit body
+    // issue pullreq release commit body & create payload description
     let ipr_body = '';
 
     switch (type) {
+        // ref: refs/heads/master
         case 'PushEvent':
             mainTitle = `pushed ${payload['size']} 
-                        ${(payload['size'] == 1) ? ' commit to ' : ' commits to '} 
-                        ${payload['ref'].split('/')[2]} at ${repo}`;
+                        ${(payload['size'] <= 1) ? ' commit to ' : ' commits to '} 
+                        ${payload['ref'].split('/')[2]} 
+                        at ${repo}`;
             payload['commits'].forEach(commit => {
                 commits.push({
                     'sha': commit['sha'],
@@ -282,7 +305,8 @@ function parseApiJson(event) {
                 mainTitle = `created tag ${payload['ref']} at ${repo}`;
                 branchtag_url = `${url}/tree/${payload['ref']}`;
             } else if (payload['ref_type'] == 'repository') {
-                mainTitle = `created a ${event['public'] ? 'public' : 'private'} repository ${repo}`;
+                mainTitle = `created ${isPublicFlag ? 'public' : 'private'} repository ${repo}`;
+                ipr_body = payload['description'];
             }
             break;
         case 'IssuesEvent':
@@ -342,12 +366,15 @@ function parseApiJson(event) {
                 avatar_url: avatar_url,
                 user: actor,
                 user_url: user_url,
-                createTime: createTime
+                createTime: createTime,
+                isPublicFlag: isPublicFlag
             }
             return ret;
     }
 
-    ipr_body = ipr_body.replace(/<.*>/g, '');
+    if (ipr_body)
+        ipr_body = ipr_body.replace(/<.*>/g, '');
+
     return {
         type: type,
         mainTitle: mainTitle,
@@ -362,7 +389,8 @@ function parseApiJson(event) {
         commits: commits,
         iprtitle: ipr_title,
         body: ipr_body,
-        createTime: createTime
+        createTime: createTime,
+        isPublicFlag: isPublicFlag
     }
 }
 

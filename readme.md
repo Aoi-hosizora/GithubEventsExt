@@ -33,6 +33,7 @@
 ![HoverIcon](./assets/HoverIcon.jpg)
 
 ### Tips
++ Svg path data all in [ui.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/ui.js) ( `getSvgTag()` ) and [main.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/main.js) ( `injectJs()` )
 + All element classNames start with `.ah-`
 + All element ids start with `#ahid-`
 + Setup user token
@@ -50,6 +51,7 @@
 > + pull request & pull request review comment body
 > + commit comment body
 > + release body
+> + create repo description
 >
 > ( Detail code see the function `parseApiJson()` in [core.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/core.js#L253) )
 >
@@ -61,7 +63,7 @@
 
 ### Problems
 + Resize is too slow
-+ Could not distinguish user event and org event
++ ~~Could not distinguish user event and org event~~
 + ...
 
 ### References
