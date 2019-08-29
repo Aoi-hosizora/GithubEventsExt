@@ -196,7 +196,7 @@ function bindResize() {
     var el = document.getElementById('ahid-nav');
     var jel = $('#ahid-nav');
 
-    $('#ahid-resize-handler').css("left", `calc(100% - ${gwidth}px)`);
+    $('#ahid-resize-handler').css("left", `calc(100% - ${gwidth - 2}px)`);
 
     var x = 0,
         w = 0;

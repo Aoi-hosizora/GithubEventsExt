@@ -44,7 +44,18 @@ function _regClick() {
     // 反馈
     $('#ahid-feedback').click(() => {
         // TODO
-        window.open(feedback_url)
+        window.open(feedback_url);
+    });
+
+    // 刷新
+    $('#ahid-refresh').click(() => {
+        // TODO
+        $('#ahid-ul').html('');
+        refreshPadding();
+        page = 1;
+        firstFlag = true;
+        showLoading(true);
+        getDataAjax();
     });
 }
 
@@ -97,6 +108,15 @@ function _regMouse() {
 
     $('#ahid-feedback').mouseleave((e) => {
         $('#ahid-feedback').children('svg').children('path').attr("fill", "#999");
+    }); 
+    
+    // 刷新高亮
+    $('#ahid-refresh').mousemove((e) => {
+        $('#ahid-refresh').children('svg').children('path').attr("fill", "#fff");
+    });
+
+    $('#ahid-refresh').mouseleave((e) => {
+        $('#ahid-refresh').children('svg').children('path').attr("fill", "#999");
     });
 }
 

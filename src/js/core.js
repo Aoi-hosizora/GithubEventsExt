@@ -361,7 +361,7 @@ function parseApiJson(event) {
         default:
             ret = {
                 type: type,
-                mainTitle: "Unknown Event",
+                mainTitle: "Unknown Event: " + type,
                 url: "https://github.com",
                 avatar_url: avatar_url,
                 user: actor,
@@ -374,6 +374,10 @@ function parseApiJson(event) {
 
     if (ipr_body)
         ipr_body = ipr_body.replace(/<.*>/g, '');
+
+    // Bot
+    if (actor == 'lock[bot]')
+        user_url = 'https://github.com/apps/lock'
 
     return {
         type: type,

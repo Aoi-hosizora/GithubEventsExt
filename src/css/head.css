@@ -15,7 +15,8 @@
 /* toolbar */
 
 #ahid-pin,
-#ahid-feedback {
+#ahid-feedback,
+#ahid-refresh {
     position: absolute;
     top: 42px;
     font-size: 12px;
@@ -26,7 +27,12 @@
 }
 
 #ahid-feedback {
-    left: 30px;
+    left: 28px;
+}
+
+#ahid-refresh {
+    left: 46px;
+    margin-top: -1px;
 }
 
 /* title */

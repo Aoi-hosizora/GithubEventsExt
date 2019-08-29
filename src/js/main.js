@@ -88,6 +88,11 @@ function injectJs(urlType) {
                 <path fill="#999" d="M20,2L4,2c-1.1,0 -1.99,0.9 -1.99,2L2,22l4,-4h14c1.1,0 2,-0.9 2,-2L22,4c0,-1.1 -0.9,-2 -2,-2zM13,14h-2v-2h2v2zM13,10h-2L11,6h2v4z"></path>
             </svg>
         </a>
+        <a id="ahid-refresh" href="javascript:void(0)" title="Refresh">
+            <svg width=14 height=14 viewBox="0 0 24 24">
+                <path fill="#999" d="M17.65,6.35C16.2,4.9 14.21,4 12,4c-4.42,0 -7.99,3.58 -7.99,8s3.57,8 7.99,8c3.73,0 6.84,-2.55 7.73,-6h-2.08c-0.82,2.33 -3.04,4 -5.65,4 -3.31,0 -6,-2.69 -6,-6s2.69,-6 6,-6c1.66,0 3.14,0.69 4.22,1.78L13,11h7V4l-2.35,2.35z"></path>
+            </svg>
+        </a>
         <div id="ahid-title">
             ${ahid_title_as}
         </div>
@@ -197,13 +202,13 @@ function checkURL() {
     var preserveKeyWord = [
         '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
         'new', 'login', 'organizations', 'settings',
-        'search', 'orgs'
+        'search', 'orgs', 'apps', 'users', 'repos'
     ];
 
     var url = document.URL
         .replace(/[https:\/\/|http:\/\/]*[.*\.]*github\.com\//, "")
         .replace(/\?.*/, '')
-        .replace("#", "")
+        .replace(/#.*/, "")
 
     url = url.split('/');
 
@@ -246,9 +251,11 @@ function checkURL() {
 function getStorage(fb) {
     storage.get(PIN_FLAG, (storedData) => {
         var pin_flag = storedData[PIN_FLAG];
+        if (!pin_flag) pin_flag = false;
 
         storage.get(GWIDTH_FLAG, (storedData) => {
             var gwidth_flag = storedData[GWIDTH_FLAG];
+            if (!gwidth_flag) gwidth_flag = 200;
 
             storage.get(TOKEN_FLAG, (storedData) => {
                 var token_flag = storedData[TOKEN_FLAG];
