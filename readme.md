@@ -26,7 +26,7 @@
 ### Events
 + Support Event: 
     + `PushEvent` `CreateEvent` `WatchEvent` `IssuesEvent` `IssueCommentEvent` `ForkEvent` `PullRequestEvent`
-    + `MemberEvent` `PullRequestReviewCommentEvent` `CommitCommentEvent` `ReleaseEvent` `DeleteEvent` `PublicEvent`
+    + `MemberEvent` `PullRequestReviewCommentEvent` `CommitCommentEvent` `ReleaseEvent` `DeleteEvent` `PublicEvent` `GollumEvent`
 + If there is an unknown event, please open an issue.
 + (Event type will be shown when the cursor is hovering over the event icon)
 

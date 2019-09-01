@@ -23,17 +23,18 @@ function addEvents(events) {
 
         var commitsTag = '',
             isprTitleTag = '',
-            isprCommentTag = '';
+            isprCommentTag = '',
+            wikiPagesTag = '';
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 预处理数据
         /////////////////////////////////////////////////////////////////////////////////////////
 
-        // Git commit
+        // Git commits
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
-                    <div class="ah-commit-div">
+                    <div class="ah-commit-div ah-sub-content">
                         <a href="${commit['url']}" target="_blank" class="ah-commit-sha">
                             ${commit['sha'].substring(0, 7)}
                         </a>
@@ -48,7 +49,7 @@ function addEvents(events) {
         // Issue PullReq Release 标题
         if (ret.iprtitle) {
             isprTitleTag = `
-                <div class="ah-ipr-title" title="${ret.iprtitle}">
+                <div class="ah-ipr-title ah-sub-content" title="${ret.iprtitle}">
                     ${ret.iprtitle}
                 </div>
             `;
@@ -57,10 +58,36 @@ function addEvents(events) {
         // Issue PullReq Commit 评论 & Release 体
         if (ret.body)
             isprCommentTag = `
-                <div class="ah-ipr-body" title="${ret.body}">
+                <div class="ah-ipr-body ah-sub-content" title="${ret.body}">
                     ${ret.body}
                 </div>
             `;
+
+        // Wiki pages
+        if (ret.wikipages) {
+            ret.wikipages.forEach((page) => {
+                wikiPagesTag += `
+                    <div class="ah-wikipage-div ah-sub-content">
+                        <span class="ah-wikipage-action"> 
+                            ${page.action.replace(page.action[0], page.action[0].toUpperCase())}
+                        </span>
+                        <a href="${page.url}" target="_blank" class="ah-wikipage-url" 
+                            title="${page.title}">
+                            <span class="ah-wikipage-title"> 
+                                ${page.title}
+                            </span>
+                        </a>
+                        <span>Page</span>
+                `;
+                if (page.summary)
+                    wikiPagesTag += `
+                        <div class="ah-wikipage-summary" title="${page.summary}">
+                            ${page.summary}
+                        </div>
+                    `;
+                wikiPagesTag += `</div>`
+            })
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // 拆分主标题
@@ -213,7 +240,7 @@ function addEvents(events) {
                         </div>
                         ${titleSpanTag}
                         <a href="${ret.url}" target="_blank" class="ah-content-repo">${mr}</a>
-                        ${commitsTag} 
+                        ${commitsTag} ${wikiPagesTag}
                         ${isprTitleTag} ${isprCommentTag} 
                     </li>
                 `);
@@ -244,6 +271,7 @@ function parseApiJson(event) {
         ReleaseEvent                    octicon octicon-tag
         DeleteEvent                     octicon octicon-x
         PublicEvent                     octicon octicon-lock
+        GollumEvent                     octicon octicon-book
     */
 
     let type = event['type'];
@@ -265,10 +293,11 @@ function parseApiJson(event) {
     let comment_url = "";
     let forker_url = "";
     let pullreq_url = "";
-    let branchtag_url = '';
+    let branchtag_url = "";
 
     let mainTitle = '';
     let commits = [];
+    let wikipages = []
 
     // issue pullreq release title
     let ipr_title = '';
@@ -358,6 +387,18 @@ function parseApiJson(event) {
         case 'PublicEvent':
             mainTitle = `make repository ${event['public'] ? 'public' : 'private'} at ${repo}`;
             break;
+        case 'GollumEvent':
+            mainTitle = `update ${payload['pages'].length <= 1 ? 'a wiki page' : `${payload['pages'].length} wiki pages`} at ${repo}`;
+            payload['pages'].forEach(page => {
+                wikipages.push({
+                    // page_name: page['page_name'], -> Page-Title
+                    title: page['title'], // Page Title
+                    action: page['action'],
+                    url: page['html_url'],
+                    summary: page['summary']
+                })
+            })
+            break;
         default:
             ret = {
                 type: type,
@@ -394,7 +435,8 @@ function parseApiJson(event) {
         iprtitle: ipr_title,
         body: ipr_body,
         createTime: createTime,
-        isPublicFlag: isPublicFlag
+        isPublicFlag: isPublicFlag,
+        wikipages: wikipages
     }
 }
 
