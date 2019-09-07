@@ -8,12 +8,12 @@ function addEvents(events) {
     // console.log(events);
 
     // 判断 org repo
-    var eventFlag = $('#ahid-subtitle span+span').text().toLowerCase();
+    var eventFlag = $('#ahid-subtitle span+a span').text().toLowerCase();
     if (eventFlag.indexOf('org') == -1 && eventFlag.indexOf('user') == -1)
         if (eventFlag.indexOf('repo') != -1) {
             if (events[0]) {
                 var orgFlag = events[0]['org'] != undefined;
-                $('#ahid-subtitle span+span').text(`${orgFlag ? 'Org' : 'User'} Repo Event`);
+                $('#ahid-subtitle span+a span').text(`${orgFlag ? 'Org' : 'User'} Repo Event`);
             }
         }
 
@@ -116,6 +116,17 @@ function addEvents(events) {
                         ${mt[0]} 
                         <a href="${ret.forker_url}" target="_blank">${forker}</a> 
                         ${mt.slice(2, mt.length).join(' ')}
+                    </span>
+                `;
+                break;
+            case 'MemberEvent':
+                // Added member huxiaoman7 to PaddlePaddle/examples
+                var memberName = mt[2];
+                titleSpanTag = `
+                    <span class="ah-content-title">
+                        ${mt.splice(0, 2).join(' ')} 
+                        <a href="${ret.member_url}" target="_blank">${memberName}</a> 
+                        ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
@@ -294,6 +305,7 @@ function parseApiJson(event) {
     let forker_url = "";
     let pullreq_url = "";
     let branchtag_url = "";
+    let member_url = "";
 
     let mainTitle = '';
     let commits = [];
@@ -363,6 +375,7 @@ function parseApiJson(event) {
             break;
         case 'MemberEvent':
             mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
+            member_url = payload['member']['html_url']
             break;
         case 'PullRequestReviewCommentEvent':
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
@@ -430,6 +443,7 @@ function parseApiJson(event) {
         branchtag_url: branchtag_url,
         user: actor,
         user_url: user_url,
+        member_url: member_url,
         avatar_url: avatar_url,
         commits: commits,
         iprtitle: ipr_title,

@@ -73,6 +73,8 @@ function injectJs(urlType) {
             <a id="ahid-title-org" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a>
         `;
 
+    // Repo type -> core: addEvents()
+
     var navTag = document.createElement('nav');
     navTag.className = 'ah-content-nav ah-content-trans';
     navTag.id = 'ahid-nav';
@@ -98,7 +100,9 @@ function injectJs(urlType) {
         </div>
         <div id="ahid-subtitle">
             <span id="ahid-event-icon" class="ah-title-icon"></span>
-            <span>${urlType.type.replace(urlType.type[0], urlType.type[0].toUpperCase())} Events</span>
+            <a id="ahid-event-url" href="#" target="_blank">
+                <span>${urlType.type.replace(urlType.type[0], urlType.type[0].toUpperCase())} Events</span>
+            </a>
         </div>
     </div>
 
@@ -148,6 +152,7 @@ function initData(st, urlType) {
     else if (urlType.type == 'org')
         url = `https://api.github.com/orgs/${urlType.username}/events?page=`;
 
+    $('#ahid-event-url').attr('href', url + "0");
     // console.log(url);
 
     page = 1;
@@ -220,7 +225,7 @@ function checkURL() {
 
     if (url.length == 1) {
         // https://github.com/Aoi-hosizora?tab=repositories
-        var type = $('.org-name').length > 0 ? "org" : "user";
+        var type = $('.org-header-wrapper').length > 0 ? "org" : "user";
         return {
             type: type,
             username: url[0],
