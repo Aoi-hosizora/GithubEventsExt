@@ -2,7 +2,6 @@
  * 注册事件处理
  */
 function regEvent() {
-
     _regClick();
     _regMouse();
     _regRefresh();
@@ -18,10 +17,11 @@ function _regClick() {
 
     // More 处理
     $('#ahid-more-a').click(() => {
+        $('#ahid-nothing').html("");
         showLoading(true);
-
         ajax(url, ++page, token, (events) => {
             addEvents(events);
+            checkNothing();
             showLoading(false, false);
         }, () => {
             showLoading(false, true);
@@ -57,6 +57,19 @@ function _regClick() {
         showLoading(true);
         getDataAjax();
     });
+}
+
+/**
+ * 判断 ul 是否为空
+ */
+function checkNothing() {
+    if ($('#ahid-ul').html() == "") {
+        $('#ahid-ul').html(`
+            <p id="#ahid-nothing">
+                Nothing found, please press more button in bottom to try get more...
+            </p>
+        `);
+    }
 }
 
 /**

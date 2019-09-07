@@ -193,6 +193,7 @@ function getDataAjax() {
     // 异步获取
     ajax(url, page, token, (events) => {
         addEvents(events);
+        checkNothing();
         showLoading(false);
     }, () => {
         showLoading(false, true);

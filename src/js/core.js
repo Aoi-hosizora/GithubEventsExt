@@ -364,8 +364,8 @@ function parseApiJson(event) {
             break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
-            url = payload['forkee']['html_url'];
             forker_url = url;
+            url = payload['forkee']['html_url'];
             break;
         case 'PullRequestEvent':
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
