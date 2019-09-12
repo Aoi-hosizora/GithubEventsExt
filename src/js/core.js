@@ -35,9 +35,7 @@ function addEvents(events) {
             ret.commits.forEach((commit) => {
                 commitsTag += `
                     <div class="ah-commit-div ah-sub-content">
-                        <a href="${commit['url']}" target="_blank" class="ah-commit-sha">
-                            ${commit['sha'].substring(0, 7)}
-                        </a>
+                        <a href="${commit['url']}" target="_blank" class="ah-commit-sha">${commit['sha'].substring(0, 7)}</a>
                         <span class="ah-commit-title" title="${commit['commit']}"> 
                             ${commit['commit']}
                         </span>

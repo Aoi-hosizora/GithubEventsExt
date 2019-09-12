@@ -222,7 +222,7 @@ function checkURL() {
     // console.log(url.length);
 
     if (url.length == 0) return null;
-    if (preserveKeyWord.includes(url[0])) return null;
+    if (preserveKeyWord.includes(url[0]) || url[0].indexOf('.') != -1) return null;
 
     if (url.length == 1) {
         // https://github.com/Aoi-hosizora?tab=repositories

@@ -1,5 +1,5 @@
-# GithubEvents_ChromeExt
-+ Let browser show github users and repos activity events
+# GithubEventsExt
++ Let Chrome show github users and repos activity events
 + Use [Github API V3](https://developer.github.com/v3/) to build this extension
 
 ### Environment
