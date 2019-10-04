@@ -107,7 +107,8 @@ function injectJs(urlType) {
     </div>
 
     <div id="ahid-tail">
-        <div id="ahid-content"></div>
+        <!-- Main -->
+        <div id="ahid-content" data-repository-hovercards-enabled></div>
 
         <div id="ahid-foot">
             <div id="ahid-more-div">

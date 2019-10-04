@@ -105,6 +105,7 @@ function addEvents(events) {
         mt = ret.mainTitle.split(' ');
         mr = mt[mt.length - 1];
         mt = mt.slice(0, mt.length - 1);
+
         switch (ret.type) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
@@ -112,7 +113,13 @@ function addEvents(events) {
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt[0]} 
-                        <a href="${ret.forker_url}" target="_blank">${forker}</a> 
+                        <a 
+                            href="${ret.forker_url}" target="_blank"
+                            data-hovercard-type="repository"
+                            data-hovercard-url="/${forker}/hovercard"
+                        >
+                            ${forker}
+                        </a> 
                         ${mt.slice(2, mt.length).join(' ')}
                     </span>
                 `;
@@ -223,6 +230,8 @@ function addEvents(events) {
         /////////////////////////////////////////////////////////////////////////////////////////
         // 插入内容
         /////////////////////////////////////////////////////////////////////////////////////////
+        
+        // z-index: 100
 
         $('#ahid-ul').append(`
                     ${firstFlag == true ? '' : '<hr style="margin: 8px 0;"/>'}
@@ -230,9 +239,25 @@ function addEvents(events) {
                         <div class="ah-avator-div">
 
                             <div class="ah-content-avatar">
-                                <img src="${ret.avatar_url}" alt="" class="ah-avator-icon"/>
+                                <a href="${ret.user_url}" target="_blank"
+                                    style="text-decoration:none"
+                                    data-hovercard-type="user"
+                                    data-hovercard-url="/hovercards?user_id=${ret.user_id}" 
+                                    data-octo-click="hovercard-link-click"
+                                    data-octo-dimensions="link_type:self"
+                                >
+                                    <img src="${ret.avatar_url}" alt="" class="ah-avator-icon"/>
+                                </a>
                                 <span class="ah-avator-link">
-                                    <a href="${ret.user_url}" target="_blank">${ret.user}</a>
+                                    <a 
+                                        href="${ret.user_url}" target="_blank"
+                                        data-hovercard-type="user"
+                                        data-hovercard-url="/hovercards?user_id=${ret.user_id}" 
+                                        data-octo-click="hovercard-link-click"
+                                        data-octo-dimensions="link_type:self"
+                                    >
+                                        ${ret.user}
+                                    </a>
                                 </span>
                                 <span class="ah-avator-item-icon" title="${ret.type}">
                                     ${getSvgTag(ret.type)}
@@ -247,8 +272,17 @@ function addEvents(events) {
                                 }
                             </div>
                         </div>
+
                         ${titleSpanTag}
-                        <a href="${ret.url}" target="_blank" class="ah-content-repo">${mr}</a>
+
+                        <a 
+                            href="${ret.repo_url}" target="_blank" class="ah-content-repo"
+                            data-hovercard-type="repository"
+                            data-hovercard-url="/${mr}/hovercard"
+                        >
+                            ${mr}
+                        </a>
+
                         ${commitsTag} ${wikiPagesTag}
                         ${isprTitleTag} ${isprCommentTag} 
                     </li>
@@ -291,13 +325,17 @@ function parseApiJson(event) {
 
     let isPublicFlag = event['public'];
 
-    let url = "https://" + event['repo']['url']
+    let repo_url = "https://" + event['repo']['url']
         .replace("https://api.", "").replace("http://api.", "")
         .replace("repos/", "");
     let user_url = "https://" + event['actor']['url']
         .replace("https://api.", "").replace("http://api.", "")
         .replace("users/", "");
     let avatar_url = event['actor']['avatar_url'];
+
+    let user_id = event['actor']['id'];
+    let repo_id = event['repo']['id'];
+    let forker_id;
 
     let comment_url = "";
     let forker_url = "";
@@ -338,11 +376,11 @@ function parseApiJson(event) {
             if (payload['ref_type'] == 'branch') {
                 type = "CreateBranchEvent"
                 mainTitle = `created branch ${payload['ref']} at ${repo}`;
-                branchtag_url = `${url}/tree/${payload['ref']}`;
+                branchtag_url = `${repo_url}/tree/${payload['ref']}`;
             } else if (payload['ref_type'] == 'tag') {
                 type = "CreateTagEvent"
                 mainTitle = `created tag ${payload['ref']} at ${repo}`;
-                branchtag_url = `${url}/tree/${payload['ref']}`;
+                branchtag_url = `${repo_url}/tree/${payload['ref']}`;
             } else if (payload['ref_type'] == 'repository') {
                 mainTitle = `created ${isPublicFlag ? 'public' : 'private'} repository ${repo}`;
                 ipr_body = payload['description'];
@@ -362,8 +400,12 @@ function parseApiJson(event) {
             break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
-            forker_url = url;
-            url = payload['forkee']['html_url'];
+            // forked repo: event['repo']
+            forker_url = repo_url;
+            focker_id = repo_id;
+            // my repo: payload['forkee']
+            repo_id = payload['forkee']['id'];
+            repo_url = payload['forkee']['html_url'];
             break;
         case 'PullRequestEvent':
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
@@ -414,9 +456,11 @@ function parseApiJson(event) {
             ret = {
                 type: type,
                 mainTitle: "Unknown Event: " + type,
-                url: "https://github.com",
+                repo_url: "https://github.com",
+                repo_id: repo_id,
                 avatar_url: avatar_url,
                 user: actor,
+                user_id: user_id,
                 user_url: user_url,
                 createTime: createTime,
                 isPublicFlag: isPublicFlag
@@ -434,12 +478,15 @@ function parseApiJson(event) {
     return {
         type: type,
         mainTitle: mainTitle,
-        url: url,
+        repo_url: repo_url,
+        repo_id: repo_id,
         comment_url: comment_url,
         forker_url: forker_url,
+        forker_id: forker_id,
         pullreq_url: pullreq_url,
         branchtag_url: branchtag_url,
         user: actor,
+        user_id: user_id,
         user_url: user_url,
         member_url: member_url,
         avatar_url: avatar_url,
