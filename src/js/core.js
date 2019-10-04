@@ -30,12 +30,19 @@ function addEvents(events) {
         // 预处理数据
         /////////////////////////////////////////////////////////////////////////////////////////
 
+        // data-commit-hovercards-enabled
+
         // Git commits
         if (ret.commits) {
             ret.commits.forEach((commit) => {
+                // /Aoi-hosizora/NeteaseLyric_Mobile2Desktop/commit/918649f1b9f3577f2b1d7df44e3419fdb5937a63/hovercard
                 commitsTag += `
-                    <div class="ah-commit-div ah-sub-content">
-                        <a href="${commit['url']}" target="_blank" class="ah-commit-sha">${commit['sha'].substring(0, 7)}</a>
+                    <div class="ah-commit-div ah-sub-content" data-commit-hovercards-enabled>
+                        <a 
+                            href="${commit['url']}" target="_blank" class="ah-commit-sha"
+                            data-hovercard-type="commit"
+                            data-hovercard-url="/${ret.repo}/commit/${commit['sha']}/hovercard"
+                        >${commit['sha'].substring(0, 7)}</a>
                         <span class="ah-commit-title" title="${commit['commit']}"> 
                             ${commit['commit']}
                         </span>
@@ -109,6 +116,7 @@ function addEvents(events) {
         switch (ret.type) {
             case 'ForkEvent':
                 // Forked angular/angular to coulonxyz/angular
+                // /Aoi-hosizora/Mp3CoverDroper/hovercard
                 var forker = mt[1];
                 titleSpanTag = `
                     <span class="ah-content-title">
@@ -126,66 +134,101 @@ function addEvents(events) {
                 break;
             case 'MemberEvent':
                 // Added member huxiaoman7 to PaddlePaddle/examples
+                // /hovercards?user_id=31433480
                 var memberName = mt[2];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 2).join(' ')} 
-                        <a href="${ret.member_url}" target="_blank">${memberName}</a> 
+                        <a 
+                            href="${ret.member_url}" target="_blank"
+                            data-hovercard-type="user"
+                            data-hovercard-url="/hovercards?user_id=${ret.member_id}" 
+                        >${memberName}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'IssueCommentEvent':
                 // Created comment on issue #32258 "yarn setup not working in aio" in angular/angular
+                // /JeevanJames/Id3/issues/23/hovercard
                 var issueId = mt[4];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 4).join(' ')} 
-                        <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
+                        <a 
+                            href="${ret.comment_url}" target="_blank"
+                            data-hovercard-type="issue"
+                            data-hovercard-url="/${ret.repo}/issues/${issueId.replace("#", "")}/hovercard"
+                        >
+                        ${issueId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'IssuesEvent':
                 // Opened issue #32264 in angular/angular
+                // /JeevanJames/Id3/issues/23/hovercard
                 var issueId = mt[2];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 2).join(' ')} 
-                        <a href="${ret.comment_url}" target="_blank">${issueId}</a> 
+                        <a 
+                            href="${ret.comment_url}" target="_blank"
+                            data-hovercard-type="issue"
+                            data-hovercard-url="/${ret.repo}/issues/${issueId.replace("#", "")}/hovercard"
+                        >
+                        ${issueId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'PullRequestEvent':
                 // Opened pull request #32267 "docs: fixed animations reference links to api" at angular/angular
+                // /GEEKiDoS/NeteaseMuiscApi/pull/3/hovercard
                 var pullReqId = mt[3];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 3).join(' ')} 
-                        <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
+                        <a 
+                            href="${ret.pullreq_url}" target="_blank"
+                            data-hovercard-type="pull_request"
+                            data-hovercard-url="/${ret.repo}/pull/${pullReqId.replace("#", "")}/hovercard"
+                        >
+                        ${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'PullRequestReviewCommentEvent':
                 // Created pull request review comment in pull request #undefined at angular/angular
+                // /GEEKiDoS/NeteaseMuiscApi/pull/3/hovercard
                 var pullReqId = mt[8];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 8).join(' ')} 
-                        <a href="${ret.pullreq_url}" target="_blank">${pullReqId}</a> 
+                        <a 
+                            href="${ret.pullreq_url}" target="_blank"
+                            data-hovercard-type="pull_request"
+                            data-hovercard-url="/${ret.repo}/pull/${pullReqId.replace("#", "")}/hovercard"
+                        >
+                        ${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'CommitCommentEvent':
                 // Created a comment at commit #904a201 in angular/angular
+                // /Aoi-hosizora/NeteaseLyric_Mobile2Desktop/commit/918649f1b9f3577f2b1d7df44e3419fdb5937a63/hovercard
                 var pullReqId = mt[5];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 5).join(' ')} 
-                        <a href="${ret.comment_url}" target="_blank">${pullReqId}</a> 
+                        <a 
+                            href="${ret.comment_url}" target="_blank"
+                            data-hovercard-type="commit"
+                            data-hovercard-url="/${ret.repo}/commit/${pullReqId.replace("#", "")}/hovercard"
+                        >
+                        ${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
@@ -203,17 +246,25 @@ function addEvents(events) {
                 break;
             case 'CreateTagEvent':
                 // Created tag 1.1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
+                // /Aoi-hosizora/NeteaseM2D/releases/tag/1.1/hovercard
+                /*
+                    data-hovercard-type="releases"
+                    data-hovercard-url="/${ret.repo}/releases/tag/${tag}/hovercard"
+                */
                 var tag = mt[2];
                 titleSpanTag = `
                     <span class="ah-content-title">
                         ${mt.splice(0, 2).join(' ')} 
-                        <a href="${ret.branchtag_url}" target="_blank">${tag}</a> 
+                        <a
+                            href="${ret.branchtag_url}" target="_blank"
+                        >${tag}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
                     </span>
                 `;
                 break;
             case 'ReleaseEvent':
                 // Published release 1.1 at Aoi-hosizora/NNS_Android Aoi-hosizora/NNS_Android
+                // /Aoi-hosizora/NeteaseM2D/releases/tag/1.1/hovercard
                 var tag = mt[2];
                 titleSpanTag = `
                     <span class="ah-content-title">
@@ -336,6 +387,7 @@ function parseApiJson(event) {
     let user_id = event['actor']['id'];
     let repo_id = event['repo']['id'];
     let forker_id;
+    let member_id;
 
     let comment_url = "";
     let forker_url = "";
@@ -415,7 +467,8 @@ function parseApiJson(event) {
             break;
         case 'MemberEvent':
             mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
-            member_url = payload['member']['html_url']
+            member_url = payload['member']['html_url'];
+            member_id = payload['member']['id'];
             break;
         case 'PullRequestReviewCommentEvent':
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
@@ -456,6 +509,7 @@ function parseApiJson(event) {
             ret = {
                 type: type,
                 mainTitle: "Unknown Event: " + type,
+                repo: repo,
                 repo_url: "https://github.com",
                 repo_id: repo_id,
                 avatar_url: avatar_url,
@@ -478,6 +532,7 @@ function parseApiJson(event) {
     return {
         type: type,
         mainTitle: mainTitle,
+        repo: repo,
         repo_url: repo_url,
         repo_id: repo_id,
         comment_url: comment_url,
@@ -489,6 +544,7 @@ function parseApiJson(event) {
         user_id: user_id,
         user_url: user_url,
         member_url: member_url,
+        member_id: member_id,
         avatar_url: avatar_url,
         commits: commits,
         iprtitle: ipr_title,

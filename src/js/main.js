@@ -108,7 +108,11 @@ function injectJs(urlType) {
 
     <div id="ahid-tail">
         <!-- Main -->
-        <div id="ahid-content" data-repository-hovercards-enabled></div>
+        <div 
+            id="ahid-content"
+            data-repository-hovercards-enabled
+            data-issue-and-pr-hovercards-enabled
+        > </div>
 
         <div id="ahid-foot">
             <div id="ahid-more-div">
@@ -120,6 +124,10 @@ function injectJs(urlType) {
         <div id="ahid-resize-handler"></div>
     </div>
     `;
+
+    // data-repository-hovercards-enabled
+    // data-issue-and-pr-hovercards-enabled
+
     navTag.onload = () => this.parent.removeChild(this);
 
     // ul
