@@ -217,7 +217,7 @@ function checkURL() {
     var preserveKeyWord = [
         '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
         'new', 'login', 'organizations', 'settings',
-        'search', 'orgs', 'apps', 'users', 'repos', 'stars'
+        'search', 'orgs', 'apps', 'users', 'repos', 'stars', "account"
     ];
 
     var url = document.URL
