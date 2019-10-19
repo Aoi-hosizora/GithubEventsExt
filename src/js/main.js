@@ -112,6 +112,7 @@ function injectJs(urlType) {
             id="ahid-content"
             data-repository-hovercards-enabled
             data-issue-and-pr-hovercards-enabled
+            data-commit-hovercards-enabled
         > </div>
 
         <div id="ahid-foot">
@@ -127,6 +128,7 @@ function injectJs(urlType) {
 
     // data-repository-hovercards-enabled
     // data-issue-and-pr-hovercards-enabled
+    // data-commit-hovercards-enabled
 
     navTag.onload = () => this.parent.removeChild(this);
 

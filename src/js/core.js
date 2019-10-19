@@ -30,14 +30,13 @@ function addEvents(events) {
         // 预处理数据
         /////////////////////////////////////////////////////////////////////////////////////////
 
-        // data-commit-hovercards-enabled
 
         // Git commits
         if (ret.commits) {
             ret.commits.forEach((commit) => {
                 // /Aoi-hosizora/NeteaseLyric_Mobile2Desktop/commit/918649f1b9f3577f2b1d7df44e3419fdb5937a63/hovercard
                 commitsTag += `
-                    <div class="ah-commit-div ah-sub-content" data-commit-hovercards-enabled>
+                    <div class="ah-commit-div ah-sub-content">
                         <a 
                             href="${commit['url']}" target="_blank" class="ah-commit-sha"
                             data-hovercard-type="commit"
@@ -226,7 +225,7 @@ function addEvents(events) {
                         <a 
                             href="${ret.comment_url}" target="_blank"
                             data-hovercard-type="commit"
-                            data-hovercard-url="/${ret.repo}/commit/${pullReqId.replace("#", "")}/hovercard"
+                            data-hovercard-url="/${ret.repo}/commit/${pullReqId}/hovercard"
                         >
                         ${pullReqId}</a> 
                         ${mt.slice(1, mt.length).join(' ')}
@@ -477,7 +476,7 @@ function parseApiJson(event) {
             ipr_body = payload['comment']['body'];
             break;
         case 'CommitCommentEvent':
-            mainTitle = `created a comment at commit #${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
+            mainTitle = `created a comment at commit ${payload['comment']['commit_id'].substring(0, 7)} in ${repo}`;
             comment_url = payload['comment']['html_url'];
             ipr_body = payload['comment']['body'];
             break;
