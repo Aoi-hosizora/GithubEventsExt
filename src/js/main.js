@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 获得 repo | user
     urlType = checkURL();
 
+    injectMenu();
+
     if (urlType) {
         // HTML 标签
         injectJs(urlType);
@@ -33,6 +35,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // else
     // console.log("Loading Ext Finish (Url Not For Events)");
 })
+
+/**
+ * 插入菜单项
+ */
+function injectMenu() {
+    // details-menu
+
+    var popupmenu = document.getElementsByClassName("dropdown-menu dropdown-menu-sw mt-2")
+
+    if (popupmenu !== null && popupmenu.length == 1) {
+
+        popupmenu = popupmenu[0]
+
+        var currUserTag = popupmenu.getElementsByClassName("no-underline user-profile-link px-3 pt-2 pb-2 mb-n2 mt-n1 d-block")
+        if (currUserTag === null) return;
+        var username = currUserTag[0].getElementsByTagName('strong')[0].innerText;
+
+        var yourGistsTag = popupmenu.getElementsByClassName("dropdown-item") // HTMLCollection
+        if (yourGistsTag === null) return;
+        yourGistsTag = Array.from(yourGistsTag).filter((tag) => {
+            return tag.innerText == "Your gists";
+        })
+        if (yourGistsTag === null || yourGistsTag.length != 1) return;
+        yourGistsTag = yourGistsTag[0];
+
+        var foers = document.createElement('a');
+        foers.setAttribute('role', 'menuitem');
+        foers.setAttribute('class', 'dropdown-item');
+        foers.setAttribute('data-ga-click', 'Header, go to followers, text:your followers');
+        foers.setAttribute('href', `/${username}?tab=followers`);
+        foers.innerText = "Your followers";
+    
+        var foings = document.createElement('a');
+        foings.setAttribute('role', 'menuitem');
+        foings.setAttribute('class', 'dropdown-item');
+        foings.setAttribute('data-ga-click', 'Header, go to followings, text:your followings');
+        foings.setAttribute('href', `/${username}?tab=following`);
+        foings.innerText = "Your followings";
+        
+        popupmenu.append(foers)
+        popupmenu.append(foings)
+        popupmenu.insertBefore(foers, yourGistsTag);
+        popupmenu.insertBefore(foings, yourGistsTag);
+    }
+}
 
 /**
  * 添加 HTML
@@ -74,6 +121,8 @@ function injectJs(urlType) {
         `;
 
     // Repo type -> core: addEvents()
+    
+    // hovercards-enabled !!!
 
     var navTag = document.createElement('nav');
     navTag.className = 'ah-content-nav ah-content-trans';
@@ -126,9 +175,6 @@ function injectJs(urlType) {
     </div>
     `;
 
-    // data-repository-hovercards-enabled
-    // data-issue-and-pr-hovercards-enabled
-    // data-commit-hovercards-enabled
 
     navTag.onload = () => this.parent.removeChild(this);
 
