@@ -7,19 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // console.log("Loading Ext Start");
 
-    // 获得 repo | user
-    urlType = checkURL();
-
+    // Add popup menu
     injectMenu();
 
+    // Get repo | user type
+    urlType = checkURL();
+
     if (urlType) {
-        // HTML 标签
+
+        // 插入 HTML 标签模板框架
         injectJs(urlType);
 
         getStorage((st) => {
 
-            // 初始化 Ext 数据
-            initData(st, urlType);
+            // 初始化 Ext 存储相关和页面类型
+            initStorageType(st, urlType);
+
             // 初始化 Ext 界面
             initUI(urlType);
 
@@ -87,7 +90,9 @@ function injectMenu() {
  */
 function injectJs(urlType) {
 
+    //////
     // div (toggle)
+
     var divTag = document.createElement('div');
     divTag.className = 'ah-content-toggle ah-content-toggle-hide ah-content-trans';
     divTag.id = 'ahid-toggle';
@@ -99,20 +104,22 @@ function injectJs(urlType) {
     `;
     divTag.onload = () => this.parent.removeChild(this);
 
-    // nav
+    //////
+    // nav (content)
 
     var ahid_title_as = '';
 
-    if (urlType.type == 'repo')
+    // #ahid-head
+    if (urlType.type == 'user')
+        ahid_title_as = `
+            <span id="ahid-user-icon" class="ah-title-icon"></span>
+            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a>
+        `;
+    else if (urlType.type == 'repo')
         ahid_title_as = `
             <span id="ahid-repo-icon" class="ah-title-icon"></span>
             <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a> /
             <a id="ahid-title-repo" class="ah-title-head-a" href="${urlType.repo_url}" target="_blank" title="${urlType.repo}">${urlType.repo}</a>
-        `;
-    else if (urlType.type == 'user')
-        ahid_title_as = `
-            <span id="ahid-user-icon" class="ah-title-icon"></span>
-            <a id="ahid-title-user" class="ah-title-head-a" href="${urlType.user_url}" target="_blank" title="${urlType.username}">${urlType.username}</a>
         `;
     else if (urlType.type == 'org')
         ahid_title_as = `
@@ -154,9 +161,12 @@ function injectJs(urlType) {
             </a>
         </div>
     </div>
+    `
 
+    // #ahid-tail
+    + `
     <div id="ahid-tail">
-        <!-- Main -->
+        <!-- Main Content -->
         <div 
             id="ahid-content"
             data-repository-hovercards-enabled
@@ -175,6 +185,7 @@ function injectJs(urlType) {
     </div>
     `;
 
+    // Handle after insert content
 
     navTag.onload = () => this.parent.removeChild(this);
 
@@ -183,6 +194,7 @@ function injectJs(urlType) {
     ulTag.id = "ahid-ul";
     ulTag.onload = () => this.parent.removeChild(ulTag);
 
+    // Append to body
     document.body.append(divTag);
     document.body.append(navTag);
     $('#ahid-content').append(ulTag);
@@ -198,9 +210,11 @@ function injectJs(urlType) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * 初始化数据
+ * 初始化 存储 和 类型
+ * @param {*} st 存储设置
+ * @param {*} urlType 页面类型
  */
-function initData(st, urlType) {
+function initStorageType(st, urlType) {
 
     if (urlType.type == 'user')
         url = `https://api.github.com/users/${urlType.username}/events?page=`;
@@ -222,6 +236,9 @@ function initData(st, urlType) {
     feedback_url = "https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/issues";
 }
 
+/**
+ * 初始化 UI 和 Resize
+ */
 function initUI() {
 
     // Label
