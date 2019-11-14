@@ -281,7 +281,7 @@ function checkURL() {
 
     var preserveKeyWord = [
         '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
-        'new', 'login', 'organizations', 'settings',
+        'new', 'login', 'organizations', 'settings', 'dashboard',
         'search', 'orgs', 'apps', 'users', 'repos', 'stars', "account"
     ];
 
