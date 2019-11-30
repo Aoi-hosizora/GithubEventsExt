@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // console.log("Loading Ext Start");
 
+    gh_head = document.getElementsByClassName('gh-header-shadow');
+    if (gh_head !== null && gh_head.length > 0)
+        gh_head[0].style.zIndex = 89;
+
     // Add popup menu
     injectMenu();
 
