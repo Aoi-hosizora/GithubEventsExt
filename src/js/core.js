@@ -437,18 +437,6 @@ function parseApiJson(event) {
                 ipr_body = payload['description'];
             }
             break;
-        case 'IssuesEvent':
-            mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
-            comment_url = payload['issue']['html_url'];
-            ipr_title = payload['issue']['title'];
-            ipr_body = payload['issue']['body'];
-            break;
-        case 'IssueCommentEvent':
-            mainTitle = `created comment on issue #${payload['issue']['number']} in ${repo}`;
-            comment_url = payload['comment']['html_url'];
-            ipr_title = payload['issue']['title'];
-            ipr_body = payload['comment']['body'];
-            break;
         case 'ForkEvent':
             mainTitle = `forked ${repo} to ${payload['forkee']['full_name']}`;
             // forked repo: event['repo']
@@ -458,16 +446,29 @@ function parseApiJson(event) {
             repo_id = payload['forkee']['id'];
             repo_url = payload['forkee']['html_url'];
             break;
+        case 'DeleteEvent':
+            mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
+            break;
+        case 'PublicEvent':
+            mainTitle = `make repository ${event['public'] ? 'public' : 'private'} at ${repo}`;
+            break;
+        case 'IssuesEvent':
+            mainTitle = `${payload['action']} issue #${payload['issue']['number']} in ${repo}`;
+            comment_url = payload['issue']['html_url'];
+            ipr_title = payload['issue']['title'];
+            ipr_body = payload['issue']['body'];
+            break;
+        case 'IssueCommentEvent':
+            mainTitle = `${payload['action']} comment on issue #${payload['issue']['number']} in ${repo}`;
+            comment_url = payload['comment']['html_url'];
+            ipr_title = payload['issue']['title'];
+            ipr_body = payload['comment']['body'];
+            break;
         case 'PullRequestEvent':
             mainTitle = `${payload['action']} pull request #${payload['number']} at ${repo}`;
             pullreq_url = payload['pull_request']['html_url'];
             ipr_title = payload['pull_request']['title'];
             ipr_body = payload['pull_request']['body'];
-            break;
-        case 'MemberEvent':
-            mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
-            member_url = payload['member']['html_url'];
-            member_id = payload['member']['id'];
             break;
         case 'PullRequestReviewCommentEvent':
             mainTitle = `${payload['action']} pull request review comment in pull request #${payload['pull_request']['number']} at ${repo}`;
@@ -480,17 +481,16 @@ function parseApiJson(event) {
             comment_url = payload['comment']['html_url'];
             ipr_body = payload['comment']['body'];
             break;
+        case 'MemberEvent':
+            mainTitle = `${payload['action']} member ${payload['member']['login']} to ${repo}`;
+            member_url = payload['member']['html_url'];
+            member_id = payload['member']['id'];
+            break;
         case 'ReleaseEvent':
             mainTitle = `${payload['action']} release ${payload['release']['tag_name']} at ${repo}`;
             branchtag_url = payload['release']['html_url'];
             ipr_title = payload['release']['name'];
             ipr_body = payload['release']['body'];
-            break;
-        case 'DeleteEvent':
-            mainTitle = `delete ${payload['ref_type']} ${payload['ref']} at ${repo}`;
-            break;
-        case 'PublicEvent':
-            mainTitle = `make repository ${event['public'] ? 'public' : 'private'} at ${repo}`;
             break;
         case 'GollumEvent':
             mainTitle = `update ${payload['pages'].length <= 1 ? 'a wiki page' : `${payload['pages'].length} wiki pages`} at ${repo}`;
