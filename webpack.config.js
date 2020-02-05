@@ -16,10 +16,15 @@ module.exports = {
         filename: './js/[name].js'
     },
     module: {
-        rules: [{
+        rules: [
+            {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.html$/,
+                use: 'text-loader',
             },
             {
                 test: /\.s[ac]ss$/,

@@ -57,6 +57,6 @@ class GithubInfo {
         public actor: Actor,
         public repo: Repo,
         public createTime: Date,
-        public payload: Object
+        public payload: object
     ) { }
 }

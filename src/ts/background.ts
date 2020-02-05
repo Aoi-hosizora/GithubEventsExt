@@ -10,7 +10,7 @@ function onBrowserActionClicked() {
             if (confirm('Do you want to add a token to access the private repos?')) {
                 addToken();
             } else {
-                alert('You can click the extension icon to reopen this dialog.')
+                alert('You can click the extension icon to reopen this dialog.');
             }
         } else {
             removeToken(token);
@@ -19,9 +19,9 @@ function onBrowserActionClicked() {
 }
 
 function addToken() {
-    let token = prompt('Please enter your Github token: \n(to get token, please visit https://github.com/settings/tokens)');
+    const token = prompt('Please enter your Github token: \n(to get token, please visit https://github.com/settings/tokens)');
     if (token === null) return;
-    if (token.trim().length == 0) {
+    if (token.trim().length === 0) {
         alert("You have entered an empty token.");
     } else {
         STORAGE.set({
@@ -33,7 +33,7 @@ function addToken() {
 }
 
 function removeToken(token: string) {
-    let ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
+    const ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
     if (ok) {
         STORAGE.remove(TOKEN_FLAG, () => {
             alert("You have successfully removed Github token.");
