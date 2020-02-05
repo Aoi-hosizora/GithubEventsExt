@@ -19,7 +19,7 @@ function onBrowserActionClicked() {
 }
 
 function addToken() {
-    var token = prompt('Please enter your Github token: \n(to get token, please visit https://github.com/settings/tokens)');
+    let token = prompt('Please enter your Github token: \n(to get token, please visit https://github.com/settings/tokens)');
     if (token === null) return;
     if (token.trim().length == 0) {
         alert("You have entered an empty token.");
@@ -33,7 +33,7 @@ function addToken() {
 }
 
 function removeToken(token: string) {
-    var ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
+    let ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
     if (ok) {
         STORAGE.remove(TOKEN_FLAG, () => {
             alert("You have successfully removed Github token.");

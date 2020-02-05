@@ -14,11 +14,11 @@
                 "http://github.com/*",
                 "https://github.com/*"
             ],
-            "js": [
-                "js/content.js"
-            ],
             "css": [
                 "css/core.css"
+            ],
+            "js": [
+                "js/content_script.js"
             ],
             "run_at": "document_start"
         }
