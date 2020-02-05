@@ -1,11 +1,10 @@
 # GithubEventsExt
+
 + Let Chrome show github users and repos activity events
 + Use [Github API V3](https://developer.github.com/v3/) to build this extension
 
-### Environment
-+ `Chrome 76.0.3809.100`
-
 ### Functions
+
 + [x] Show Repo Events
 + [x] Show User Events
 + [x] Show different title and url of different events
@@ -13,7 +12,14 @@
 + [ ] Error reminder
 + [ ] ...
 
+### Install
+
+```bash
+npm install
+```
+
 ### How to run
+
 + git clone the whole repo
 + Open Chrome Extension setting [chrome://extensions/](chrome://extensions/)
 + Click `Load unpacked` to open the repo folder
@@ -24,6 +30,7 @@
 ![ext-setting](./assets/ext-setting.jpg)
 
 ### Events
+
 + Support Event: 
     + `PushEvent` `CreateEvent` `WatchEvent` `IssuesEvent` `IssueCommentEvent` `ForkEvent` `PullRequestEvent`
     + `MemberEvent` `PullRequestReviewCommentEvent` `CommitCommentEvent` `ReleaseEvent` `DeleteEvent` `PublicEvent` `GollumEvent`
@@ -33,6 +40,7 @@
 ![HoverIcon](./assets/HoverIcon.jpg)
 
 ### Tips
+
 + Svg path data all in [ui.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/ui.js) ( `getSvgTag()` ) and [main.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/main.js) ( `injectJs()` )
 + All element classNames start with `.ah-`
 + All element ids start with `#ahid-`
@@ -58,15 +66,19 @@
 > ![tipsDemo](./assets/tipsDemo.jpg)
 
 ### Screenshot
+
 ![mainExt](./assets/mainExt.jpg)
 ![tokenSetting](./assets/tokenSetting.jpg)
 
 ### Problems
+
 + Resize is too slow
 + ~~Could not distinguish user event and org event~~
 + ...
 
 ### References
+
 + [activity events types](https://developer.github.com/v3/activity/events/types/)
 + [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
 + [github-repo-size](https://github.com/harshjv/github-repo-size)
++ [chrome拡張をTypeScriptで開発するときのWebpackの設定](https://qiita.com/okumurakengo/items/1a4404c20b0bf10f2c68)

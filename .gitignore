@@ -1,4 +1,8 @@
+.vscode/
 .ionide/
+
+node_modules/
+dist/
 
 demo.json
 .token

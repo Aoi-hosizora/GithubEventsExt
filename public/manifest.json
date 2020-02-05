@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Github Events Viewer",
-    "version": "0.1.1",
+    "version": "0.9.0",
     "description": "Let browser show github users and repos activity events",
 	"icons": {
 		"16": "img/icon16.png",
@@ -15,16 +15,10 @@
                 "https://github.com/*"
             ],
             "js": [
-                "src/lib/js/jquery-3.4.1.min.js",
-                "src/js/core.js",
-                "src/js/ui.js",
-                "src/js/events.js",
-                "src/js/main.js"
+                "js/content.js"
             ],
             "css": [
-                "src/css/core.css",
-                "src/css/head.css",
-                "src/css/tail.css"
+                "css/core.css"
             ],
             "run_at": "document_start"
         }
@@ -37,11 +31,13 @@
         "default_title": "Set user token"
     },
     "background": {
-		"scripts": ["src/js/background.js"]
+		"scripts": [
+            "js/background.js"
+        ]
 	},
-    "options_page": "src/html/options.html",
+    "options_page": "options.html",
 	"options_ui": {
-		"page": "src/html/options.html",
+		"page": "options.html",
 		"chrome_style": true
 	}
 }
