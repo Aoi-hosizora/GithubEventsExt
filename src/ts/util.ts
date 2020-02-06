@@ -33,7 +33,7 @@ export function checkUrl(): UrlInfo | null {
 let currentPage = 1;
 
 export function fetchEvents(info: UrlInfo, page: number = 1): Observer<any> {
-    const url = `https://api.github.com/${info.type.toString()}s/${info.info.name}/events?page=${page}`;
+    const url = `${info.apiUrl}?page=${page}`;
     return Observable.create((obs: Observer<any>) => {
         axios.get(url).then(response => {
             obs.next(response.data);

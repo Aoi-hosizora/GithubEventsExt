@@ -5,10 +5,13 @@ export enum UrlType {
 }
 
 export class UrlInfo {
+    public apiUrl: string;
     constructor(
         public type: UrlType,
         public info: UserOrgInfo | RepoInfo
-    ) { }
+    ) { 
+        this.apiUrl = `https://api.github.com/${this.type.toString()}s/${this.info.name}/events`;
+    }
 }
 
 export class UserOrgInfo {

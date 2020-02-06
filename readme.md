@@ -82,3 +82,4 @@ npm install
 + [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
 + [github-repo-size](https://github.com/harshjv/github-repo-size)
 + [chrome拡張をTypeScriptで開発するときのWebpackの設定](https://qiita.com/okumurakengo/items/1a4404c20b0bf10f2c68)
++ [JQueryUI resizable](https://jqueryui.com/resizable/)

@@ -1,15 +1,14 @@
 import $ from 'jquery';
-import 'jquery-ui/ui/widgets/resizable';
+import 'jquery-ui-dist/jquery-ui';
 import { Global, setStorage, StorageFlag } from './global';
 
 export function registerEvent() {
     _regToggle();
     _regClick();
+    _regResizeEvent();
 
+    navStatus(Global.isPin);
     setPin(Global.isPin);
-    if (Global.isPin === false) {
-        navStatus(false);
-    }
 }
 
 function _regToggle() {
@@ -20,7 +19,7 @@ function _regToggle() {
         Global.isHovering = false;
         if (!Global.isPin) {
             setTimeout(() => {
-                if (!Global.isHovering)
+                if (!Global.isPin && !Global.isHovering)
                     navStatus(false);
             }, 1000);
         }
@@ -44,6 +43,7 @@ function _regClick() {
     });
 
     $('#ahid-refresh').click(() => {
+        adjustMain(false);
         // $('#ahid-ul').html('');
         // refreshPadding();
         // page = 1;
@@ -68,15 +68,16 @@ function _regClick() {
 function navStatus(flag: boolean) {
     const nav = $('#ahid-nav');
     const toggle = $('#ahid-toggle');
+    nav.css('width', `${Global.width}px`);
 
     if (flag) {
-        nav.addClass('ah-open');
         toggle.addClass('ah-hide');
-        nav.css('right', `0`);
+        nav.addClass('ah-open');
+        nav.css('right', '');
         bindResize(true);
     } else {
-        nav.removeClass('ah-open');
         toggle.removeClass('ah-hide');
+        nav.removeClass('ah-open');
         nav.css('right', `-${Global.width}px`);
         bindResize(false);
     }
@@ -93,21 +94,58 @@ function setPin(flag: boolean) {
 
     Global.isPin = flag;
     setStorage(StorageFlag.Pin, Global.isPin);
+    adjustMain(false);
+}
+
+/**
+ * pin & load & resize
+ * @param useElWidth true only el.resize
+ */
+function adjustMain(useElWidth: boolean) {
+    const nav = $('#ahid-nav');
+    if (nav.css('left') !== '') {
+        nav.css('left', '');
+    }
+    if (Global.isPin) {
+        let to: number = Global.width;
+        if (useElWidth) {
+            to = nav.width()!!;
+        }
+        $('body').css('margin-right', `${to}px`);
+    } else {
+        $('body').css('margin-right', '');
+    }
 }
 
 function bindResize(flag: boolean) {
-    const el = $('#ahid-nav');
-    if (flag) {
-        el.resizable({
-            handles: 'w'
-        });
-    } else {
-        el.resizable({
-            disabled: true
-        });
-    }
-    el.mouseup(_ => {
-        Global.width = el.width()!!;
-        setStorage(StorageFlag.Width, Global.width);
+    $(() => {
+        const el = $('#ahid-nav');
+        if (flag) {
+            el.resizable({
+                disabled: false,
+                handles: 'w',
+                minWidth: 150,
+                maxWidth: 500
+            });
+        } else {
+            el.resizable({
+                disabled: true
+            });
+        }
     });
+}
+
+function _regResizeEvent() {
+    const el = $('#ahid-nav');
+    const hdr = $('.ui-resizable-handle');
+    const event = () => {
+        if (Global.width !== el.width()!!) {
+            Global.width = el.width()!!;
+            setStorage(StorageFlag.Width, Global.width);
+        }
+        adjustMain(false);
+    };
+    hdr.mouseup(event);
+    el.mouseup(event);
+    el.resize(() => { adjustMain(true); });
 }

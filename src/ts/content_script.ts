@@ -14,18 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function onLoaded() {
     const info = checkUrl();
+    adjustGithubUI(info);
     if (info === null) {
         return;
     }
 
-    adjustGithubUI(info);
     mainInject(info);
     readStorage(() => {
         registerEvent();
     });
 }
 
-function adjustGithubUI(info: UrlInfo) {
+function adjustGithubUI(info: UrlInfo | null) {
     // modify github shadow head bar zindex
     const ghShadowHeads = $('.gh-header-shadow');
     if (ghShadowHeads && ghShadowHeads.length > 0) {
@@ -34,28 +34,36 @@ function adjustGithubUI(info: UrlInfo) {
 
     // inject menu
     const ghYourGistTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="your gists"]');
-    if (ghYourGistTag) {
-        $('<a>', {
-            role: 'menuitem',
-            class: 'dropdown-item',
-            href: `/${info.info.name}?tab=followers`,
-            text: 'Your followers',
-            'data-ga-click': 'Header, go to followers, text:your followers'
-        }).insertBefore(ghYourGistTag);
-        $('<a>', {
-            role: 'menuitem',
-            class: 'dropdown-item',
-            href: `/${info.info.name}?tab=followings`,
-            text: 'Your followings',
-            'data-ga-click': 'Header, go to followings, text:your followings'
-        }).insertBefore(ghYourGistTag);
-    }
+    const ghUsernameTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="Signed in as"] strong');
+    const username = info?.info.name ?? ghUsernameTag!!.text();
+    $('<a>', {
+        role: 'menuitem',
+        class: 'dropdown-item',
+        href: `/${username}?tab=followers`,
+        text: 'Your followers',
+        'data-ga-click': 'Header, go to followers, text:your followers'
+    }).insertBefore(ghYourGistTag!!);
+    $('<a>', {
+        role: 'menuitem',
+        class: 'dropdown-item',
+        href: `/${username}?tab=followings`,
+        text: 'Your followings',
+        'data-ga-click': 'Header, go to followings, text:your followings'
+    }).insertBefore(ghYourGistTag!!);
+    $('<a>', {
+        role: 'menuitem',
+        class: 'dropdown-item',
+        href: '/',
+        text: 'Github Homepage',
+        'data-ga-click': 'Header, go to homepage, text:homepage'
+    }).insertAfter(ghYourGistTag!!);
 }
 
 function mainInject(info: UrlInfo) {
     let renderedTemplate = template
         .replaceAll(/<!--(.|[\r\n])+?-->/, '')
-        .replaceAll('${urlType}', info.type.toString());
+        .replaceAll('${urlType}', info.type.toString())
+        .replaceAll('${apiUrl}', info.apiUrl);
 
     const reUser = /\$\{if isUser\}((.|[\r\n])+?)\$\{endif\}/m;
     const reRepo = /\$\{if isRepo\}((.|[\r\n])+?)\$\{endif\}/m;
