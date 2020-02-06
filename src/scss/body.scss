@@ -1,22 +1,26 @@
-#ahid-body {
-    height: calc(100% - 64px);
-    overflow: hidden;
+@import "head";
+@import "foot";
 
+#ahid-body {
+    $other-height: $head-height + $foot-height + 1px;
+    height: calc(100% - #{$other-height});
+    border-left: 1px solid #DFE2E5;
+    overflow: hidden;
     overflow-y: auto;
     overflow-x: auto;
 }
 
 #ahid-ul {
-    border-left: 1px solid #DFE2E5;
     min-height: calc(100% - 30px);
-
-    list-style-type: none;
     padding: 10px 10px 7px 10px;
+    list-style-type: none;
 
     li {
         word-break: break-all;
     }
 }
+
+// content
 
 /* avator */
 
@@ -115,23 +119,21 @@
     -webkit-line-clamp: 1;
 }
 
-/* Scrollbar */
+// scrollbar
 
 #ahid-body::-webkit-scrollbar {
     width: 8px;
-}
 
-#ahid-body::-webkit-scrollbar-track {
-    border-radius: 4px;
-    background-color: transparent;
-}
+    &-track {
+        border-radius: 4px;
+    }
 
-#ahid-body::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgb(168, 168, 168);
-}
+    &-thumb {
+        background-color: rgb(168, 168, 168);
+        border-radius: 4px;
 
-#ahid-body::-webkit-scrollbar-thumb:hover {
-    border-radius: 4px;
-    background-color: gray;
+        &:hover {
+            background-color: gray;
+        }
+    }
 }

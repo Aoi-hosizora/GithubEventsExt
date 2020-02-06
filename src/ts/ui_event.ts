@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import 'jquery-ui-dist/jquery-ui';
+import { handleGithubEvent, nextGithubEvent } from './github_event';
 import { Global, setStorage, StorageFlag } from './global';
 
 export function registerEvent() {
@@ -44,24 +45,13 @@ function _regClick() {
 
     $('#ahid-refresh').click(() => {
         adjustMain(false);
-        // $('#ahid-ul').html('');
-        // refreshPadding();
-        // page = 1;
-        // firstFlag = true;
-        // showLoading(true);
-        // getDataAjax();
+        $('#ahid-ul').html('');
+        Global.page = 1;
+        handleGithubEvent(Global.info);
     });
 
     $('#ahid-more-a').click(() => {
-        // $('#ahid-nothing').html("");
-        // showLoading(true);
-        // ajax(url, ++page, token, (events) => {
-        //     addEvents(events);
-        //     checkNothing();
-        //     showLoading(false, false);
-        // }, () => {
-        //     showLoading(false, true);
-        // });
+        nextGithubEvent(Global.info);
     });
 }
 
@@ -124,8 +114,8 @@ function bindResize(flag: boolean) {
             el.resizable({
                 disabled: false,
                 handles: 'w',
-                minWidth: 150,
-                maxWidth: 500
+                minWidth: parseInt(el.css('min-width'), 10),
+                maxWidth: parseInt(el.css('max-width'), 10)
             });
         } else {
             el.resizable({

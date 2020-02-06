@@ -10,7 +10,7 @@
     },
     "rules": {
         "no-console": false,
-        "quotemark": [false, "single"],
+        "quotemark": [true, "single"],
         "indent": [false, "spaces", 2],
         "semicolon": [true, "always"],
         "no-consecutive-blank-lines": [true, 2],
@@ -19,6 +19,7 @@
         "ordered-imports": true,
         "object-literal-sort-keys": false,
         "no-trailing-whitespace": false,
-        "max-classes-per-file": false
+        "max-classes-per-file": false,
+        "eofline": true
     }
 }

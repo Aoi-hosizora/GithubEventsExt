@@ -1,12 +1,13 @@
 #ahid-foot {
-    background: #F1F8FF;
-    border: 1px solid #C8E1FF;
-
+    $foot-height: 30px !global;
+    height: $foot-height;
     margin-bottom: -1px;
     padding: 6px 0 4px 0;
 
-    a,
-    div {
+    background: #F1F8FF;
+    border: 1px solid #C8E1FF;
+
+    a {
         display: block;
         text-align: center;
     }

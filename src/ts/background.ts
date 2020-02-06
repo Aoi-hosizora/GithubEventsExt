@@ -1,4 +1,4 @@
-import { getStorage, removeStorage, setStorage, StorageFlag } from "./global";
+import { getStorage, removeStorage, setStorage, StorageFlag } from './global';
 
 chrome.browserAction.onClicked.addListener(_ => onBrowserActionClicked());
 
@@ -21,10 +21,10 @@ function addToken() {
     const token = prompt('Please enter your Github token: \n(to get token, please visit https://github.com/settings/tokens)');
     if (token === null) return;
     if (token.trim().length === 0) {
-        alert("You have entered an empty token.");
+        alert('You have entered an empty token.');
     } else {
         setStorage(StorageFlag.Token, token, () => {
-            alert("Your Github token has been set successfully, reload this page to see changes.");
+            alert('Your Github token has been set successfully, reload this page to see changes.');
         });
     }
 }
@@ -33,7 +33,7 @@ function removeToken(token: string) {
     const ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
     if (ok) {
         removeStorage(StorageFlag.Token, () => {
-            alert("You have successfully removed Github token.");
+            alert('You have successfully removed Github token.');
         });
     }
 }

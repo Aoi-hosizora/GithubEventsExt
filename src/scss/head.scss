@@ -1,23 +1,61 @@
 #ahid-head {
-    height: 64px;
+    $head-height: 64px !global;
+    height: $head-height;
     background: #373E43;
     padding: 10px 12px;
+
+    a:-webkit-any-link {
+        color: white;
+    }
+}
+
+// title
+
+.ah-head-title {
+    display: block;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    svg {
+        margin-right: 1px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-top: -1px;
+    }
+}
+
+#ahid-title {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+#ahid-subtitle {
     font-size: 11px;
+    margin-top: 5px;
 }
 
-#ahid-head,
-#ahid-head a:-webkit-any-link {
-    color: white;
-}
+// command
 
-/* toolbar */
-
-#ahid-pin,
-#ahid-feedback,
-#ahid-refresh {
+.ah-head-command a {
     position: absolute;
     top: 42px;
     font-size: 12px;
+
+    svg {
+        fill: #999999;
+    }
+
+    svg:hover {
+        fill: white;
+    }
+
+    &.ah-pined svg {
+        fill: white;
+        transform-origin: center;
+        transform: rotate(45deg);
+    }
 }
 
 #ahid-pin {
@@ -29,38 +67,6 @@
 }
 
 #ahid-refresh {
-    left: 46px;
-    margin-top: -1px;
-}
-
-/* title */
-
-#ahid-title {
-    font-size: 11px;
-    margin-top: 6px;
-}
-
-#ahid-subtitle {
-    font-size: 10px;
-    margin-top: 4px;
-}
-
-#ahid-title,
-#ahid-subtitle {
-    display: block;
-    text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ah-title-icon {
-    margin-right: 1px;
-}
-
-.ah-title-icon,
-.ah-title-icon svg {
-    display: inline-block;
-    vertical-align: middle;
+    left: 44px;
     margin-top: -1px;
 }

@@ -1,14 +1,15 @@
 
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import $ from 'jquery';
-import { Observable, Observer } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { Global } from './global';
 import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 
 export function checkUrl(): UrlInfo | null {
     const preserveKeywords = [
         '', 'pulls', 'issues', 'marketplace', 'explore', 'notifications',
         'new', 'login', 'organizations', 'settings', 'dashboard',
-        'search', 'orgs', 'apps', 'users', 'repos', 'stars', "account"
+        'search', 'orgs', 'apps', 'users', 'repos', 'stars', 'account'
     ];
 
     // http://xxx.github.com/xxx#xxx?xxx
@@ -27,23 +28,15 @@ export function checkUrl(): UrlInfo | null {
     }
 }
 
-/**
- * Current query page
- */
-let currentPage = 1;
-
-export function fetchEvents(info: UrlInfo, page: number = 1): Observer<any> {
+export function fetchGithubEvents(info: UrlInfo, page: number = 1): Observable<any> {
     const url = `${info.apiUrl}?page=${page}`;
-    return Observable.create((obs: Observer<any>) => {
-        axios.get(url).then(response => {
-            obs.next(response.data);
-            obs.complete();
-        }).catch(error => {
-            obs.error(error);
-        });
+    const token = Global.token;
+    const promise = axios({
+        method: 'get',
+        url,
+        headers: {
+            'Authorization': token
+        }
     });
-}
-
-export function nextPageEvents(info: UrlInfo) {
-    return fetchEvents(info, ++currentPage);
+    return from(promise);
 }

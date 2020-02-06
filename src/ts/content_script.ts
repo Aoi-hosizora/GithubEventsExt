@@ -1,15 +1,13 @@
 import $ from 'jquery';
 import template from '../html/template.html';
-import { registerEvent } from './event';
-import "./extension";
+import './extension';
 import { readStorage } from './global';
 import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
+import { registerEvent } from './ui_event';
 import { checkUrl } from './util';
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Start");
     onLoaded();
-    console.log("Finish");
 });
 
 function onLoaded() {
