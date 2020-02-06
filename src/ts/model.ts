@@ -1,17 +1,17 @@
-enum UrlType {
+export enum UrlType {
     User = 'user',
     Org = 'org',
     Repo = 'repo'
 }
 
-class UrlInfo {
+export class UrlInfo {
     constructor(
         public type: UrlType,
         public info: UserOrgInfo | RepoInfo
     ) { }
 }
 
-class UserOrgInfo {
+export class UserOrgInfo {
     public url: string;
     constructor(
         public name: string
@@ -20,7 +20,7 @@ class UserOrgInfo {
     }
 }
 
-class RepoInfo {
+export class RepoInfo {
     public url: string;
     public userUrl: string;
     constructor(
@@ -32,7 +32,7 @@ class RepoInfo {
     }
 }
 
-class Actor {
+export class Actor {
     public url: string;
     constructor(
         public name: string,
@@ -42,18 +42,18 @@ class Actor {
     }
 }
 
-class Repo {
+export class Repo {
     public url: string;
     constructor(
-        public name: string,
+        public name: string
     ) {
         this.url = `https://github.com/${name}`;
     }
 }
 
-class GithubInfo {
+export class GithubInfo {
     constructor(
-        public type: string,
+        public eventType: string,
         public actor: Actor,
         public repo: Repo,
         public createTime: Date,

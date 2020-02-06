@@ -1,11 +1,10 @@
-const STORAGE = chrome.storage.sync || chrome.storage.local;
-const TOKEN_FLAG = 'ah-github-events-token';
+import { getStorage, removeStorage, setStorage, StorageFlag } from "./global";
 
 chrome.browserAction.onClicked.addListener(_ => onBrowserActionClicked());
 
 function onBrowserActionClicked() {
-    STORAGE.get(TOKEN_FLAG, data => {
-        const token: string = data[TOKEN_FLAG];
+    getStorage(StorageFlag.Token, data => {
+        const token: string = data[StorageFlag.Token.toString()];
         if (!token) {
             if (confirm('Do you want to add a token to access the private repos?')) {
                 addToken();
@@ -24,9 +23,7 @@ function addToken() {
     if (token.trim().length === 0) {
         alert("You have entered an empty token.");
     } else {
-        STORAGE.set({
-            TOKEN_FLAG: token
-        }, () => {
+        setStorage(StorageFlag.Token, token, () => {
             alert("Your Github token has been set successfully, reload this page to see changes.");
         });
     }
@@ -35,7 +32,7 @@ function addToken() {
 function removeToken(token: string) {
     const ok = confirm(`You have already set your Github token (${token}), want to remove it?`);
     if (ok) {
-        STORAGE.remove(TOKEN_FLAG, () => {
+        removeStorage(StorageFlag.Token, () => {
             alert("You have successfully removed Github token.");
         });
     }

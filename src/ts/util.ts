@@ -2,6 +2,7 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { Observable, Observer } from 'rxjs';
+import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 
 export function checkUrl(): UrlInfo | null {
     const preserveKeywords = [
@@ -15,7 +16,7 @@ export function checkUrl(): UrlInfo | null {
     if (!result) {
         return null;
     }
-    const endpoint = result[1].split('/');
+    const endpoint = result[2].split('/');
     if (endpoint.length === 0 || endpoint[0].indexOf('.') !== -1 || preserveKeywords.indexOf(endpoint[0]) !== -1) {
         return null;
     } else if (endpoint.length === 1) {

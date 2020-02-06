@@ -1,9 +1,13 @@
 import $ from 'jquery';
 import template from '../html/template.html';
+import "./extension";
+import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 import { checkUrl } from './util';
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Start");
     onLoaded();
+    console.log("Finish");
 });
 
 function onLoaded() {
@@ -14,6 +18,7 @@ function onLoaded() {
 
     adjustGithubUI(info);
     mainInject(info);
+    loadEvent();
 }
 
 function adjustGithubUI(info: UrlInfo) {
@@ -24,44 +29,52 @@ function adjustGithubUI(info: UrlInfo) {
     }
 
     // inject menu
-    const ghPopupMenu = $('.dropdown-menu.dropdown-menu-sw');
-    if (ghPopupMenu) {
+    const ghYourGistTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="your gists"]');
+    if (ghYourGistTag) {
         $('<a>', {
             role: 'menuitem',
             class: 'dropdown-item',
             href: `/${info.info.name}?tab=followers`,
-            text: 'Your followers'
-        }).appendTo(ghPopupMenu);
+            text: 'Your followers',
+            'data-ga-click': 'Header, go to followers, text:your followers'
+        }).insertBefore(ghYourGistTag);
         $('<a>', {
             role: 'menuitem',
             class: 'dropdown-item',
             href: `/${info.info.name}?tab=followings`,
-            text: 'Your followings'
-        }).appendTo(ghPopupMenu);
+            text: 'Your followings',
+            'data-ga-click': 'Header, go to followings, text:your followings'
+        }).insertBefore(ghYourGistTag);
     }
 }
 
 function mainInject(info: UrlInfo) {
-    let renderedTemplate = template
-        .replace('${urlType}', info.type.toString());
 
-    const reUser = /\$\{if isUser\}(.+?)\$\{endif\}/g;
-    const reRepo = /\$\{if isRepo\}(.+?)\$\{endif\}/g;
+    let renderedTemplate = template
+        .replaceAll(/<!--(.|[\r\n])+?-->/, '')
+        .replaceAll('${urlType}', info.type.toString());
+
+    const reUser = /\$\{if isUser\}((.|[\r\n])+?)\$\{endif\}/m;
+    const reRepo = /\$\{if isRepo\}((.|[\r\n])+?)\$\{endif\}/m;
     if (info.type === UrlType.Repo) {
         const repoInfo = info.info as RepoInfo;
         renderedTemplate = renderedTemplate
-            .replace(reUser, '').replace(reRepo, RegExp.$1)
-            .replace('${repoInfo.userUrl}', repoInfo.userUrl)
-            .replace('${repoInfo.user}', repoInfo.user)
-            .replace('${repoInfo.url}', repoInfo.url)
-            .replace('${repoInfo.name}', repoInfo.name);
+            .replaceAll(reUser, '')
+            .replaceAll(reRepo, reRepo.exec(renderedTemplate)!![1])
+            .replaceAll('${repoInfo.userUrl}', repoInfo.userUrl)
+            .replaceAll('${repoInfo.user}', repoInfo.user)
+            .replaceAll('${repoInfo.url}', repoInfo.url)
+            .replaceAll('${repoInfo.name}', repoInfo.name);
     } else {
         const userOrgInfo = info.info as UserOrgInfo;
         renderedTemplate = renderedTemplate
-            .replace(reRepo, '').replace(reUser, RegExp.$1)
-            .replace('${userOrgInfo.url}', userOrgInfo.url)
-            .replace('${userOrgInfo.name}', userOrgInfo.name);
+            .replace(reRepo, '')
+            .replace(reUser, reUser.exec(renderedTemplate)!![1])
+            .replaceAll('${userOrgInfo.url}', userOrgInfo.url)
+            .replaceAll('${userOrgInfo.name}', userOrgInfo.name);
     }
 
     $('body').append(renderedTemplate);
 }
+
+function loadEvent() { }

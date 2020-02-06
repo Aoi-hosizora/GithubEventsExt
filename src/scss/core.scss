@@ -1,9 +1,7 @@
 @import "head.scss";
 @import "body.scss";
 
-/* Trans */
-
-.ah-content-trans {
+.ah-anime {
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     transition: all 0.3s ease;
@@ -44,7 +42,7 @@
 
 /* Toggle */
 
-.ah-content-toggle {
+#ahid-toggle {
     position: fixed;
     text-align: center;
 
@@ -68,14 +66,14 @@
     left: calc(100%);
 }
 
-.ah-content-toggle svg {
+#ahid-toggle svg {
     display: inline-block;
     position: relative;
     top: 5px;
     left: -3px;
 }
 
-.ah-content-toggle span {
+#ahid-toggle span {
     display: inline-block;
     position: relative;
     top: 22px;
