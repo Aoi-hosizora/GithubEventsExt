@@ -7,7 +7,8 @@
         "rootDir": "src",
         "outDir": "dist/js",
         "esModuleInterop": true,
-        "removeComments": true
+        "removeComments": true,
+        "moduleResolution": "node"
     },
     "exclude": [
         "node_modules",

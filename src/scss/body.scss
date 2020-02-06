@@ -1,4 +1,4 @@
-#ahid-tail {
+#ahid-body {
     height: calc(100% - 64px);
     overflow: hidden;
 
@@ -6,25 +6,17 @@
     overflow-x: auto;
 }
 
-/* Ul */
-
 #ahid-ul {
+    border-left: 1px solid #DFE2E5;
+    min-height: calc(100% - 30px);
+
     list-style-type: none;
     padding: 10px 10px 7px 10px;
-    /* margin: 7px 10px 0 10px; */
+
+    li {
+        word-break: break-all;
+    }
 }
-
-#ahid-ul li {
-    word-break: break-all;
-}
-
-// #ahid-ul li:last-child {
-//     padding-bottom: 7px;
-// }
-
-// #ahid-ul li:first-child {
-//     margin: 7px 0 0 0;
-// }
 
 /* avator */
 
@@ -71,11 +63,6 @@
     border-radius: 2px;
 
     line-height: 1;
-}
-
-#ahid-content {
-    border-left: 1px solid #DFE2E5;
-    min-height: calc(100% - 30px);
 }
 
 .ah-content-pt {
@@ -128,42 +115,23 @@
     -webkit-line-clamp: 1;
 }
 
-/* ///////////////////////////////////// */
-/* Foot */
-
-#ahid-foot {
-    background: #F1F8FF;
-    border: 1px solid #C8E1FF;
-    border-right: none;
-
-    /* margin: 7px 0 -1px -1px; */
-    margin-bottom: -1px;
-    padding: 6px 0 4px 0;
-}
-
-#ahid-foot a,
-#ahid-foot div {
-    display: block;
-    text-align: center;
-}
-
 /* Scrollbar */
 
-#ahid-tail::-webkit-scrollbar {
+#ahid-body::-webkit-scrollbar {
     width: 8px;
 }
 
-#ahid-tail::-webkit-scrollbar-track {
+#ahid-body::-webkit-scrollbar-track {
     border-radius: 4px;
     background-color: transparent;
 }
 
-#ahid-tail::-webkit-scrollbar-thumb {
+#ahid-body::-webkit-scrollbar-thumb {
     border-radius: 4px;
     background-color: rgb(168, 168, 168);
 }
 
-#ahid-tail::-webkit-scrollbar-thumb:hover {
+#ahid-body::-webkit-scrollbar-thumb:hover {
     border-radius: 4px;
     background-color: gray;
 }

@@ -1,5 +1,14 @@
 @import "head.scss";
 @import "body.scss";
+@import "foot.scss";
+
+.ah-shadow {
+    box-shadow: rgba(118, 118, 118, 0.11) 0px 0px 3px 2px;
+}
+
+.ah-shadow-toggle {
+    box-shadow: rgba(118, 118, 118, 0.11) 2px 0px 5px 0px;
+}
 
 .ah-anime {
     -webkit-transition: all 0.3s ease;
@@ -7,11 +16,48 @@
     transition: all 0.3s ease;
 }
 
-/* Nav */
+#ahid-toggle {
+    left: calc(100% - 27px);
+
+    &.ah-hide {
+        left: calc(100%);
+    }
+}
+
+#ahid-nav {
+    right: calc(-300px - 1px);
+
+    &.ah-open {
+        right: 0px;
+    }
+}
+
+// Button
+
+#ahid-pin,
+#ahid-feedback,
+#ahid-refresh {
+    fill: #999999;
+    transform: "";
+
+    &:hover {
+        fill: white;
+    }
+
+    &.ah-pined {
+        fill: white;
+
+        svg {
+            transform-origin: center;
+            transform: rotate(45deg);
+        }
+    }
+}
+
+// Nav
 
 #ahid-nav {
     min-width: 200px;
-    /* overflow: visible; */
     display: block;
     background: #FAFBFC;
     position: fixed;
@@ -27,76 +73,39 @@
     z-index: 90;
 }
 
-.ah-content-nav.ah-content-nav-open {
-    right: 0px;
-}
-
-.ah-content-nav {
-    right: calc(-300px - 1px);
-}
-
-.ah-content-nav-shadow {
-    box-shadow: rgba(118, 118, 118, 0.11) 0px 0px 3px 2px;
-}
-
-
-/* Toggle */
+// Toggle
 
 #ahid-toggle {
     position: fixed;
     text-align: center;
-
     width: 30px;
     height: 80px;
     top: calc(50% - 45px);
-    left: calc(100% - 27px);
 
-    line-height: 1;
     z-index: 91;
+    line-height: 1;
     cursor: pointer;
     background-color: #F2F5F7;
-    box-shadow: rgba(118, 118, 118, 0.11) 2px 0px 5px 0px;
     border: 1px solid #E0E4E7;
     border-right: none;
     padding: 6px;
     border-radius: 5px;
-}
 
-.ah-content-toggle-hide {
-    left: calc(100%);
-}
+    svg,
+    span {
+        display: inline-block;
+        position: relative;
+    }
 
-#ahid-toggle svg {
-    display: inline-block;
-    position: relative;
-    top: 5px;
-    left: -3px;
-}
+    svg {
+        top: 5px;
+        left: -3px;
+    }
 
-#ahid-toggle span {
-    display: inline-block;
-    position: relative;
-    top: 22px;
-    left: -12px;
-    font-size: 13px;
-
-    transform: rotate(90deg);
-}
-
-/* Resize */
-
-#ahid-resize-handler {
-    cursor: col-resize;
-    position: fixed;
-
-    z-index: 90;
-
-    /* width: 8px; */
-    /* left: -4px; */
-    height: 100%;
-    width: 5px;
-    /* TODO */
-    left: 0px;
-    bottom: 0px;
-    top: 0px;
+    span {
+        top: 22px;
+        left: -12px;
+        font-size: 13px;
+        transform: rotate(90deg);
+    }
 }

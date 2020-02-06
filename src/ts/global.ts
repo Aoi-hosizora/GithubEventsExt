@@ -3,6 +3,7 @@ export class Global {
     public static isPin: boolean = false;
     public static width: number;
     public static isHovering: boolean = false;
+    public static feedbackUrl: string = "https://github.com/Aoi-hosizora/GithubEventsExt/issues";
 }
 
 export const STORAGE = chrome.storage.sync || chrome.storage.local;

@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import template from '../html/template.html';
+import { registerEvent } from './event';
 import "./extension";
+import { readStorage } from './global';
 import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 import { checkUrl } from './util';
 
@@ -18,7 +20,9 @@ function onLoaded() {
 
     adjustGithubUI(info);
     mainInject(info);
-    loadEvent();
+    readStorage(() => {
+        registerEvent();
+    });
 }
 
 function adjustGithubUI(info: UrlInfo) {
@@ -49,7 +53,6 @@ function adjustGithubUI(info: UrlInfo) {
 }
 
 function mainInject(info: UrlInfo) {
-
     let renderedTemplate = template
         .replaceAll(/<!--(.|[\r\n])+?-->/, '')
         .replaceAll('${urlType}', info.type.toString());
@@ -68,13 +71,11 @@ function mainInject(info: UrlInfo) {
     } else {
         const userOrgInfo = info.info as UserOrgInfo;
         renderedTemplate = renderedTemplate
-            .replace(reRepo, '')
-            .replace(reUser, reUser.exec(renderedTemplate)!![1])
+            .replaceAll(reRepo, '')
+            .replaceAll(reUser, reUser.exec(renderedTemplate)!![1])
             .replaceAll('${userOrgInfo.url}', userOrgInfo.url)
             .replaceAll('${userOrgInfo.name}', userOrgInfo.name);
     }
 
     $('body').append(renderedTemplate);
 }
-
-function loadEvent() { }
