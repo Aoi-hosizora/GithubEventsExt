@@ -33,7 +33,7 @@ export function readStorage(callback: () => void) {
     });
 }
 
-export function getStorage(flag: StorageFlag, callback: (items: { [key: string]: any }) => void) {
+export function getStorage(flag: StorageFlag, callback: (item: any) => void) {
     STORAGE.get(flag.toString(), callback);
 }
 

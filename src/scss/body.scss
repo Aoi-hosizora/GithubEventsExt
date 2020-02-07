@@ -13,12 +13,12 @@
 
     #ahid-ul,
     #ahid-message {
+        min-height: calc(100% - 30px);
         padding: 10px 10px 7px 10px;
     }
 }
 
 #ahid-ul {
-    min-height: calc(100% - 30px);
     list-style-type: none;
 
     li {

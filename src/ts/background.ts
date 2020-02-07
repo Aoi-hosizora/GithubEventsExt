@@ -4,7 +4,7 @@ chrome.browserAction.onClicked.addListener(_ => onBrowserActionClicked());
 
 function onBrowserActionClicked() {
     getStorage(StorageFlag.Token, data => {
-        const token: string = data[StorageFlag.Token.toString()];
+        const token: string = data;
         if (!token) {
             if (confirm('Do you want to add a token to access the private repos?')) {
                 addToken();

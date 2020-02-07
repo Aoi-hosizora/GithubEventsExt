@@ -1,7 +1,8 @@
 # GithubEventsExt
 
-+ Let Chrome show github users and repos activity events
++ Let chrome show github users and repos activity events
 + Use [Github API V3](https://developer.github.com/v3/) to build this extension
++ TamperMonkey version see [Aoi-hosizora/GithubEvents_TamperMonkey](https://github.com/Aoi-hosizora/GithubEvents_TamperMonkey)
 
 ### Functions
 
@@ -9,21 +10,21 @@
 + [x] Show User Events
 + [x] Show different title and url of different events
 + [x] Set token to access user private repos
-+ [ ] Error reminder
++ [x] Error reminder
++ [ ] Faster resize
 + [ ] ...
 
-### Install
+### Run
 
 ```bash
+git clone git@github.com:Aoi-hosizora/GithubEventsExt.git
+cd GithubEventsExt/
 npm install
+npm run build # or npm run watch
 ```
 
-### How to run
-
-+ git clone the whole repo
 + Open Chrome Extension setting [chrome://extensions/](chrome://extensions/)
-+ Click `Load unpacked` to open the repo folder
-+ (too poor to be a chrome developer)
++ Click `Load unpacked` and open with the generated `/dist` folder
 
 ![how-to-run](./assets/how-to-run.jpg)
 
@@ -31,50 +32,21 @@ npm install
 
 ### Events
 
-+ Support Event: 
-    + `PushEvent` `CreateEvent` `WatchEvent` `IssuesEvent` `IssueCommentEvent` `ForkEvent` `PullRequestEvent`
-    + `MemberEvent` `PullRequestReviewCommentEvent` `CommitCommentEvent` `ReleaseEvent` `DeleteEvent` `PublicEvent` `GollumEvent`
++ Support Event: see [github_event.ts](https://github.com/Aoi-hosizora/GithubEventsExt/blob/master/src/ts/github_event.ts) ( `wrapGithubLi()` )
 + If there is an unknown event, please open an issue.
-+ (Event type will be shown when the cursor is hovering over the event icon)
 
 ![HoverIcon](./assets/HoverIcon.jpg)
 
 ### Tips
 
-+ Svg path data all in [ui.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/ui.js) ( `getSvgTag()` ) and [main.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/main.js) ( `injectJs()` )
-+ All element classNames start with `.ah-`
-+ All element ids start with `#ahid-`
-+ Setup user token
-    + visit https://github.com/settings/tokens to get token
-    + click the ext icon to set or remove token
-+ Display
-
-> Content showing in the reference blank is for: ( `.ah-ipr-title` )
-> + issue title
-> + pull request title
-> + release title
->
-> Content showing in the sub title is for: ( `.ah-ipr-body` )
-> + issue & issue comment body
-> + pull request & pull request review comment body
-> + commit comment body
-> + release body
-> + create repo description
->
-> ( Detail code see the function `parseApiJson()` in [core.js](https://github.com/Aoi-hosizora/GithubEvents_ChromeExt/blob/master/src/js/core.js#L253) )
->
-> ![tipsDemo](./assets/tipsDemo.jpg)
++ Svg path data all in [ui_event.ts](https://github.com/Aoi-hosizora/GithubEventsExt/blob/master/src/ts/ui_event.ts) ( `getSvgTag()` )
++ All elements class names start with `.ah-`
++ All elements id names start with `#ahid-`
 
 ### Screenshot
 
 ![mainExt](./assets/mainExt.jpg)
 ![tokenSetting](./assets/tokenSetting.jpg)
-
-### Problems
-
-+ Resize is too slow
-+ ~~Could not distinguish user event and org event~~
-+ ...
 
 ### References
 

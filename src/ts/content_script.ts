@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function onLoaded() {
+    adjustGithubUI();
+
     const info = checkUrl();
-    adjustGithubUI(info);
     if (info === null) {
         return;
     }
@@ -26,7 +27,7 @@ function onLoaded() {
     });
 }
 
-function adjustGithubUI(info: UrlInfo | null) {
+function adjustGithubUI() {
     // modify github shadow head bar zindex
     const ghShadowHeads = $('.gh-header-shadow');
     if (ghShadowHeads && ghShadowHeads.length > 0) {
@@ -34,30 +35,30 @@ function adjustGithubUI(info: UrlInfo | null) {
     }
 
     // inject menu
-    const ghYourGistTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="your gists"]');
-    const ghUsernameTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="Signed in as"] strong');
-    const username = info?.author ?? ghUsernameTag!!.text();
+    const ghYourGistTag = $('details-menu a[data-ga-click$="your gists"]');
+    const ghUsernameTag = $('details-menu a[data-ga-click$="Signed in as"] strong');
+    const username = ghUsernameTag!!.text();
     $('<a>', {
         role: 'menuitem',
         class: 'dropdown-item',
         href: `/${username}?tab=followers`,
         text: 'Your followers',
         'data-ga-click': 'Header, go to followers, text:your followers'
-    }).insertBefore(ghYourGistTag!!);
+    }).insertBefore(ghYourGistTag);
     $('<a>', {
         role: 'menuitem',
         class: 'dropdown-item',
-        href: `/${username}?tab=followings`,
-        text: 'Your followings',
-        'data-ga-click': 'Header, go to followings, text:your followings'
-    }).insertBefore(ghYourGistTag!!);
+        href: `/${username}?tab=following`,
+        text: 'Your following',
+        'data-ga-click': 'Header, go to followings, text:your following'
+    }).insertBefore(ghYourGistTag);
     $('<a>', {
         role: 'menuitem',
         class: 'dropdown-item',
         href: '/',
         text: 'Github Homepage',
         'data-ga-click': 'Header, go to homepage, text:homepage'
-    }).insertAfter(ghYourGistTag!!);
+    }).insertAfter(ghYourGistTag);
 }
 
 function mainInject(info: UrlInfo) {
