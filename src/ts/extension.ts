@@ -1,6 +1,7 @@
 interface String {
     toRegExp(): RegExp;
     replaceAll(from: string | RegExp, to: string): string;
+    capital(): string;
 }
 
 String.prototype.toRegExp = function (): RegExp {
@@ -19,4 +20,8 @@ String.prototype.replaceAll = function (from: string | RegExp, to: string): stri
         }
         return result;
     }
+};
+
+String.prototype.capital = function (): string {
+    return String(this).replace(String(this)[0], String(this)[0].toUpperCase());
 };

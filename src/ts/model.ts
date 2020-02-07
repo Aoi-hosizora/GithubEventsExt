@@ -4,6 +4,14 @@ export enum UrlType {
     Repo = 'repo'
 }
 
+export enum Hovercard {
+    User = 'user',
+    Repo = 'repository',
+    Commit = 'commit',
+    Issue = 'issue',
+    Pull = 'pull_request'
+}
+
 /**
  * document.URL parse result
  */
