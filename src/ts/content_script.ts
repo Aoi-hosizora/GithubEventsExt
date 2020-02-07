@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import template from '../html/template.html';
 import './extension';
-import { readStorage } from './global';
+import { handleGithubEvent } from './github_event';
+import { Global, readStorage } from './global';
 import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 import { registerEvent } from './ui_event';
 import { checkUrl } from './util';
@@ -16,10 +17,12 @@ function onLoaded() {
     if (info === null) {
         return;
     }
+    Global.info = info;
 
     mainInject(info);
     readStorage(() => {
         registerEvent();
+        handleGithubEvent(info, Global.page);
     });
 }
 

@@ -5,6 +5,8 @@
     $other-height: $head-height + $foot-height + 1px;
     height: calc(100% - #{$other-height});
     border-left: 1px solid #DFE2E5;
+    padding: 10px 10px 7px 10px;
+
     overflow: hidden;
     overflow-y: auto;
     overflow-x: auto;
@@ -12,12 +14,15 @@
 
 #ahid-ul {
     min-height: calc(100% - 30px);
-    padding: 10px 10px 7px 10px;
     list-style-type: none;
 
     li {
         word-break: break-all;
     }
+}
+
+#ahid-message {
+    word-break: break-word;
 }
 
 // content

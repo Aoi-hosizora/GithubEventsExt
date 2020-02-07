@@ -7,9 +7,9 @@
     <span>Events</span>
 </div>
 
-<div class="ah-shadow ah-open ah-anime" id="ahid-nav">
+<nav class="ah-shadow ah-open ah-anime" id="ahid-nav">
 
-    <div id="ahid-head">
+    <header id="ahid-head">
         <div class="ah-head-command">
             <a id="ahid-pin" href="javascript:void(0)" title="Pin">
                 <svg width=9 height=14 viewBox="0 0 384 512">
@@ -68,16 +68,18 @@
                 <a href="${apiUrl}" target="_blank" title="Open api page"> <span>${urlType} events</span> </a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div id="ahid-body">
+    <main id="ahid-body">
+        <div id="ahid-message" class="ah-hint-hide"></div>
         <ul id="ahid-ul" data-repository-hovercards-enabled data-issue-and-pr-hovercards-enabled
             data-commit-hovercards-enabled>
         </ul>
-    </div>
+    </main>
 
-    <div id="ahid-foot">
-        <a id="ahid-more-a" href="javascript:void(0)">More...</a>
-    </div>
+    <footer id="ahid-foot">
+        <a id="ahid-more" href="javascript:void(0)">More...</a>
+        <a id="ahid-retry" class="ah-hint-hide" href="javascript:void(0)">Retry...</a>
+    </footer>
 
 </div>

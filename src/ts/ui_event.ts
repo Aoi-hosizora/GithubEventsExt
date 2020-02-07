@@ -12,6 +12,32 @@ export function registerEvent() {
     setPin(Global.isPin);
 }
 
+export function showMessage(isError: boolean, message?: string) {
+    const classFlag = 'ah-hint-hide';
+    const ulTag = $('#ahid-ul');
+    const messageTag = $('#ahid-message');
+    const moreTag = $('#ahid-more');
+    const retryTag = $('#ahid-retry');
+
+    if (message || message === '') {
+        ulTag.addClass(classFlag);
+        messageTag.removeClass(classFlag);
+        messageTag.text(message);
+    } else {
+        ulTag.removeClass(classFlag);
+        messageTag.addClass(classFlag);
+        messageTag.text('');
+    }
+
+    if (isError) {
+        moreTag.addClass(classFlag);
+        retryTag.removeClass(classFlag);
+    } else {
+        moreTag.removeClass(classFlag);
+        retryTag.addClass(classFlag);
+    }
+}
+
 function _regToggle() {
     $('#ahid-nav').mouseenter(() => {
         Global.isHovering = true;
@@ -50,8 +76,14 @@ function _regClick() {
         handleGithubEvent(Global.info);
     });
 
-    $('#ahid-more-a').click(() => {
+    $('#ahid-more').click(() => {
         nextGithubEvent(Global.info);
+    });
+
+    $('#ahid-retry').click(() => {
+        $('#ahid-ul').html('');
+        Global.page = 1;
+        handleGithubEvent(Global.info);
     });
 }
 

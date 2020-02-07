@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import $ from 'jquery';
 import { from, Observable } from 'rxjs';
 import { Global } from './global';
-import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
+import { GithubInfo, RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
 
 export function checkUrl(): UrlInfo | null {
     const preserveKeywords = [
@@ -28,15 +28,13 @@ export function checkUrl(): UrlInfo | null {
     }
 }
 
-export function fetchGithubEvents(info: UrlInfo, page: number = 1): Observable<any> {
+export function fetchGithubEvents(info: UrlInfo, page: number = 1): Observable<AxiosResponse<GithubInfo[]>> {
     const url = `${info.apiUrl}?page=${page}`;
-    const token = Global.token;
-    const promise = axios({
+    const headers:any = Global.token ? {'Authorization': `Token ${Global.token}`} : {};
+    const promise = axios.request<GithubInfo[]>({
         method: 'get',
         url,
-        headers: {
-            'Authorization': token
-        }
+        headers
     });
     return from(promise);
 }

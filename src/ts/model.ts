@@ -4,13 +4,22 @@ export enum UrlType {
     Repo = 'repo'
 }
 
+/**
+ * document.URL parse result
+ */
 export class UrlInfo {
     public apiUrl: string;
     constructor(
         public type: UrlType,
         public info: UserOrgInfo | RepoInfo
     ) { 
-        this.apiUrl = `https://api.github.com/${this.type.toString()}s/${this.info.name}/events`;
+        let endpoint: string;
+        if (this.type === UrlType.Repo) {
+            endpoint = `${(this.info as RepoInfo).user}/${(this.info as RepoInfo).name}`;
+        } else {
+            endpoint = (this.info as UserOrgInfo).name;
+        }
+        this.apiUrl = `https://api.github.com/${this.type.toString()}s/${endpoint}/events`;
     }
 }
 
@@ -35,6 +44,21 @@ export class RepoInfo {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * github api parse result
+ */
+export class GithubInfo {
+    constructor(
+        public eventType: string,
+        public actor: Actor,
+        public repo: Repo,
+        public createTime: Date,
+        public payload: any
+    ) { }
+}
+
 export class Actor {
     public url: string;
     constructor(
@@ -52,14 +76,4 @@ export class Repo {
     ) {
         this.url = `https://github.com/${name}`;
     }
-}
-
-export class GithubInfo {
-    constructor(
-        public eventType: string,
-        public actor: Actor,
-        public repo: Repo,
-        public createTime: Date,
-        public payload: object
-    ) { }
 }
