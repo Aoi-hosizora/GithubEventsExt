@@ -61,7 +61,7 @@ function catAppend(item: GithubInfo): string {
                 </div>
                 <div class="ah-content-header-info">
                     <span class="ah-content-header-time">${new Date(item.createdAt).toLocaleString()}</span>
-                    ${item.public ? '' : '<span class="ah-content-header-private ah-labeltag" title="This is a private event">Private</span>'}
+                    ${item.public ? '' : '<span class="ah-content-header-private" title="This is a private event">Private</span>'}
                 </div>
             </div>
             <div class="ah-content-body">${wrapGithubLi(item)}</div>
@@ -72,7 +72,7 @@ function catAppend(item: GithubInfo): string {
 function wrapGithubLi(data: GithubInfo): string {
     const pl = data.payload;
     const repoUrl = `http://github.com/${data.repo.name}`;
-    const repoA = a(data.repo.name, repoUrl, Hovercard.Repo, `${data.repo.name}/hovercard`);
+    const repoA = a(data.repo.name, repoUrl, Hovercard.Repo, `/${data.repo.name}/hovercard`);
 
     switch (data.type) {
         case 'PushEvent':
@@ -182,10 +182,16 @@ function a(content: string, href: string, hover?: Hovercard, hoverUrl?: string):
     }
 }
 
+function escape(str: string): string {
+    return str.replaceAll('<', '').replaceAll('>', '');
+}
+
 function subTitle(content: string) {
+    content = escape(content);
     return `<div class="ah-content-body-sub ah-content-body-subtitle" title="${content}">${content}</div>`;
 }
 
 function subContent(content: string) {
+    content = escape(content);
     return `<div class="ah-content-body-sub ah-content-body-subcontent" title="${content}">${content}</div>`;
 }

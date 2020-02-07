@@ -2,14 +2,19 @@
 @import "foot";
 
 #ahid-body {
-    $other-height: $head-height + $foot-height + 1px;
+    // $other-height: $head-height + $foot-height + 1px;
+    $other-height: $head-height + 1px;
     height: calc(100% - #{$other-height});
     border-left: 1px solid #DFE2E5;
-    padding: 10px 10px 7px 10px;
 
     overflow: hidden;
     overflow-y: auto;
     overflow-x: auto;
+
+    #ahid-ul,
+    #ahid-message {
+        padding: 10px 10px 7px 10px;
+    }
 }
 
 #ahid-ul {
@@ -77,6 +82,11 @@
             float: right;
             padding: 2px 3px;
             margin-left: 2px;
+
+            background: transparent;
+            border: 1px solid rgba(27, 31, 35, .15);
+            border-radius: 2px;
+            line-height: 1;
         }
     }
 }
@@ -134,14 +144,4 @@
             background-color: gray;
         }
     }
-}
-
-// other
-
-.ah-labeltag {
-    display: inline-block;
-    background: transparent;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 2px;
-    line-height: 1;
 }
