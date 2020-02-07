@@ -93,7 +93,6 @@ export interface Comment {
 }
 
 export interface Forkee {
-    id: number;
     fullName: string;
     owner: User;
     htmlUrl: string;
@@ -107,7 +106,6 @@ export interface PullRequest {
 }
 
 export interface Release {
-    id: number;
     tagName: string;
     name: string;
     body: string;

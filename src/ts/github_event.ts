@@ -10,7 +10,7 @@ export function handleGithubEvent(info: UrlInfo, page: number = 1) {
     fetchGithubEvents(info, page).subscribe({
         next(resp: AxiosResponse<GithubInfo[]>) {
             showMessage(false, '');
-            console.log(resp);
+            // console.log(resp);
             const ul = $('#ahid-ul');
             resp.data.forEach(item => {
                 const li = wrapGithubLi(item);
@@ -70,7 +70,7 @@ function wrapGithubLi(data: GithubInfo): string {
     const pl = data.payload;
     const repoUrl = `http://github.com/${data.repo.name}`;
     const repoA = `
-        <a href="${data.repo.name}" target="_blank" class="ah-content-repo" data-hovercard-type="repository" data-hovercard-url="${data.repo.name}/hovercard">
+        <a href="${repoUrl}" target="_blank" class="ah-content-repo" data-hovercard-type="repository" data-hovercard-url="${data.repo.name}/hovercard">
         ${data.repo.name}</a>
     `;
 
@@ -93,6 +93,8 @@ function wrapGithubLi(data: GithubInfo): string {
             `;
         case 'WatchEvent':
             return `<span class="ah-content-body-title">Starred repository ${repoA}</span>`;
+        case 'CreateBranchEvent':
+        case 'CreateTagEvent':
         case 'CreateEvent':
             if (pl.refType === 'branch') {
                 data.type = 'CreateBranchEvent';
@@ -110,7 +112,7 @@ function wrapGithubLi(data: GithubInfo): string {
             }
         case 'ForkEvent':
             const forkerCard = `
-                <a href="${pl.forkee.fullName}" target="_blank" class="ah-content-repo" data-hovercard-type="repository" data-hovercard-url="/${pl.forkee.fullName}/hovercard">
+                <a href="${pl.forkee.htmlUrl}" target="_blank" class="ah-content-repo" data-hovercard-type="repository" data-hovercard-url="/${pl.forkee.fullName}/hovercard">
                     ${pl.forkee.fullName}
                 </a>
             `;
@@ -118,9 +120,9 @@ function wrapGithubLi(data: GithubInfo): string {
                 <span class="ah-content-body-title">Forked ${repoA} to ${forkerCard}</span>
             `;
         case 'DeleteEvent':
-            return `<span class="ah-content-body-title">Delete ${pl.refType} ${pl.ref} at ${repoA}</span>`;
+            return `<span class="ah-content-body-title">Deleted ${pl.refType} ${pl.ref} at ${repoA}</span>`;
         case 'PublicEvent':
-            return `<span class="ah-content-body-title">Make repository ${repoA} ${data.public ? 'public' : 'private'}</span>`;
+            return `<span class="ah-content-body-title">Made repository ${repoA} ${data.public ? 'public' : 'private'}</span>`;
         case 'IssuesEvent':
             const issueCard = `
                 <a href="${pl.issue.htmlUrl}" target="_blank" data-hovercard-type="issue" data-hovercard-url="/${data.repo.name}/issues/${pl.issue.number}/hovercard">
@@ -137,14 +139,14 @@ function wrapGithubLi(data: GithubInfo): string {
                 #${pl.issue.number}</a>
             `;
             return `
-                <span class="ah-content-body-title">${pl.action} <a href="${pl.comment.htmlUrl} target="_blank">comment</a> on issue ${issueCommentCard} at ${repoA}</span>
+                <span class="ah-content-body-title">${pl.action} <a href="${pl.comment.htmlUrl}" target="_blank">comment</a> on issue ${issueCommentCard} at ${repoA}</span>
                 <div class="ah-ipr-title ah-sub-content" title="${pl.issue.title}">${pl.issue.title}</div>
                 <div class="ah-ipr-body ah-sub-content" title="${pl.comment.body}">${pl.comment.body}</div>
             `;
         case 'PullRequestEvent':
             const pullReqCard = `
                 <a href="${pl.pullRequest.htmlUrl}" target="_blank" data-hovercard-type="pull_request" data-hovercard-url="/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard">
-                ${pl.pullRequest.number}</a>
+                #${pl.pullRequest.number}</a>
             `;
             return `
                 <span class="ah-content-body-title">${pl.action} pull request ${pullReqCard} at ${repoA}</span>
@@ -154,25 +156,25 @@ function wrapGithubLi(data: GithubInfo): string {
         case 'PullRequestReviewCommentEvent':
             const pullReqCommentCard = `
                 <a href="${pl.pullRequest.htmlUrl}" target="_blank" data-hovercard-type="pull_request" data-hovercard-url="/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard">
-                ${pl.pullRequest.number}</a>
+                #${pl.pullRequest.number}</a>
             `;
             return `
-                <span class="ah-content-body-title">${pl.action} pull request review <a href="${pl.comment.htmlUrl} target="_blank">comment</a> in pull request ${pullReqCommentCard} at ${repoA}</span>
+                <span class="ah-content-body-title">${pl.action} pull request review <a href="${pl.comment.htmlUrl}" target="_blank">comment</a> in pull request ${pullReqCommentCard} at ${repoA}</span>
                 <div class="ah-ipr-title ah-sub-content" title="${pl.pullRequest.title}">${pl.pullRequest.title}</div>
                 <div class="ah-ipr-body ah-sub-content" title="${pl.comment.body}">${pl.comment.body}</div>
             `;
         case 'CommitCommentEvent':
             const commitCommentCard = `
                 <a href="${repoUrl}/commit/${pl.comment.commitId}" target="_blank" class="ah-commit-sha" data-hovercard-type="commit" data-hovercard-url="/${data.repo.name}/commit/${pl.comment.commitId}/hovercard">
-                ${pl.comment.commitId.substring(0, 7)}</a>
+                #${pl.comment.commitId.substring(0, 7)}</a>
             `;
             return `
-                <span class="ah-content-body-title">Created a <a href="${pl.comment.htmlUrl} target="_blank">comment</a> at commit ${commitCommentCard} in ${repoA}</span>
+                <span class="ah-content-body-title">Created a <a href="${pl.comment.htmlUrl}" target="_blank">comment</a> at commit ${commitCommentCard} in ${repoA}</span>
                 <div class="ah-ipr-body ah-sub-content" title="${pl.comment.body}">${pl.comment.body}</div>
             `;
         case 'MemberEvent':
             const memberCard = `
-                <a href="${pl.member.id}" target="_blank" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=${pl.member.id}">
+                <a href="${pl.member.htmlUrl}" target="_blank" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=${pl.member.id}">
                 ${pl.member.login}</a>
             `;
             return `<span class="ah-content-body-title">${pl.action} member ${memberCard} to ${repoA}</span>`;
