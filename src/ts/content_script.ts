@@ -3,7 +3,7 @@ import template from '../html/template.html';
 import './extension';
 import { handleGithubEvent } from './github_event';
 import { Global, readStorage } from './global';
-import { RepoInfo, UrlInfo, UrlType, UserOrgInfo } from './model';
+import { UrlInfo, UrlType } from './model';
 import { registerEvent } from './ui_event';
 import { checkUrl } from './util';
 
@@ -36,7 +36,7 @@ function adjustGithubUI(info: UrlInfo | null) {
     // inject menu
     const ghYourGistTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="your gists"]');
     const ghUsernameTag = $('.dropdown-menu.dropdown-menu-sw .dropdown-item[data-ga-click$="Signed in as"] strong');
-    const username = info?.info.name ?? ghUsernameTag!!.text();
+    const username = info?.author ?? ghUsernameTag!!.text();
     $('<a>', {
         role: 'menuitem',
         class: 'dropdown-item',
@@ -69,21 +69,19 @@ function mainInject(info: UrlInfo) {
     const reUser = /\$\{if isUser\}((.|[\r\n])+?)\$\{endif\}/m;
     const reRepo = /\$\{if isRepo\}((.|[\r\n])+?)\$\{endif\}/m;
     if (info.type === UrlType.Repo) {
-        const repoInfo = info.info as RepoInfo;
         renderedTemplate = renderedTemplate
             .replaceAll(reUser, '')
             .replaceAll(reRepo, reRepo.exec(renderedTemplate)!![1])
-            .replaceAll('${repoInfo.userUrl}', repoInfo.userUrl)
-            .replaceAll('${repoInfo.user}', repoInfo.user)
-            .replaceAll('${repoInfo.url}', repoInfo.url)
-            .replaceAll('${repoInfo.name}', repoInfo.name);
+            .replaceAll('${info.authorUrl}', info.authorUrl)
+            .replaceAll('${info.author}', info.author)
+            .replaceAll('${info.repoUrl}', info.repoUrl)
+            .replaceAll('${info.repo}', info.repo);
     } else {
-        const userOrgInfo = info.info as UserOrgInfo;
         renderedTemplate = renderedTemplate
             .replaceAll(reRepo, '')
             .replaceAll(reUser, reUser.exec(renderedTemplate)!![1])
-            .replaceAll('${userOrgInfo.url}', userOrgInfo.url)
-            .replaceAll('${userOrgInfo.name}', userOrgInfo.name);
+            .replaceAll('${info.authorUrl}', info.authorUrl)
+            .replaceAll('${info.author}', info.author);
     }
 
     $('body').append(renderedTemplate);

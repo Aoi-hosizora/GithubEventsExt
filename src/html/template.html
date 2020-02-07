@@ -43,7 +43,7 @@
                         </path>
                     </svg>
                 </span>
-                <a target="_blank" href="${userOrgInfo.url}" title="${userOrgInfo.name}">${userOrgInfo.name}</a>
+                <a target="_blank" href="${info.authorUrl}" title="${info.author}">${info.author}</a>
                 ${endif}
 
                 ${if isRepo}
@@ -54,8 +54,8 @@
                         </path>
                     </svg>
                 </span>
-                <a target="_blank" href="${repoInfo.userUrl}" title="${repoInfo.user}">${repoInfo.user}</a> /
-                <a target="_blank" href="${repoInfo.url}" title="${repoInfo.name}">${repoInfo.name}</a>
+                <a target="_blank" href="${info.authorUrl}" title="${info.author}">${info.author}</a> /
+                <a target="_blank" href="${info.repoUrl}" title="${info.repo}">${info.repo}</a>
                 ${endif}
             </div>
             <div id="ahid-subtitle">
