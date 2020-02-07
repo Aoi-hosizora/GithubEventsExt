@@ -25,77 +25,68 @@
     word-break: break-word;
 }
 
-// content
-
-/* avator */
-
-.ah-avator-div .ah-avator-icon {
-    height: 24px;
-    display: inline-block;
-    vertical-align: middle;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+.ah-hr {
+    margin: 5px 0 10px 0;
 }
 
-.ah-avator-div .ah-avator-link {
-    margin-left: 3px;
-}
+// content header
 
-.ah-avator-div {
+.ah-content-header {
+    $g: &;
     margin-bottom: 5px;
+
+    &-user {
+        #{$g}-icon {
+            align-items: center;
+            vertical-align: middle;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        #{$g}-avatar {
+            display: inline-block;
+            height: 24px;
+        }
+
+        #{$g}-link {
+            margin-left: 3px;
+        }
+
+        #{$g}-event {
+            display: flex;
+            float: right;
+            background: #E1E4E8;
+            height: 26px;
+            width: 26px;
+            margin: -2px -2px 0 0;
+        }
+    }
+
+    &-info {
+        font-size: 10.5px;
+        margin: 5px 0px -4px 0px;
+        color: gray;
+
+        #{$g}-time {
+            display: inline;
+            text-align: left;
+        }
+
+        #{$g}-private {
+            display: flex;
+            float: right;
+            padding: 2px 3px;
+            margin-left: 2px;
+        }
+    }
 }
 
-.ah-avator-item-icon {
-    background: #E1E4E8;
-    border-radius: 50%;
-    color: #24292e;
-    float: right;
+// content body
 
-    height: 26px;
-    width: 26px;
-    margin: -2px -2px 0 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.ah-content-body {
+    margin-top: 2px;
 }
 
-/* ///////////////////////////////////// */
-/* Content */
-
-.labeltag {
-    display: inline-block;
-    background: transparent;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 2px;
-
-    line-height: 1;
-}
-
-.ah-content-pt {
-    font-size: 10.5px;
-    margin: 5px 0px -4px 0px;
-
-    color: gray;
-}
-
-.ah-content-cttime {
-    display: inline;
-    text-align: left;
-}
-
-.ah-content-private {
-    display: flex;
-    float: right;
-    padding: 2px 3px;
-    margin-left: 2px;
-}
-
-/* ///////////////////////////////////// */
-
-/* !!! */
 .ah-sub-content {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -141,4 +132,15 @@
             background-color: gray;
         }
     }
+}
+
+// other
+
+
+.ah-labeltag {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 2px;
+    line-height: 1;
 }

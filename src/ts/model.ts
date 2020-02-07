@@ -32,121 +32,91 @@ export class UrlInfo {
 /**
  * github api parse result
  */
-export class GithubInfo {
-    constructor(
-        public type: string,
-        public actor: Actor,
-        public repo: Repo,
-        public isPublic: boolean,
-        public createdAt: Date,
-        public payload: Payload
-    ) { }
+export interface GithubInfo {
+    type: string;
+    actor: Actor;
+    repo: Repo;
+    public: boolean;
+    createdAt: string;
+    payload: Payload;
 }
 
-export class Actor {
-    public htmlUrl: string;
-    constructor(
-        public id: number,
-        public login: string,
-        public avatarUrl: string
-    ) {
-        this.htmlUrl = `https://github.com/${name}`;
-    }
+export interface Actor {
+    id: number;
+    login: string;
+    avatarUrl: string;
 }
 
-export class Repo {
-    public htmlUrl: string;
-    constructor(
-        public id: number,
-        public name: string
-    ) {
-        this.htmlUrl = `https://github.com/${name}`;
-    }
+export interface Repo {
+    id: number;
+    name: string;
 }
 
-export class Payload {
-    constructor(
-        public size: number,
-        public commits: Commit[],
-        public ref: string,
-        public refType: string,
-        public description: string,
-        public action: string,
-        public member: User,
-        public issue: Issue,
-        public comment: Comment,
-        public forkee: Forkee,
-        public pullRequest: PullRequest,
-        public release: Release,
-        public pages: Page[]
-    ) { }
+export interface Payload {
+    size: number;
+    commits: Commit[];
+    ref: string;
+    refType: string;
+    description: string;
+    action: string;
+    member: User;
+    issue: Issue;
+    comment: Comment;
+    forkee: Forkee;
+    pullRequest: PullRequest;
+    release: Release;
+    pages: Page[];
 }
 
-export class Commit {
-    constructor(
-        public sha: string,
-        public message: string
-    ) { }
+export interface Commit {
+    sha: string;
+    message: string;
 }
 
-export class User {
-    constructor(
-        public id: number,
-        public login: string,
-        public htmlUrl: string
-    ) { }
+export interface User {
+    id: number;
+    login: string;
+    htmlUrl: string;
 }
 
-export class Issue {
-    constructor(
-        public id: string,
-        public title: string,
-        public body: string,
-        public htmlUrl: string
-    ) { }
+export interface Issue {
+    number: number;
+    title: string;
+    body: string;
+    htmlUrl: string;
 }
 
-export class Comment {
-    constructor(
-        public id: number,
-        public body: string,
-        public commitId: string,
-        public htmlUrl: string
-    ) { }
+export interface Comment {
+    body: string;
+    commitId: string;
+    htmlUrl: string;
 }
 
-export class Forkee {
-    constructor(
-        public id: number,
-        public fullName: string,
-        public owner: User,
-        public htmlUrl: string
-    ) { }
+export interface Forkee {
+    id: number;
+    fullName: string;
+    owner: User;
+    htmlUrl: string;
 }
 
-export class PullRequest {
-    constructor(
-        public id: number,
-        public title: string,
-        public desciption: string,
-        public htmlUrl: string
-    ) { }
+export interface PullRequest {
+    number: number;
+    title: string;
+    body: string;
+    htmlUrl: string;
 }
 
-export class Release {
-    constructor(
-        public id: number,
-        public tagName: string,
-        public name: string,
-        public body: string,
-        public htmlUrl: string
-    ) { }
+export interface Release {
+    id: number;
+    tagName: string;
+    name: string;
+    body: string;
+    htmlUrl: string;
 }
 
-export class Page {
-    constructor(
-        public action: string,
-        public title: string,
-        public htmlUrl: string
-    ) { }
+export interface Page {
+    action: string;
+    sha: string;
+    title: string;
+    htmlUrl: string;
 }
