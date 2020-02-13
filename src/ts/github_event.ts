@@ -160,7 +160,7 @@ function wrapGithubLi(data: GithubInfo): string {
             return title(`Update ${pageCnt} at ${repoA}`)
                 + pages;
         default:
-            return title(`Unknwon event: ${data.type}`);
+            return title(`Unknown event: ${data.type}`);
     }
 }
 
