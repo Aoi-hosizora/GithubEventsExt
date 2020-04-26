@@ -1,9 +1,13 @@
+### Editor ###
+.idea/
 .vscode/
 .ionide/
 .history/
 
+### PRoject ###
 node_modules/
 dist/
 
+### My ###
 demo.json
 .token

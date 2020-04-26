@@ -1,7 +1,7 @@
 {
     "name": "githubeventsext",
     "version": "1.0.2",
-    "description": "Show github users, orgs and repos activity events",
+    "description": "Show github users, organizations and repositories activity events",
     "main": "index.js",
     "scripts": {
         "watch": "rm dist -rf && webpack -w",
