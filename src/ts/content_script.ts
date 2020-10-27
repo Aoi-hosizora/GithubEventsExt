@@ -11,18 +11,28 @@ document.addEventListener('DOMContentLoaded', () => {
     onLoaded();
 });
 
+/**
+ * main function
+ */
 function onLoaded() {
+    // adjust github ui first
     adjustGithubUI();
 
+    // check url first
     const info = checkUrl();
     if (info === null) {
         return;
     }
     Global.info = info;
 
+    // inject template into github
     mainInject(info);
+
     readStorage(() => {
+        // register events
         registerEvent();
+
+        // inject events to html
         handleGithubEvent(info, Global.page);
     });
 }

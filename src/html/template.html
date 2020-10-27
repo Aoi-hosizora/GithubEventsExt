@@ -36,6 +36,7 @@
         <div class="ah-head-title">
             <div id="ahid-title">
                 ${if isUser}
+                <!-- user start -->
                 <span>
                     <svg width=16 height=12 viewBox="0 0 16 12">
                         <path fill="#fff"
@@ -44,9 +45,11 @@
                     </svg>
                 </span>
                 <a target="_blank" href="${info.authorUrl}" title="${info.author}">${info.author}</a>
+                <!-- user end -->
                 ${endif}
 
                 ${if isRepo}
+                <!-- repo start -->
                 <span>
                     <svg width=16 height=12 viewBox="0 0 16 12">
                         <path fill="#fff"
@@ -56,6 +59,7 @@
                 </span>
                 <a target="_blank" href="${info.authorUrl}" title="${info.author}">${info.author}</a> /
                 <a target="_blank" href="${info.repoUrl}" title="${info.repo}">${info.repo}</a>
+                <!-- repo end -->
                 ${endif}
             </div>
             <div id="ahid-subtitle">
@@ -72,9 +76,12 @@
 
     <main id="ahid-body">
         <div id="ahid-message" class="ah-hint-hide"></div>
+
+        <!-- main list start -->
         <ul id="ahid-ul" data-repository-hovercards-enabled data-issue-and-pr-hovercards-enabled
             data-commit-hovercards-enabled>
         </ul>
+        <!-- main list end -->
 
         <footer id="ahid-foot">
             <a id="ahid-more" href="javascript:void(0)">More...</a>
