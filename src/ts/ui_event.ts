@@ -167,6 +167,12 @@ function bindResize(flag: boolean) {
     });
 }
 
+function addOctotreeWide(_: object) {
+    if ($('html').hasClass('octotree-pinned') && !($('html').hasClass('octotree-wide'))) {
+        $('html').addClass('octotree-wide');
+    }
+}
+
 function _regResizeEvent() {
     const el = $('#ahid-nav');
     const hdr = $('.ui-resizable-handle');
@@ -180,6 +186,12 @@ function _regResizeEvent() {
     hdr.mouseup(event);
     el.mouseup(event);
     el.resize(() => { adjustMain(true); });
+
+    const observer = new MutationObserver(addOctotreeWide);
+    observer.observe(document.getElementsByTagName('html')[0], {
+        attributes: true,
+        attributeFilter: ['class'],
+    });
 }
 
 export function getSvgTag(type: string, rate: number = 1) {
