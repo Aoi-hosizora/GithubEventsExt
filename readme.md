@@ -1,47 +1,41 @@
 # GithubEventsExt
 
-+ Let chrome show github users and repos activity events
-+ Use [Github API V3](https://developer.github.com/v3/) to build this extension
-+ TamperMonkey version see [Aoi-hosizora/GithubEvents_TamperMonkey](https://github.com/Aoi-hosizora/GithubEvents_TamperMonkey)
++ A chrome extension that let browser show GitHub activity events.
++ For TamperMonkey version, please visit [Aoi-hosizora/GithubEvents_TamperMonkey](https://github.com/Aoi-hosizora/GithubEvents_TamperMonkey).
 
 ### Functions
 
-+ [x] Show Repo Events
-+ [x] Show User Events
-+ [x] Show different title and url of different events
-+ [x] Set token to access user private repos
-+ [x] Error reminder
-+ [ ] Faster resize
-+ [ ] ...
++ [x] Show repo, user and org events in human readable format.
++ [x] Support for private repo events.
++ [x] Add some menu items to profile menu.
 
 ### Run
 
+1. Build the project.
+
 ```bash
 git clone git@github.com:Aoi-hosizora/GithubEventsExt.git
-cd GithubEventsExt/
+cd GithubEventsExt
+
 npm install
 npm run build # or npm run watch
 ```
 
-+ Open Chrome Extension setting [chrome://extensions/](chrome://extensions/)
-+ Click `Load unpacked` and open with the generated `/dist` folder
+2. Add to chrome extension.
+
++ Open Chrome Extension setting in `chrome://extensions/`
++ Click `Load unpacked` button and select the generated `/dist` folder
 
 ![how-to-run](./assets/how-to-run.jpg)
 
 ![ext-setting](./assets/ext-setting.jpg)
 
-### Events
+### Supported events
 
-+ Support Event: see [github_event.ts](https://github.com/Aoi-hosizora/GithubEventsExt/blob/master/src/ts/github_event.ts) ( `wrapGithubLi()` )
-+ If there is an unknown event, please open an issue.
++ For all supported event type, please visit [github_event.ts](./ts/github_event.ts) ( `wrapGithubLi()` function )
++ If there is an unknown event (see the icon's hover tip), please open an issue to contact me.
 
 ![HoverIcon](./assets/HoverIcon.jpg)
-
-### Tips
-
-+ Svg path data all in [ui_event.ts](https://github.com/Aoi-hosizora/GithubEventsExt/blob/master/src/ts/ui_event.ts) ( `getSvgTag()` )
-+ All elements class names start with `.ah-`
-+ All elements id names start with `#ahid-`
 
 ### Screenshot
 
