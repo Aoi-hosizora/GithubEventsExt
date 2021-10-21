@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "Github Events Viewer",
-    "version": "0.9.0",
-    "description": "Let browser show github users and repos activity events",
+    "name": "Github events extension",
+    "version": "1.0.6",
+    "description": "A chrome extension that let browser show GitHub activity events.",
 	"icons": {
 		"16": "img/icon16.png",
 		"48": "img/icon32.png",
