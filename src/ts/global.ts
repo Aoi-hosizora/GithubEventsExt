@@ -34,7 +34,7 @@ export function readStorage(callback: () => void) {
 }
 
 export function getStorage(flag: StorageFlag, callback: (item: any) => void) {
-    STORAGE.get(flag.toString(), callback);
+    STORAGE.get(flag.toString(), items => callback(items[flag.toString()]));
 }
 
 export function removeStorage(flag: StorageFlag, callback?: () => void) {
