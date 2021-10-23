@@ -31,13 +31,6 @@ npm run build # or npm run watch
 
 ![ext-setting](./assets/ext-setting.jpg)
 
-### Supported events
-
-+ For all supported event type, please visit [github_event.ts](./ts/github_event.ts) ( `wrapGithubLi()` function )
-+ If there is an unknown event (see the icon's hover tip), please open an issue to contact me.
-
-![HoverIcon](./assets/HoverIcon.jpg)
-
 ### Screenshot
 
 ![mainExt](./assets/mainExt.jpg)
