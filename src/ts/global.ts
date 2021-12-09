@@ -1,42 +1,58 @@
-import { UrlInfo } from './model';
+import { URLInfo } from './model';
 
 export class Global {
+    // Settings from storage
     public static token: string = '';
-    public static isPin: boolean = false;
+    public static pinned: boolean = false;
     public static width: number;
-    public static isHovering: boolean = false;
-    public static feedbackUrl: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
 
+    // Some global runtime variables
+    public static urlInfo: URLInfo;
     public static page: number = 1;
-    public static info: UrlInfo;
+    public static isHovering: boolean = false;
+
+    // Constants
+    public static readonly feedbackURL: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
 }
 
-export const STORAGE = chrome.storage.sync || chrome.storage.local;
+const STORAGE = chrome.storage.sync || chrome.storage.local;
+
 export enum StorageFlag {
-    Token = 'ah-token',
-    Pin = 'ah-is-pin',
-    Width = 'ah-width'
+    TOKEN = 'ah-token',
+    PINNED = 'ah-pinned',
+    WIDTH = 'ah-width'
 }
 
-export function setStorage(flag: StorageFlag, value: any, callback?: () => void) {
-    const obj: { [key: string]: any } = {};
-    obj[flag.toString()] = value;
-    STORAGE.set(obj, callback);
-}
-
-export function readStorage(callback: () => void) {
-    STORAGE.get(objs => {
-        Global.token = objs[StorageFlag.Token.toString()];
-        Global.isPin = objs[StorageFlag.Pin.toString()];
-        Global.width = objs[StorageFlag.Width.toString()];
-        callback();
+export async function setStorage(flag: StorageFlag, value: any): Promise<void> {
+    return new Promise((resolve, _) => {
+        const obj = { [flag.toString()]: value };
+        STORAGE.set(obj, () => resolve());
     });
 }
 
-export function getStorage(flag: StorageFlag, callback: (item: any) => void) {
-    STORAGE.get(flag.toString(), items => callback(items[flag.toString()]));
+export async function getStorage(flag: StorageFlag): Promise<any> {
+    return new Promise((resolve, _) => {
+        STORAGE.get(flag.toString(), items => {
+            var value = items[flag.toString()];
+            resolve(value);
+        });
+    });
+
 }
 
-export function removeStorage(flag: StorageFlag, callback?: () => void) {
-    STORAGE.remove(flag.toString(), callback);
+export async function removeStorage(flag: StorageFlag): Promise<void> {
+    return new Promise((resolve, _) => {
+        STORAGE.remove(flag.toString(), () => resolve());
+    });
+}
+
+export async function readStorageToGlobal(): Promise<void> {
+    return new Promise((resolve, _) => {
+        STORAGE.get(items => {
+            Global.token = items[StorageFlag.TOKEN.toString()];
+            Global.pinned = items[StorageFlag.PINNED.toString()];
+            Global.width = items[StorageFlag.WIDTH.toString()];
+            resolve();
+        });
+    });
 }

@@ -35,8 +35,8 @@
         </div>
         <div class="ah-head-title">
             <div id="ahid-title">
-                ${if isUser}
-                <!-- user start -->
+                ${if isAuthor}
+                <!-- author start -->
                 <span>
                     <svg width=16 height=12 viewBox="0 0 16 12">
                         <path fill="#fff"
@@ -45,7 +45,7 @@
                     </svg>
                 </span>
                 <a target="_blank" href="${info.authorUrl}" title="${info.author}">${info.author}</a>
-                <!-- user end -->
+                <!-- author end -->
                 ${endif}
 
                 ${if isRepo}

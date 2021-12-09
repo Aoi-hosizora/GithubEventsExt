@@ -1,7 +1,7 @@
 {
     "name": "githubeventsext",
-    "version": "1.0.2",
-    "description": "Show github users, organizations and repositories activity events",
+    "version": "1.0.7",
+    "description": "A chrome extension that let browser show GitHub activity events.",
     "main": "index.js",
     "scripts": {
         "watch": "rm dist -rf && webpack -w",
@@ -40,7 +40,6 @@
         "jquery": "^3.3.1",
         "jquery-ui-dist": "^1.12.1",
         "lodash": "^4.17.15",
-        "moment": "^2.29.1",
-        "rxjs": "^6.5.4"
+        "moment": "^2.29.1"
     }
 }
