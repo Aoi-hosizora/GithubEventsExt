@@ -5,7 +5,7 @@ const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 
 module.exports = {
     mode: process.env.NODE_ENV || "development",
-    devtool: 'eval-source-map',
+    devtool: 'cheap-module-source-map',
     entry: {
         scss: path.join(__dirname, './src/scss/core.scss'),
         background: path.join(__dirname, './src/ts/background.ts'),

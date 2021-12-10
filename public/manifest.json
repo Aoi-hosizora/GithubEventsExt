@@ -1,13 +1,13 @@
 {
     "manifest_version": 2,
     "name": "GitHub events extension",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "A chrome extension that let browser show GitHub activity events.",
-	"icons": {
-		"16": "img/icon16.png",
-		"48": "img/icon32.png",
-		"128": "img/icon32.png"
-	},
+    "icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon32.png",
+        "128": "img/icon32.png"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -31,13 +31,13 @@
         "default_title": "Set user token"
     },
     "background": {
-		"scripts": [
+        "scripts": [
             "js/background.js"
         ]
-	},
+    },
     "options_page": "options.html",
-	"options_ui": {
-		"page": "options.html",
-		"chrome_style": true
-	}
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    }
 }

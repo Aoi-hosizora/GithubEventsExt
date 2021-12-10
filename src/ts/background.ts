@@ -1,7 +1,7 @@
 import { getStorage, removeStorage, setStorage, StorageFlag } from './global';
 
-chrome.browserAction.onClicked.addListener(() => {
-    onActionClicked();
+chrome.browserAction.onClicked.addListener(async _ => {
+    await onActionClicked();
 });
 
 /**

@@ -23,19 +23,21 @@ export function formatInfoToLi(item: EventInfo): string {
             <div class="ah-content-header">
                 <div class="ah-content-header-user">
                     <a href="${userUrl}" target="_blank" style="text-decoration:none" ${userHovercard}>
-                        <img class="ah-content-header-icon ah-content-header-avatar" src="${item.actor.avatarUrl}" alt="" />
+                        <img class="ah-content-header-avatar ah-content-header-icon" src="${item.actor.avatarUrl}" alt="" />
                     </a>
                     <span class="ah-content-header-link">
                         <a href="${userUrl}" target="_blank" ${userHovercard}>${item.actor.login}</a>
                     </span>
-                    <span class="ah-content-header-icon ah-content-header-event" title="${item.type}">${getSvgTag(item.type)}</span>
+                    <span class="ah-content-header-event ah-content-header-icon" title="${item.type}">${getSvgTag(item.type)}</span>
                 </div>
                 <div class="ah-content-header-info">
                     <span class="ah-content-header-time" title="${fullCreateAt}">${displayCreateAt}</span>
                     ${item.public ? '' : '<span class="ah-content-header-private" title="This is a private event">Private</span>'}
                 </div>
             </div>
-            <div class="ah-content-body">${body}</div>
+            <div class="ah-content-body">
+                ${body}
+            </div>
         </li>
     `;
 }
@@ -154,11 +156,14 @@ function subContent(content: string) {
 // svg related
 // ===========
 
-function getSvgTag(type: string, rate: number = 1) {
-    let svgClass: string = '';
-    let svgPath: string = '';
-    let svgHeight: number = 0;
-    let svgWidth: number = 0;
+/**
+ * Get <svg> and <path> tag from event type.
+ */
+function getSvgTag(type: string) {
+    let svgClass: string = '',
+        svgPath: string = '',
+        svgHeight: number = 0,
+        svgWidth: number = 0;
     switch (type) {
         case 'PushEvent':
             svgClass = 'octicon-repo-push';
@@ -237,17 +242,9 @@ function getSvgTag(type: string, rate: number = 1) {
     if (!svgClass) {
         return '';
     }
-    svgClass = `octicon ${svgClass}`;
-
-    let width = svgWidth;
-    let height = svgHeight;
-    if (rate < 1) {
-        width = Math.floor(width * rate);
-        height = Math.floor(height * rate);
-    }
 
     return `
-        <svg class="${svgClass}" version="1.1" aria-hidden="true" width="${width}" height="${height}" viewBox="0 0 ${svgWidth} ${svgHeight}">
+        <svg class="octicon ${svgClass}" version="1.1" aria-hidden="true" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
             <path class="octicon-path" fill-rule="evenodd" d="${svgPath}"></path>
         </svg>
     `;

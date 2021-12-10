@@ -12,7 +12,7 @@ export class Global {
     public static isHovering: boolean = false;
 
     // Constants
-    public static readonly feedbackURL: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
+    public static readonly FEEDBACK_URL: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
 }
 
 const STORAGE = chrome.storage.sync || chrome.storage.local;

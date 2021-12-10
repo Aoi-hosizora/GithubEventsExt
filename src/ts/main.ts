@@ -14,8 +14,8 @@ export function adjustGithubUI() {
     const stuckHeader = $("div#partial-discussion-header div.js-sticky.js-sticky-offset-scroll.gh-header-sticky");
     const headerShadow = $("div#partial-discussion-header div.gh-header-shadow");
     if (stuckHeader.length && headerShadow.length) {
-        stuckHeader.css('z-index', '90');
-        headerShadow.css('z-index', '89');
+        stuckHeader.css('z-index', '89');
+        headerShadow.css('z-index', '88');
     }
 
     // 2. insert items to profile menu

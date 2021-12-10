@@ -1,0 +1,103 @@
+// ==================
+// display for header
+// ==================
+
+#ahid-header {
+    padding: 10px 12px;
+    background: #373e43;
+    color: white;
+}
+
+// ==============================
+// display for title and subtitle
+// ==============================
+
+#ahid-title,
+#ahid-subtitle {
+    display: block;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    svg {
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+#ahid-title {
+    margin-top: 4px;
+    font-size: 12px;
+
+    a:-webkit-any-link {
+        color: white;
+    }
+
+    svg {
+        margin-top: -3px;
+        margin-right: -3px;
+        color: white;
+    }
+}
+
+#ahid-subtitle {
+    margin-top: 6px;
+    font-size: 8px;
+
+    a:-webkit-any-link {
+        color: #acacac;
+    }
+
+    svg {
+        margin-top: -2px;
+        margin-right: 1px;
+        fill: #acacac;
+    }
+}
+
+// =================================
+// position and display for commands
+// =================================
+
+#ahid-commands {
+    position: absolute;
+    top: 40px;
+    left: 12px;
+
+    a {
+        position: relative;
+        text-decoration: none;
+    }
+
+    svg {
+        fill: #999999;
+
+        &:hover {
+            fill: white;
+        }
+    }
+}
+
+#ahid-pin {
+    left: 0;
+
+    &.ah-pined svg {
+        fill: white;
+        transform: rotate(0);
+    }
+
+    svg {
+        transform-origin: center;
+        transform: rotate(45deg);
+    }
+}
+
+#ahid-feedback {
+    left: 3px;
+}
+
+#ahid-refresh {
+    left: 1px;
+    top: -1px;
+}

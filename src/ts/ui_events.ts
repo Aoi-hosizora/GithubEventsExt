@@ -13,7 +13,7 @@ import { requestGithubEvents } from './util';
  * Start loading the specific page of github events !!!
  */
 export async function loadGithubEvents() {
-    const ulTag = $('#ahid-ul');
+    const ulTag = $('#ahid-list');
     if (Global.page == 1) {
         ulTag.html('');
     }
@@ -56,29 +56,30 @@ async function loadNextGithubEvents() {
  * Switch display mode, such as "Loading..." or "Mode..." or "Something error".
  */
 function switchDisplayMode(arg: { isLoading: boolean, isError: boolean, errorMessage?: string }) {
-    const messageTag = $('#ahid-message'), ulTag = $('#ahid-ul'),
+    const messageTag = $('#ahid-message'), ulTag = $('#ahid-list'),
         moreTag = $('#ahid-more'), loadingTag = $('#ahid-loading'), retryTag = $('#ahid-retry');
 
-    const hide = 'ah-hint-hide';
+    const hide = (tag: JQuery<HTMLElement>) => tag.addClass('ah-body-hide');
+    const show = (tag: JQuery<HTMLElement>) => tag.removeClass('ah-body-hide');
     if (arg.isLoading) {
-        messageTag.addClass(hide);
-        moreTag.addClass(hide);
-        retryTag.addClass(hide);
-        ulTag.removeClass(hide);
-        loadingTag.removeClass(hide);
+        hide(messageTag);
+        hide(moreTag);
+        hide(retryTag);
+        show(ulTag);
+        show(loadingTag);
     } else if (arg.isError) {
-        ulTag.addClass(hide);
-        moreTag.addClass(hide);
-        loadingTag.addClass(hide);
+        hide(ulTag);
+        hide(moreTag);
+        hide(loadingTag);
         messageTag.text(arg.errorMessage ?? 'Something error.');
-        messageTag.removeClass(hide);
-        retryTag.removeClass(hide);
+        show(messageTag);
+        show(retryTag);
     } else {
-        messageTag.addClass(hide);
-        loadingTag.addClass(hide);
-        retryTag.addClass(hide);
-        ulTag.removeClass(hide);
-        moreTag.removeClass(hide);
+        hide(messageTag);
+        hide(loadingTag);
+        hide(retryTag);
+        show(ulTag);
+        show(moreTag);
     }
 }
 
@@ -103,7 +104,7 @@ export function registerUIEvents() {
 
     // buttons events
     $('#ahid-pin').on('click', () => pinSidebar(!Global.pinned));
-    $('#ahid-feedback').on('click', () => window.open(Global.feedbackURL));
+    $('#ahid-feedback').on('click', () => window.open(Global.FEEDBACK_URL));
     $('#ahid-refresh').on('click', () => { adjustBodyLayout(); Global.page = 1; loadGithubEvents(); });
     $('#ahid-more').on('click', () => loadNextGithubEvents());
     $('#ahid-retry').on('click', () => { Global.page = 1; loadGithubEvents(); });
@@ -124,13 +125,13 @@ function showSidebar(needShow: boolean) {
     const toggleTag = $('#ahid-toggle');
     navTag.css('width', `${Global.width}px`);
     if (needShow) {
-        toggleTag.addClass('ah-hide');
-        navTag.addClass('ah-open');
+        toggleTag.addClass('ah-toggle-hide');
+        navTag.addClass('ah-nav-open');
         navTag.css('right', '');
         enableResizing(true);
     } else {
-        toggleTag.removeClass('ah-hide');
-        navTag.removeClass('ah-open');
+        toggleTag.removeClass('ah-toggle-hide');
+        navTag.removeClass('ah-nav-open');
         navTag.css('right', `-${Global.width}px`);
         enableResizing(false);
     }
