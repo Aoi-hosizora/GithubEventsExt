@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { RepoInfo, HoverCard } from './model';
+import { EventInfo, HoverCardType } from './model';
 
 // ===================
 // format info related
@@ -8,135 +8,113 @@ import { RepoInfo, HoverCard } from './model';
 /**
  * Format RepoInfo to <li> string.
  */
-export function formatInfoToLi(item: RepoInfo): string {
-    function userHovercard(id: number): string {
-        return `
-            data-hovercard-type="user"
-            data-hovercard-url="/hovercards?user_id=${id}"
-        `;
-    }
-
+export function formatInfoToLi(item: EventInfo): string {
     const body = formatInfoToBody(item);
     if (!body) {
         return "";
     }
-    const createAtStr = moment(new Date(item.createdAt)).format('YYYY/MM/DD HH:mm:ss');
+    const userUrl = `https://github.com/${item.actor.login}`;
+    const userHovercard = hovercard(HoverCardType.USER, `/hovercards?user_id=${item.actor.id}`);
+    const createAt = moment(new Date(item.createdAt));
+    const displayCreateAt = createAt.format('YY/MM/DD HH:mm:ss');
+    const fullCreateAt = `${createAt.format('YYYY/MM/DD dddd, HH:mm:ss')} (${createAt.fromNow()})`;
     return `
         <li>
             <div class="ah-content-header">
                 <div class="ah-content-header-user">
-                    <a href="https://github.com/${item.actor.login}" target="_blank" style="text-decoration:none" ${userHovercard(item.actor.id)}>
+                    <a href="${userUrl}" target="_blank" style="text-decoration:none" ${userHovercard}>
                         <img class="ah-content-header-icon ah-content-header-avatar" src="${item.actor.avatarUrl}" alt="" />
                     </a>
                     <span class="ah-content-header-link">
-                        <a href="https://github.com/${item.actor.login}" target="_blank" ${userHovercard(item.actor.id)}>${item.actor.login}</a>
+                        <a href="${userUrl}" target="_blank" ${userHovercard}>${item.actor.login}</a>
                     </span>
                     <span class="ah-content-header-icon ah-content-header-event" title="${item.type}">${getSvgTag(item.type)}</span>
                 </div>
                 <div class="ah-content-header-info">
-                    <span class="ah-content-header-time">${createAtStr}</span>
+                    <span class="ah-content-header-time" title="${fullCreateAt}">${displayCreateAt}</span>
                     ${item.public ? '' : '<span class="ah-content-header-private" title="This is a private event">Private</span>'}
                 </div>
             </div>
-
-            <div class="ah-content-body">
-                ${body}
-            </div>
+            <div class="ah-content-body">${body}</div>
         </li>
     `;
 }
 
 /**
- * Format RepoInfo to tags that will put inside body <div>.
+ * Format RepoInfo to tags that will be put inside body <div>.
  */
-function formatInfoToBody(data: RepoInfo): string {
+function formatInfoToBody(data: EventInfo): string {
     const pl = data.payload;
     const repoUrl = `http://github.com/${data.repo.name}`;
-    const repoA = a(data.repo.name, repoUrl, HoverCard.Repo, `/${data.repo.name}/hovercard`);
-
+    const repoA = a(data.repo.name, repoUrl, HoverCardType.REPO, `/${data.repo.name}/hovercard`);
     switch (data.type) {
         case 'PushEvent':
-            const commitCnt = pl.size > 1 ? `${pl.size} commits` : '1 commit';
+            const branch = pl.ref.split('/').slice(2).join('/');
+            const branchA = a(branch, `${repoUrl}/tree/${branch}`);
+            const commitsCount = pl.size > 1 ? `${pl.size} commits` : '1 commit';
             let commits = '';
-            pl.commits.forEach(item => {
-                commits += `
-                    <div class="ah-content-body-sub">
-                        ${a(item.sha.substring(0, 7), `${repoUrl}/commit/${item.sha}`, HoverCard.Commit, `/${data.repo.name}/commit/${item.sha}/hovercard`)}
-                        <span class="ah-content-body-commit-wiki" title="${item.message}">${item.message}</span>
-                    </div>
-                `;
-            });
-            return title(`Pushed ${commitCnt} to ${pl.ref.split('/')[2]} at ${repoA}`)
-                + commits;
-        case 'WatchEvent':
-            return title(`Starred repository ${repoA}`);
+            pl.commits.forEach(item => commits += `
+                <div class="ah-content-body-sub">
+                    ${a(item.sha.substring(0, 7), `${repoUrl}/commit/${item.sha}`, HoverCardType.COMMIT, `/${data.repo.name}/commit/${item.sha}/hovercard`)}
+                    <span class="ah-content-body-commit-wiki" title="${item.message}">${item.message}</span>
+                </div>
+            `);
+            return title(`Pushed ${commitsCount} to ${branchA} at ${repoA}`) + commits;
+        case 'CreateEvent':
         case 'CreateBranchEvent':
         case 'CreateTagEvent':
-        case 'CreateEvent':
+            if (pl.refType === 'repository') {
+                return title(`Created ${data.public ? '' : 'private'} repository ${repoA}`) + subContent(pl.description);
+            }
+            const refA = a(pl.ref, `${repoUrl}/tree/${pl.ref}`);
             if (pl.refType === 'branch') {
                 data.type = 'CreateBranchEvent';
-                return title(`Created branch ${a(pl.ref, `${repoUrl}/tree/${pl.ref}`)} at ${repoA}`);
+                return title(`Created branch ${refA} at ${repoA}`);
             } else if (pl.refType === 'tag') {
                 data.type = 'CreateTagEvent';
-                return title(`Created tag ${a(pl.ref, `${repoUrl}/tree/${pl.ref}`)} at ${repoA}`);
-            } else if (pl.refType === 'repository') {
-                return title(`Created ${data.public ? '' : 'private'} repository ${repoA}`)
-                    + subContent(pl.description);
-            } else {
-                return '';
+                return title(`Created tag ${refA} at ${repoA}`);
             }
+            return '';
+        case 'WatchEvent':
+            return title(`Starred repository ${repoA}`);
         case 'ForkEvent':
-            return title(`Forked ${repoA} to ${a(pl.forkee.fullName, pl.forkee.htmlUrl, HoverCard.Repo, `/${pl.forkee.fullName}/hovercard`)}`);
+            return title(`Forked ${repoA} to ${a(pl.forkee.fullName, pl.forkee.htmlUrl, HoverCardType.REPO, `/${pl.forkee.fullName}/hovercard`)}`);
         case 'DeleteEvent':
             return title(`Deleted ${pl.refType} ${pl.ref} at ${repoA}`);
         case 'PublicEvent':
             return title(`Made repository ${repoA} ${data.public ? 'public' : 'private'}`);
         case 'IssuesEvent':
-            return title(`${pl.action} issue ${a(`#${pl.issue.number}`, pl.issue.htmlUrl, HoverCard.Issue, `/${data.repo.name}/issues/${pl.issue.number}/hovercard`)
-                } at ${repoA}`)
-                + subTitle(pl.issue.title)
-                + subContent(pl.issue.body);
+            return title(`${pl.action} issue ${a(`#${pl.issue.number}`, pl.issue.htmlUrl, HoverCardType.ISSUE, `/${data.repo.name}/issues/${pl.issue.number}/hovercard`)} at ${repoA}`)
+                + subtitle(pl.issue.title) + subContent(pl.issue.body);
         case 'IssueCommentEvent':
-            return title(`${pl.action} ${a('comment', pl.comment.htmlUrl)} on issue ${a(`#${pl.issue.number}`, pl.issue.htmlUrl, HoverCard.Issue, `/${data.repo.name}/issues/${pl.issue.number}/hovercard`)
-                } at ${repoA}`)
-                + subTitle(pl.issue.title)
-                + subContent(pl.comment.body);
+            return title(`${pl.action} ${a('comment', pl.comment.htmlUrl)} on issue ${a(`#${pl.issue.number}`, pl.issue.htmlUrl, HoverCardType.ISSUE, `/${data.repo.name}/issues/${pl.issue.number}/hovercard`)} at ${repoA}`)
+                + subtitle(pl.issue.title) + subContent(pl.comment.body);
         case 'PullRequestEvent':
-            return title(`${pl.action} pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCard.Pull, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)
-                } at ${repoA}`)
-                + subTitle(pl.pullRequest.title)
-                + subContent(pl.pullRequest.body);
+            return title(`${pl.action} pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCardType.PULL, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)} at ${repoA}`)
+                + subtitle(pl.pullRequest.title) + subContent(pl.pullRequest.body);
         case 'PullRequestReviewEvent':
-            return title(`${pl.action} a pull request review in pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCard.Pull, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)
-                } at ${repoA}`);
+            return title(`${pl.action} a pull request review in pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCardType.PULL, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)} at ${repoA}`);
         case 'PullRequestReviewCommentEvent':
-            return title(`${pl.action} pull request review ${a('comment', pl.comment.htmlUrl)} in pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCard.Pull, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)
-                } at ${repoA}`)
-                + subTitle(pl.pullRequest.title)
-                + subContent(pl.comment.body);
+            return title(`${pl.action} pull request review ${a('comment', pl.comment.htmlUrl)} in pull request ${a(`#${pl.pullRequest.number}`, pl.pullRequest.htmlUrl, HoverCardType.PULL, `/${data.repo.name}/pull/${pl.pullRequest.number}/hovercard`)} at ${repoA}`)
+                + subtitle(pl.pullRequest.title) + subContent(pl.comment.body);
         case 'CommitCommentEvent':
-            return title(`Created a ${a('comment', pl.comment.htmlUrl)} in commit ${a(`#${pl.comment.commitId.substring(0, 7)}`, `${repoUrl}/commit/${pl.comment.commitId}`, HoverCard.Commit, `/${data.repo.name}/commit/${pl.comment.commitId}/hovercard`)
-                } at ${repoA}`)
+            return title(`Created a ${a('comment', pl.comment.htmlUrl)} in commit ${a(`#${pl.comment.commitId.substring(0, 7)}`, `${repoUrl}/commit/${pl.comment.commitId}`, HoverCardType.COMMIT, `/${data.repo.name}/commit/${pl.comment.commitId}/hovercard`)} at ${repoA}`)
                 + subContent(pl.comment.body);
         case 'MemberEvent':
-            return title(`${pl.action} member ${a(pl.member.login, pl.member.htmlUrl, HoverCard.User, `/hovercards?user_id=${pl.member.id}`)} to ${repoA}`);
+            return title(`${pl.action} member ${a(pl.member.login, pl.member.htmlUrl, HoverCardType.USER, `/hovercards?user_id=${pl.member.id}`)} to ${repoA}`);
         case 'ReleaseEvent':
             return title(`${pl.action} release ${a(pl.release.tagName, pl.release.htmlUrl)} at ${repoA}`)
-                + subTitle(pl.release.name)
-                + subContent(pl.release.body);
+                + subtitle(pl.release.name) + subContent(pl.release.body);
         case 'GollumEvent':
-            const pageCnt = pl.pages.length > 1 ? `${pl.pages.length} wiki pages` : '1 wiki page';
+            const pageCount = pl.pages.length > 1 ? `${pl.pages.length} wiki pages` : '1 wiki page';
             let pages = '';
-            pl.pages.forEach(item => {
-                pages += `
-                    <div class="ah-content-body-sub">
-                        ${item.action} ${a(item.sha.substring(0, 7), item.htmlUrl)}
-                        <span class="ah-content-body-commit-wiki" title="${item.title}">${item.title}</span>
-                    </div>
-                `;
-            });
-            return title(`Update ${pageCnt} at ${repoA}`)
-                + pages;
+            pl.pages.forEach(item => pages += `
+                <div class="ah-content-body-sub">
+                    ${item.action} ${a(item.sha.substring(0, 7), item.htmlUrl)}
+                    <span class="ah-content-body-commit-wiki" title="${item.title}">${item.title}</span>
+                </div>
+            `);
+            return title(`Update ${pageCount} at ${repoA}`) + pages;
         default:
             return title(`Unknown event: ${data.type}`);
     }
@@ -146,30 +124,23 @@ function formatInfoToBody(data: RepoInfo): string {
 // helper functions
 // ================
 
+function hovercard(type: HoverCardType, url: string): string {
+    return `data-hovercard-type="${type.toString()}" data-hovercard-url="${url}"`;
+}
+
 function title(content: string): string {
     return `<span class="ah-content-body-title">${content.capital()}</span>`;
 }
 
-function a(content: string, href: string, hover?: HoverCard, hoverUrl?: string): string {
-    if (!hover || !hoverUrl) {
-        return `<a href="${href}" target="_blank">${content}</a>`;
-    } else {
-        return `
-            <a href="${href}" target="_blank" data-hovercard-type="${hover.toString()}" data-hovercard-url="${hoverUrl}">
-                ${content}
-            </a>
-        `;
-    }
+function a(content: string, href: string, hover?: HoverCardType, hoverUrl?: string): string {
+    return `<a href="${href}" target="_blank" ${(hover && hoverUrl) ? hovercard(hover, hoverUrl) : ''}>${content}</a>`;
 }
 
 function escape(str: string): string {
-    if (!str) {
-        return ""
-    }
-    return str.replaceAll('<', '').replaceAll('>', '');
+    return str ? str.replaceAll('<', '').replaceAll('>', '') : "";
 }
 
-function subTitle(content: string) {
+function subtitle(content: string) {
     content = escape(content);
     return `<div class="ah-content-body-sub ah-content-body-subtitle" title="${content}">${content}</div>`;
 }
@@ -183,7 +154,7 @@ function subContent(content: string) {
 // svg related
 // ===========
 
-export function getSvgTag(type: string, rate: number = 1) {
+function getSvgTag(type: string, rate: number = 1) {
     let svgClass: string = '';
     let svgPath: string = '';
     let svgHeight: number = 0;

@@ -78,7 +78,7 @@ async function adjustUserProfileUI(observe: boolean = true) {
     try {
         const info = await requestUserInfo(Global.urlInfo.author, Global.token);
         if (info.createdAt) {
-            const joinTimeString = moment(info.createdAt).format('YYYY/MM/DD HH:mm');
+            const joinTimeString = moment(new Date(info.createdAt)).format('YYYY/MM/DD HH:mm');
             const joinTimeLi = $('ul.vcard-details li[itemprop="join time"]');
             if (!joinTimeLi.length) {
                 $('ul.vcard-details').append(
@@ -142,11 +142,11 @@ export function injectSidebar() {
         .replaceAll('${apiUrl}', info.eventAPI);
 
     const reAuthor = /\$\{if isAuthor\}([\s\S]+?)\$\{endif\}/m;
-    const reRepo =   /\$\{if isRepo\}([\s\S]+?)\$\{endif\}/m;
+    const reRepo = /\$\{if isRepo\}([\s\S]+?)\$\{endif\}/m;
     if (info.type === URLType.REPO) {
         renderedTemplate = renderedTemplate
             .replaceAll(reAuthor, '')
-            .replaceAll(reRepo, reRepo.exec(renderedTemplate)!![0])
+            .replaceAll(reRepo, reRepo.exec(renderedTemplate)!![1])
             .replaceAll('${info.authorUrl}', info.authorURL)
             .replaceAll('${info.author}', info.author)
             .replaceAll('${info.repoUrl}', info.repoURL)

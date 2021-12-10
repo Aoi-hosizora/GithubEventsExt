@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import $ from 'jquery';
 import { camelCase, isArray, isObject, mapKeys, mapValues } from 'lodash';
-import { RepoInfo, URLInfo, URLType, UserInfo } from './model';
+import { EventInfo, URLInfo, URLType, UserInfo } from './model';
 
 /**
  * Check the document.URL, return null if current page is not a github page.
@@ -21,7 +21,7 @@ export function checkURL(): URLInfo | null {
     var endpoint = result[result.length - 1].replaceAll(/(#.*|\?.*|\/$)/, '');
     const endpoints = endpoint.split('/'); // xxx/yyy or xxx
 
-    if (endpoints.length === 0 || endpoints.length > 2 || preservedEndpoint.indexOf(endpoints[0]) !== -1) {
+    if (endpoints.length === 0 || preservedEndpoint.indexOf(endpoints[0]) !== -1) {
         return new URLInfo(URLType.OTHER);
     }
     if (endpoints.length === 1) {
@@ -63,10 +63,10 @@ function myAxios(): AxiosInstance {
 /**
  * HTTP Get user/org/repo events information.
  */
-export async function requestGithubEvents(info: URLInfo, token: string = '', page: number = 1): Promise<RepoInfo[]> {
+export async function requestGithubEvents(info: URLInfo, page: number, token: string = ''): Promise<EventInfo[]> {
     const url = `${info.eventAPI}?page=${page}`;
     const headers: any = token ? { 'Authorization': `Token ${token}` } : {};
-    const resp = await myAxios().request<RepoInfo[]>({
+    const resp = await myAxios().request<EventInfo[]>({
         method: 'get', url, headers
     });
     return resp.data;

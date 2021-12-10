@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import 'jquery-ui-dist/jquery-ui';
 import { Global, setStorage, StorageFlag } from './global';
-import { RepoInfo } from './model';
+import { EventInfo } from './model';
 import { formatInfoToLi } from './sidebar_ui';
 import { requestGithubEvents } from './util';
 
@@ -13,33 +13,34 @@ import { requestGithubEvents } from './util';
  * Start loading the specific page of github events !!!
  */
 export async function loadGithubEvents() {
-    showMessage('Loading...');
-    var infos: RepoInfo[];
+    const ulTag = $('#ahid-ul');
+    if (Global.page == 1) {
+        ulTag.html('');
+    }
+
+    // loading
+    switchDisplayMode({ isLoading: true, isError: false });
+    var infos: EventInfo[];
     try {
-        infos = await requestGithubEvents(Global.urlInfo, Global.token, Global.page);
+        infos = await requestGithubEvents(Global.urlInfo, Global.page, Global.token);
     } catch (ex) {
         if (Global.page === 1) {
-            showMessage(ex as string, true);
+            switchDisplayMode({ isLoading: false, isError: true, errorMessage: ex as string });
         }
         return;
     }
 
-    showMessage('');
-    const ul = $('#ahid-ul');
+    // data got
+    switchDisplayMode({ isLoading: false, isError: false });
     infos.forEach(info => {
         const li = formatInfoToLi(info);
         if (!li) {
             return;
         }
-        if (ul.text().trim()) {
-            ul.append('<hr class="ah-hr" />');
+        if (ulTag[0].children.length) {
+            ulTag.append('<hr class="ah-hr" />');
         }
-        const content = li
-            .replaceAll('\n', '')
-            .replaceAll('  ', ' ')
-            .replaceAll(' </a>', '</a>') // <a "xxx"> xxx </a>
-            .replaceAll('"> ', '">');
-        ul.append(content);
+        ulTag.append(li);
     });
 }
 
@@ -52,37 +53,32 @@ async function loadNextGithubEvents() {
 }
 
 /**
- * Show normal message in (#ahid-message) or error message in (#ahid-more).
+ * Switch display mode, such as "Loading..." or "Mode..." or "Something error".
  */
-function showMessage(message: string, isError: boolean = false) {
-    const hideClass = 'ah-hint-hide';
-    const disableClass = 'ah-a-disabled';
+function switchDisplayMode(arg: { isLoading: boolean, isError: boolean, errorMessage?: string }) {
+    const messageTag = $('#ahid-message'), ulTag = $('#ahid-ul'),
+        moreTag = $('#ahid-more'), loadingTag = $('#ahid-loading'), retryTag = $('#ahid-retry');
 
-    const ulTag = $('#ahid-ul');
-    const messageTag = $('#ahid-message');
-    const moreTag = $('#ahid-more');
-    const retryTag = $('#ahid-retry');
-
-    if (isError) {
-        moreTag.addClass(hideClass);
-        retryTag.removeClass(hideClass);
-        ulTag.addClass(hideClass);
-        messageTag.removeClass(hideClass);
-
-        messageTag.text(message!!);
+    const hide = 'ah-hint-hide';
+    if (arg.isLoading) {
+        messageTag.addClass(hide);
+        moreTag.addClass(hide);
+        retryTag.addClass(hide);
+        ulTag.removeClass(hide);
+        loadingTag.removeClass(hide);
+    } else if (arg.isError) {
+        ulTag.addClass(hide);
+        moreTag.addClass(hide);
+        loadingTag.addClass(hide);
+        messageTag.text(arg.errorMessage ?? 'Something error.');
+        messageTag.removeClass(hide);
+        retryTag.removeClass(hide);
     } else {
-        moreTag.removeClass(hideClass);
-        retryTag.addClass(hideClass);
-        ulTag.removeClass(hideClass);
-        messageTag.addClass(hideClass);
-
-        if (message && message !== '') {
-            moreTag.text(message);
-            moreTag.addClass(disableClass);
-        } else {
-            moreTag.text('More...');
-            moreTag.removeClass(disableClass);
-        }
+        messageTag.addClass(hide);
+        loadingTag.addClass(hide);
+        retryTag.addClass(hide);
+        ulTag.removeClass(hide);
+        moreTag.removeClass(hide);
     }
 }
 
@@ -94,145 +90,124 @@ function showMessage(message: string, isError: boolean = false) {
  * Register sidebar's UI events !!!
  */
 export function registerUIEvents() {
-    registerToggleEvents();
-    registerButtonsEvents();
-    registerResizeEvent();
-
-    setNavStatus(Global.pinned);
-    SetPinState(Global.pinned);
-}
-
-function registerToggleEvents() {
-    $('#ahid-nav').mouseenter(() => {
-        Global.isHovering = true;
-    });
-    $('#ahid-nav').mouseleave(() => {
+    // toggle and nav (sidebar) events
+    $('#ahid-toggle').on('mouseenter', () => showSidebar(true));
+    $('#ahid-toggle').on('click', () => showSidebar(true));
+    $('#ahid-nav').on('mouseenter', () => Global.isHovering = true);
+    $('#ahid-nav').on('mouseleave', () => {
         Global.isHovering = false;
         if (!Global.pinned) {
-            setTimeout(() => {
-                if (!Global.pinned && !Global.isHovering)
-                    setNavStatus(false);
-            }, 1000);
+            setTimeout(() => (!Global.pinned && !Global.isHovering) ? showSidebar(false) : null, 1000);
         }
     });
 
-    $('#ahid-toggle').mouseenter(() => {
-        setNavStatus(true);
-    });
-    $('#ahid-toggle').click(() => {
-        setNavStatus(true);
-    });
-}
+    // buttons events
+    $('#ahid-pin').on('click', () => pinSidebar(!Global.pinned));
+    $('#ahid-feedback').on('click', () => window.open(Global.feedbackURL));
+    $('#ahid-refresh').on('click', () => { adjustBodyLayout(); Global.page = 1; loadGithubEvents(); });
+    $('#ahid-more').on('click', () => loadNextGithubEvents());
+    $('#ahid-retry').on('click', () => { Global.page = 1; loadGithubEvents(); });
 
-function registerButtonsEvents() {
-    $('#ahid-pin').click(() => {
-        SetPinState(!Global.pinned);
-    });
+    // resize events
+    registerResizeEvent();
 
-    $('#ahid-feedback').click(() => {
-        window.open(Global.feedbackURL);
-    });
-
-    $('#ahid-refresh').click(() => {
-        adjustMain(false);
-        $('#ahid-ul').html('');
-        Global.page = 1;
-        loadGithubEvents();
-    });
-
-    $('#ahid-more').click(() => {
-        loadNextGithubEvents();
-    });
-
-    $('#ahid-retry').click(() => {
-        $('#ahid-ul').html('');
-        Global.page = 1;
-        loadGithubEvents();
-    });
-}
-
-function setNavStatus(flag: boolean) {
-    const nav = $('#ahid-nav');
-    const toggle = $('#ahid-toggle');
-    nav.css('width', `${Global.width}px`);
-
-    if (flag) {
-        toggle.addClass('ah-hide');
-        nav.addClass('ah-open');
-        nav.css('right', '');
-        bindResize(true);
-    } else {
-        toggle.removeClass('ah-hide');
-        nav.removeClass('ah-open');
-        nav.css('right', `-${Global.width}px`);
-        bindResize(false);
-    }
-}
-
-function SetPinState(flag: boolean) {
-    if (flag) {
-        $('#ahid-nav').addClass('ah-shadow');
-        $('#ahid-pin').addClass('ah-pined');
-    } else {
-        $('#ahid-nav').removeClass('ah-shadow');
-        $('#ahid-pin').removeClass('ah-pined');
-    }
-
-    Global.pinned = flag;
-    setStorage(StorageFlag.PINNED, Global.pinned);
-    adjustMain(false);
+    // set sidebar status
+    showSidebar(Global.pinned);
+    pinSidebar(Global.pinned);
 }
 
 /**
- * pin & load & resize
- * @param useElWidth true only el.resize
+ * Show the sidebar needShow flag is true, otherwise hide the sidebar.
  */
-function adjustMain(useElWidth: boolean) {
-    const nav = $('#ahid-nav');
-    if (nav.css('left') !== '') {
-        nav.css('left', '');
+function showSidebar(needShow: boolean) {
+    const navTag = $('#ahid-nav');
+    const toggleTag = $('#ahid-toggle');
+    navTag.css('width', `${Global.width}px`);
+    if (needShow) {
+        toggleTag.addClass('ah-hide');
+        navTag.addClass('ah-open');
+        navTag.css('right', '');
+        enableResizing(true);
+    } else {
+        toggleTag.removeClass('ah-hide');
+        navTag.removeClass('ah-open');
+        navTag.css('right', `-${Global.width}px`);
+        enableResizing(false);
     }
+}
 
+/**
+ * Pin the sidebar needPin flag is true, otherwise hide the sidebar.
+ */
+function pinSidebar(needPin: boolean) {
+    const navTag = $('#ahid-nav');
+    const pinTag = $('#ahid-pin');
+    if (needPin) {
+        navTag.addClass('ah-shadow');
+        pinTag.addClass('ah-pined');
+    } else {
+        navTag.removeClass('ah-shadow');
+        pinTag.removeClass('ah-pined');
+    }
+    Global.pinned = needPin;
+    setStorage(StorageFlag.PINNED, Global.pinned);
+    adjustBodyLayout();
+}
+
+// =========================
+// resize and adjust related
+// =========================
+
+/**
+ * Adjust body's layout (margin-right), used when pin/refresh button is clicked or user is resizing.
+ */
+function adjustBodyLayout(resizing: boolean = false) {
+    const navTag = $('#ahid-nav');
+    navTag.css('left', '');
     if (Global.pinned) {
-        let to: number = Global.width;
-        if (useElWidth) {
-            to = nav.width()!!;
-        }
+        const to = resizing ? navTag.width()!! : Global.width;
         $('body').css('margin-right', `${to}px`);
     } else {
         $('body').css('margin-right', '');
     }
 }
 
-function bindResize(flag: boolean) {
+/**
+ * Register resize event.
+ */
+function registerResizeEvent() {
+    const navTag = $('#ahid-nav');
+    const hdlTag = $('.ui-resizable-handle');
+    const event = () => {
+        if (Global.width !== navTag.width()!!) {
+            Global.width = navTag.width()!!;
+            setStorage(StorageFlag.WIDTH, Global.width);
+        }
+        adjustBodyLayout(false);
+    };
+
+    navTag.on('resize', () => adjustBodyLayout(true));
+    navTag.on('mouseup', event);
+    hdlTag.on('mouseup', event);
+}
+
+/**
+ * Enable resizing if flag set to true, otherwise disable resizing.
+ */
+function enableResizing(enable: boolean) {
     $(() => {
-        const el = $('#ahid-nav');
-        if (flag) {
-            el.resizable({
+        const navTag = $('#ahid-nav');
+        if (enable) {
+            navTag.resizable({
                 disabled: false,
                 handles: 'w',
-                minWidth: parseInt(el.css('min-width'), 10),
-                maxWidth: parseInt(el.css('max-width'), 10)
+                minWidth: parseInt(navTag.css('min-width'), 10),
+                maxWidth: parseInt(navTag.css('max-width'), 10)
             });
         } else {
-            el.resizable({
+            navTag.resizable({
                 disabled: true
             });
         }
     });
-}
-
-function registerResizeEvent() {
-    const el = $('#ahid-nav');
-    const hdr = $('.ui-resizable-handle');
-    const event = () => {
-        if (Global.width !== el.width()!!) {
-            Global.width = el.width()!!;
-            setStorage(StorageFlag.WIDTH, Global.width);
-        }
-        adjustMain(false);
-    };
-    hdr.mouseup(event);
-    el.mouseup(event);
-    el.resize(() => { adjustMain(true); });
 }
