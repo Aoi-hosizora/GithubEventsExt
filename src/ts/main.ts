@@ -63,16 +63,18 @@ export function adjustGithubUI() {
         $('main#js-repo-pjax-container>div.container-xl').attr('style', 'margin-left: auto !important; margin-right: auto !important;');
     }
 
-    // 4. update user profile page
+    // 4. update user profile and repo page with MutationObserver
     if (Global.urlInfo.type == URLType.USER) {
-        adjustUserProfileUI();
+        adjustUserUIObservably();
+    } else if (Global.urlInfo.type == URLType.REPO) {
+        adjustRepoUIObservably();
     }
 }
 
 /**
- * Adjust github user profile UI.
+ * Adjust github user profile UI with observer.
  */
-async function adjustUserProfileUI(observe: boolean = true) {
+async function adjustUserUIObservably(observe: boolean = true) {
     // 1. add join time and private counters
     const isMe = $('div.js-profile-editable-area button').length;
     try {
@@ -118,7 +120,30 @@ async function adjustUserProfileUI(observe: boolean = true) {
             if (mut.type === 'attributes' && mut.attributeName == 'class' && mut.target.nodeType == mut.target.ELEMENT_NODE) {
                 const el = mut.target as Element;
                 if (!el.classList.contains("is-loading")) {
-                    adjustUserProfileUI(false);
+                    adjustUserUIObservably(false);
+                }
+            }
+        }));
+        observer.observe(progressSpan, { attributes: true });
+    }
+}
+/**
+ * Adjust github repo UI with observer.
+ */
+async function adjustRepoUIObservably(observe: boolean = true) {
+    // 1. improve repo page margin under octotree
+    if (Global.urlInfo.type === URLType.REPO) {
+        $('main#js-repo-pjax-container>div.container-xl').attr('style', 'margin-left: auto !important; margin-right: auto !important;');
+    }
+
+    // *. observe route change
+    if (observe) {
+        const progressSpan = $("span.progress-pjax-loader")[0];
+        const observer = new MutationObserver(mutationList => mutationList.forEach(mut => {
+            if (mut.type === 'attributes' && mut.attributeName == 'class' && mut.target.nodeType == mut.target.ELEMENT_NODE) {
+                const el = mut.target as Element;
+                if (!el.classList.contains("is-loading")) {
+                    adjustRepoUIObservably(false);
                 }
             }
         }));
