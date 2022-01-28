@@ -58,12 +58,7 @@ export function adjustGithubUI() {
     };
     avatarMenuSummary.on('mouseenter', menuHoverHdl);
 
-    // 3. improve repo page margin under octotree
-    if (Global.urlInfo.type === URLType.REPO) {
-        $('main#js-repo-pjax-container>div.container-xl').attr('style', 'margin-left: auto !important; margin-right: auto !important;');
-    }
-
-    // 4. update user profile and repo page with MutationObserver
+    // 3. update user profile and repo page with MutationObserver
     if (Global.urlInfo.type == URLType.USER) {
         adjustUserUIObservably();
     } else if (Global.urlInfo.type == URLType.REPO) {
@@ -113,9 +108,9 @@ async function adjustUserUIObservably(observe: boolean = true) {
     // 2. center align follow* text
     $('div.js-profile-editable-area div.flex-md-order-none').css('text-align', 'center')
 
-    // 3. observe route change
+    // *. observe route change
     if (observe) {
-        const progressSpan = $("span.progress-pjax-loader")[0];
+        const progressSpan = $('span.progress-pjax-loader')[0];
         const observer = new MutationObserver(mutationList => mutationList.forEach(mut => {
             if (mut.type === 'attributes' && mut.attributeName == 'class' && mut.target.nodeType == mut.target.ELEMENT_NODE) {
                 const el = mut.target as Element;
@@ -127,6 +122,7 @@ async function adjustUserUIObservably(observe: boolean = true) {
         observer.observe(progressSpan, { attributes: true });
     }
 }
+
 /**
  * Adjust github repo UI with observer.
  */
@@ -136,9 +132,35 @@ async function adjustRepoUIObservably(observe: boolean = true) {
         $('main#js-repo-pjax-container>div.container-xl').attr('style', 'margin-left: auto !important; margin-right: auto !important;');
     }
 
+    // 2. show counter and add link for page head buttons
+    const repoName = `${Global.urlInfo.author}/${Global.urlInfo.repo}`
+    const watchCounterSpan = $('#repo-notifications-counter');
+    watchCounterSpan.attr('style', 'display: inline-block;');
+    if (!$('#repo-notifications-counter-a').length) {
+        watchCounterSpan.wrap(`<a href="/${repoName}/watchers" id="repo-notifications-counter-a"></a>`);
+    }
+    const forkCounterSpan = $('#repo-network-counter');
+    forkCounterSpan.attr('style', 'display: inline-block;')
+    if (!$('#repo-network-counter-a').length) {
+        forkCounterSpan.wrap(`<a href="/${repoName}/network/members" id="repo-network-counter-a"></a>`);
+    }
+    const starCounterSpan = $('#repo-stars-counter-star');
+    starCounterSpan.attr('style', 'display: inline-block;');
+    if (!$('#repo-stars-counter-a').length) {
+        // => <a #counter-a><span><span #counter-star>
+        starCounterSpan.wrap(`<a href="/${repoName}/stargazers" id="repo-stars-counter-a" class="BtnGroup-parent"></a>`);
+        starCounterSpan.wrap(`<span class="btn-sm btn BtnGroup-item px-1" style="color: var(--color-accent-fg);"></span>`);
+        $('#repo-stars-counter-unstar').attr('style', 'display: none;');
+        const unstarForm = $('form.unstarred.js-social-form.BtnGroup-parent');
+        $('#repo-stars-counter-a').insertAfter(unstarForm);
+        const starSummary = $('summary.BtnGroup-item[aria-label="Add this repository to a list"]');
+        starSummary.removeClass('px-2');
+        starSummary.addClass('px-1');
+    }
+
     // *. observe route change
     if (observe) {
-        const progressSpan = $("span.progress-pjax-loader")[0];
+        const progressSpan = $('span.progress-pjax-loader')[0];
         const observer = new MutationObserver(mutationList => mutationList.forEach(mut => {
             if (mut.type === 'attributes' && mut.attributeName == 'class' && mut.target.nodeType == mut.target.ELEMENT_NODE) {
                 const el = mut.target as Element;

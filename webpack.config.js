@@ -9,7 +9,7 @@ module.exports = {
     entry: {
         scss: path.join(__dirname, './src/scss/core.scss'),
         background: path.join(__dirname, './src/ts/background.ts'),
-        content_script: path.join(__dirname, './src/ts/content_script.ts')
+        content_script: path.join(__dirname, './src/content_script.ts')
     },
     output: {
         path: path.join(__dirname, './dist'),

@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "GitHub events extension",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "A chrome extension that let browser show GitHub activity events.",
     "icons": {
         "16": "img/icon16.png",
