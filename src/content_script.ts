@@ -18,7 +18,7 @@ async function onLoaded() {
     }
     Global.urlInfo = info;
 
-    // 2. load settings from chrome storage
+    // 2. load settings from storage
     await readStorageToGlobal();
 
     // 3. adjust github ui

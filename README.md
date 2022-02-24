@@ -1,39 +1,26 @@
 # GithubEventsExt
 
 + A chrome extension that let browser show GitHub activity events.
-+ For TamperMonkey version, please visit [Aoi-hosizora/GithubEvents_TamperMonkey](https://github.com/Aoi-hosizora/GithubEvents_TamperMonkey).
++ For Userscript (Tampermonkey) version, please visit [Aoi-hosizora/GithubEventsExt_Userscript](https://github.com/Aoi-hosizora/GithubEventsExt_Userscript).
 
 ### Functions
 
 + [x] Show repo, user and org events in human readable format.
-+ [x] Support for private repo events.
-+ [x] Improve github profile page.
++ [x] Improve several GitHub UI details.
 
-### Run
+### Install
 
-1. Build the project.
+1. Clone the built source code by `git clone --single-branch --branch dist https://github.com/Aoi-hosizora/GithubEventsExt`.
+2. Open Chrome Extension setting in `chrome://extensions/`, click the "Load unpacked" button and select the cloned folder.
+3. Click the switcher of "GitHub events extension" to enable it. Now you will see the effect after refresh the GitHub page.
 
-```bash
-git clone git@github.com:Aoi-hosizora/GithubEventsExt.git
-cd GithubEventsExt
-
-npm install
-npm run build # or npm run watch
-```
-
-2. Add to chrome extension.
-
-+ Open Chrome Extension setting in `chrome://extensions/`
-+ Click `Load unpacked` button and select the generated `/dist` folder
-
-![how-to-run](./assets/how-to-run.jpg)
-
-![ext-setting](./assets/ext-setting.jpg)
+![how-to-install.jpg](./assets/how-to-install.jpg.jpg)
 
 ### Screenshot
 
-![mainExt](./assets/mainExt.jpg)
-![tokenSetting](./assets/tokenSetting.jpg)
+![screenshot-sidebar](./assets/screenshot-sidebar.jpg)
+
+![screenshot-setting](./assets/screenshot-setting.jpg)
 
 ### References
 

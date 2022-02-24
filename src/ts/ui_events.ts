@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import 'jquery-ui-dist/jquery-ui';
+import { onActionClicked } from './background';
 import { Global, setStorage, StorageFlag } from './global';
 import { EventInfo } from './model';
 import { formatInfoToLi } from './sidebar_ui';
@@ -22,7 +23,7 @@ export async function loadGithubEvents() {
     switchDisplayMode({ isLoading: true, isError: false });
     var infos: EventInfo[];
     try {
-        infos = await requestGithubEvents(Global.urlInfo, Global.page, Global.token);
+        infos = await requestGithubEvents(Global.urlInfo.eventAPI, Global.page, Global.token);
     } catch (ex) {
         if (Global.page === 1) {
             switchDisplayMode({ isLoading: false, isError: true, errorMessage: ex as string });
@@ -108,6 +109,7 @@ export function registerUIEvents() {
     $('#ahid-refresh').on('click', () => { adjustBodyLayout(); Global.page = 1; loadGithubEvents(); });
     $('#ahid-more').on('click', () => loadNextGithubEvents());
     $('#ahid-retry').on('click', () => { Global.page = 1; loadGithubEvents(); });
+    $('#ahid-setting').on('click', () => onActionClicked());
 
     // resize events
     registerResizeEvent();

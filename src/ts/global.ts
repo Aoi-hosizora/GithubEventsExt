@@ -15,13 +15,13 @@ export class Global {
     public static readonly FEEDBACK_URL: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
 }
 
-const STORAGE = chrome.storage.sync || chrome.storage.local;
-
 export enum StorageFlag {
     TOKEN = 'ah-token',
     PINNED = 'ah-pinned',
     WIDTH = 'ah-width'
 }
+
+const STORAGE = chrome.storage.sync || chrome.storage.local;
 
 export async function setStorage(flag: StorageFlag, value: any): Promise<void> {
     return new Promise((resolve, _) => {
