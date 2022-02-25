@@ -33,4 +33,4 @@
 + [github-repo-size](https://github.com/harshjv/github-repo-size)
 + [chrome拡張をTypeScriptで開発するときのWebpackの設定](https://qiita.com/okumurakengo/items/1a4404c20b0bf10f2c68)
 + [JQueryUI resizable](https://jqueryui.com/resizable/)
-+ [https://betterprogramming.pub/the-right-usage-of-aliases-in-webpack-typescript-4418327f47fa](https://betterprogramming.pub/the-right-usage-of-aliases-in-webpack-typescript-4418327f47fa)
++ [The Right Usage of Aliases in Webpack and TypeScript](https://betterprogramming.pub/the-right-usage-of-aliases-in-webpack-typescript-4418327f47fa)

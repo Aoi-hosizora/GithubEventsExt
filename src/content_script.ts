@@ -1,7 +1,7 @@
-import '@src/ts/extension';
+import '@src/ts/extensions';
 import { Global, readStorageToGlobal } from '@src/ts/global';
-import { adjustGithubUI, injectSidebar } from '@src/ts/main';
-import { checkURL } from '@src/ts/util';
+import { adjustGitHubUI, injectSidebar } from '@src/ts/main';
+import { checkURL } from '@src/ts/utils';
 
 document.addEventListener('DOMContentLoaded', () => {
     onLoaded();
@@ -21,9 +21,9 @@ async function onLoaded() {
     // 2. load settings from storage
     await readStorageToGlobal();
 
-    // 3. adjust github ui
-    adjustGithubUI();
+    // 3. adjust GitHub UI
+    adjustGitHubUI();
 
-    // 4. add sidebar to github 
+    // 4. inject sidebar to GitHub
     injectSidebar();
 }

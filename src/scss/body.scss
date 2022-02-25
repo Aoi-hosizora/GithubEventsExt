@@ -11,15 +11,15 @@
 
     &::-webkit-scrollbar {
         width: 8px;
-    
+
         &-track {
             border-radius: 4px;
         }
-    
+
         &-thumb {
             background-color: #a8a8a8;
             border-radius: 4px;
-    
+
             &:hover {
                 background-color: gray;
             }

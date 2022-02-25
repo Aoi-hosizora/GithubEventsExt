@@ -73,6 +73,6 @@ module.exports = {
                 from: p('./public'),
                 to: '.',
             }
-        ]),
+        ])
     ]
 }

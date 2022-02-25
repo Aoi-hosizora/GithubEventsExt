@@ -1,5 +1,5 @@
 {
-    "name": "githubeventsext",
+    "name": "github-events-ext",
     "title": "GitHub events extension",
     "version": "1.0.8",
     "description": "A Chrome extension that let browser show GitHub activity events.",
