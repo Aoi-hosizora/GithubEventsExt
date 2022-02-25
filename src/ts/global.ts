@@ -1,4 +1,4 @@
-import { URLInfo } from './model';
+import { URLInfo } from "@src/ts/model";
 
 export class Global {
     // Settings from storage

@@ -1,7 +1,8 @@
 {
     "name": "githubeventsext",
-    "version": "1.0.7",
-    "description": "A chrome extension that let browser show GitHub activity events.",
+    "title": "GitHub events extension",
+    "version": "1.0.8",
+    "description": "A Chrome extension that let browser show GitHub activity events.",
     "main": "index.js",
     "scripts": {
         "watch": "rm dist -rf && webpack -w",
@@ -27,7 +28,6 @@
         "mini-css-extract-plugin": "^0.9.0",
         "node-sass": "^6.0.1",
         "sass-loader": "^10.2.0",
-        "style-loader": "^1.1.3",
         "text-loader": "0.0.1",
         "ts-loader": "^6.2.1",
         "typescript": "^3.7.5",

@@ -1,4 +1,4 @@
-import { getStorage, removeStorage, setStorage, StorageFlag } from './global';
+import { getStorage, removeStorage, setStorage, StorageFlag } from '@src/ts/global';
 
 chrome.browserAction.onClicked.addListener(async _ => {
     await onActionClicked();

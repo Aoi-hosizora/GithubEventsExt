@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import moment from 'moment';
-import template from '../html/template.html';
-import { Global } from './global';
-import { URLType } from './model';
-import { loadGithubEvents, registerUIEvents } from './ui_events';
-import { requestUserInfo } from './util';
+import template from '@src/html/template.html';
+import { Global } from '@src/ts/global';
+import { URLType } from '@src/ts/model';
+import { loadGithubEvents, registerUIEvents } from '@src/ts/ui_events';
+import { requestUserInfo } from '@src/ts/util';
 
 /**
  * Adjust github UI.

@@ -1,18 +1,29 @@
 const path = require('path');
+const PACKAGE = require('./package.json');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+
+function p(f) {
+    return path.join(__dirname, f);
+}
 
 module.exports = {
     mode: process.env.NODE_ENV || "development",
     devtool: 'cheap-module-source-map',
     entry: {
-        scss: path.join(__dirname, './src/scss/core.scss'),
-        background: path.join(__dirname, './src/ts/background.ts'),
-        content_script: path.join(__dirname, './src/content_script.ts')
+        scss: p('./src/scss/core.scss'),
+        background: p('./src/ts/background.ts'),
+        content_script: p('./src/content_script.ts'),
+    },
+    resolve: {
+        alias: {
+          '@src': path.resolve(__dirname, 'src')
+        },
+        extensions: ['.ts', '.tsx', '.js']
     },
     output: {
-        path: path.join(__dirname, './dist'),
+        path: p('./dist'),
         filename: './js/[name].js'
     },
     module: {
@@ -33,11 +44,8 @@ module.exports = {
                     'css-loader',
                     'sass-loader'
                 ]
-            }
+            },
         ],
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js']
     },
     optimization: {
         minimize: true
@@ -47,9 +55,24 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: './css/core.css',
         }),
-        new CopyPlugin([{
-            from: './public',
-            to: '.'
-        }])
+        new CopyPlugin([
+            {
+                from: p('./src/etc'),
+                to: '.',
+                transform: (content, absoluteFrom) => {
+                    if (absoluteFrom.includes('manifest.json')) {
+                        content = content.toString();
+                        content = content.replace(/@@title/g, PACKAGE.title);
+                        content = content.replace(/@@version/g, PACKAGE.version)
+                        content = content.replace(/@@description/g, PACKAGE.description);
+                    }
+                    return content;
+                }
+            },
+            {
+                from: p('./public'),
+                to: '.',
+            }
+        ]),
     ]
 }

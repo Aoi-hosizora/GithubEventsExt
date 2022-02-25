@@ -1,7 +1,7 @@
 # GithubEventsExt
 
-+ A chrome extension that let browser show GitHub activity events.
-+ For Userscript (Tampermonkey) version, please visit [Aoi-hosizora/GithubEventsExt_Userscript](https://github.com/Aoi-hosizora/GithubEventsExt_Userscript).
++ A Chrome extension that let browser show GitHub activity events.
++ For Userscript version, please visit [Aoi-hosizora/GithubEventsExt_Userscript](https://github.com/Aoi-hosizora/GithubEventsExt_Userscript).
 
 ### Functions
 
@@ -14,18 +14,23 @@
 2. Open Chrome Extension setting in `chrome://extensions/`, click the "Load unpacked" button and select the cloned folder.
 3. Click the switcher of "GitHub events extension" to enable it. Now you will see the effect after refresh the GitHub page.
 
-![how-to-install.jpg](./assets/how-to-install.jpg.jpg)
+<p align="center">
+<img src="./assets/how-to-install.jpg" alt="how-to-install" />
+</p>
 
 ### Screenshot
 
-![screenshot-sidebar](./assets/screenshot-sidebar.jpg)
-
-![screenshot-setting](./assets/screenshot-setting.jpg)
+<p align="center">
+<img src="./assets/screenshot-sidebar.jpg" alt="screenshot-sidebar" />
+<img src="./assets/screenshot-setting.jpg" alt="screenshot-setting" />
+</p>
 
 ### References
 
 + [activity events types](https://developer.github.com/v3/activity/events/types/)
++ [Manifest V2 Getting started](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
 + [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
 + [github-repo-size](https://github.com/harshjv/github-repo-size)
 + [chrome拡張をTypeScriptで開発するときのWebpackの設定](https://qiita.com/okumurakengo/items/1a4404c20b0bf10f2c68)
 + [JQueryUI resizable](https://jqueryui.com/resizable/)
++ [https://betterprogramming.pub/the-right-usage-of-aliases-in-webpack-typescript-4418327f47fa](https://betterprogramming.pub/the-right-usage-of-aliases-in-webpack-typescript-4418327f47fa)
