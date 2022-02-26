@@ -21,12 +21,12 @@
   #ahid-title a:-webkit-any-link {
     color: white; }
   #ahid-title svg {
-    margin-top: -3px;
+    margin-top: -5px;
     margin-right: -3px;
     color: white; }
 
 #ahid-subtitle {
-  margin-top: 6px;
+  margin-top: 7px;
   font-size: 8px; }
   #ahid-subtitle a:-webkit-any-link {
     color: #acacac; }
@@ -37,15 +37,43 @@
 
 #ahid-commands {
   position: absolute;
-  top: 40px;
+  top: 39px;
   left: 12px; }
-  #ahid-commands a {
+  #ahid-commands a,
+  #ahid-commands details {
+    display: inline;
     position: relative;
     text-decoration: none; }
   #ahid-commands svg {
     fill: #999999; }
     #ahid-commands svg:hover {
       fill: white; }
+
+#ahid-commands details summary {
+  list-style: none; }
+
+#ahid-commands details details-menu {
+  top: 24px;
+  right: -11.8px;
+  z-index: 99;
+  width: 450px; }
+  #ahid-commands details details-menu label,
+  #ahid-commands details details-menu a,
+  #ahid-commands details details-menu button {
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-weight: 400 !important; }
+    #ahid-commands details details-menu label svg,
+    #ahid-commands details details-menu a svg,
+    #ahid-commands details details-menu button svg {
+      margin-right: 5px;
+      fill: currentColor; }
+  #ahid-commands details details-menu .ah-checkable svg {
+    display: none; }
+  #ahid-commands details details-menu .ah-checkable.ah-enabled svg {
+    display: inline-block; }
+  #ahid-commands details details-menu .dropdown-divider {
+    margin: 4px 0; }
 
 #ahid-pin {
   left: 0; }
@@ -56,16 +84,18 @@
     transform-origin: center;
     transform: rotate(45deg); }
 
-#ahid-feedback {
-  left: 3px; }
-
 #ahid-refresh {
-  left: 1px;
-  top: -1px; }
+  left: 1px; }
 
 #ahid-setting {
   left: 1px;
   top: -2px; }
+
+.ah-hover-underline {
+  text-decoration: none; }
+  .ah-hover-underline:hover {
+    text-decoration: underline !important;
+    color: #79b7ff; }
 
 #ahid-body {
   padding: 0;
