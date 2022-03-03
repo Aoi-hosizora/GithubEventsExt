@@ -197,11 +197,3 @@ export function formatBytes(bytes: number): string {
     const gb = mb / 1024;
     return `${gb.toFixed(2)} GB`;
 }
-
-/**
- * Join given path array to a single path using "/".
- */
-export function joinPaths(paths: string[]): string {
-    const nonEmptyPaths = paths.filter(p => !!p);
-    return nonEmptyPaths.join('/');
-}
