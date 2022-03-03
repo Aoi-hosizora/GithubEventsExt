@@ -11,6 +11,7 @@ function p(f) {
 module.exports = {
     mode: process.env.NODE_ENV || "development",
     devtool: 'cheap-module-source-map',
+    // devtool: 'inline-module-source-map',
     entry: {
         scss: p('./src/scss/core.scss'),
         background: p('./src/ts/background.ts'),
@@ -18,7 +19,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-          '@src': path.resolve(__dirname, 'src')
+            '@src': path.resolve(__dirname, 'src')
         },
         extensions: ['.ts', '.tsx', '.js']
     },
