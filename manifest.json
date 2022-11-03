@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Github events",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "A Chrome extension that shows GitHub activity events in sidebar and improves several UI details.",
     "icons": {
         "16": "img/icon16.png",

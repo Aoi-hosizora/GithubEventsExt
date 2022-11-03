@@ -26,7 +26,7 @@
     color: white; }
 
 #ahid-subtitle {
-  margin-top: 7px;
+  margin-top: 5px;
   font-size: 8px; }
   #ahid-subtitle a:-webkit-any-link {
     color: #acacac; }
@@ -37,7 +37,7 @@
 
 #ahid-commands {
   position: absolute;
-  top: 39px;
+  top: 36px;
   left: 12px; }
   #ahid-commands a,
   #ahid-commands details {
@@ -233,13 +233,13 @@ hr.ah-hr {
     right: 0px; }
 
 #ahid-header {
-  height: 62px; }
+  height: 60px; }
 
 #ahid-footer {
   height: 30px; }
 
 #ahid-body {
-  height: calc(100% - 63px); }
+  height: calc(100% - 61px); }
   #ahid-body div,
   #ahid-body ul {
     min-height: calc(100% - 30px); }
