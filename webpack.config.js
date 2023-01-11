@@ -14,7 +14,6 @@ module.exports = {
     // devtool: 'inline-module-source-map',
     entry: {
         scss: p('./src/scss/core.scss'),
-        background: p('./src/ts/background.ts'),
         content_script: p('./src/content_script.ts'),
     },
     resolve: {

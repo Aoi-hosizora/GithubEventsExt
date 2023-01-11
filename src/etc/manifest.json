@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "@@title",
     "version": "@@version",
     "description": "@@description",
@@ -27,17 +27,13 @@
         "webRequest",
         "storage"
     ],
-    "browser_action": {
-        "default_title": "@@title"
-    },
-    "background": {
-        "scripts": [
-            "js/background.js"
-        ]
+    "action": { 
+        "default_title": "@@title",
+        "default_icon": "img/icon16.png",
+        "default_popup": "options.html"
     },
     "options_page": "options.html",
     "options_ui": {
-        "page": "options.html",
-        "chrome_style": true
+        "page": "options.html"
     }
 }

@@ -1,7 +1,7 @@
 {
     "name": "github-events-ext",
     "title": "Github events",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "description": "A Chrome extension that shows GitHub activity events in sidebar and improves several UI details.",
     "main": "index.js",
     "scripts": {
@@ -13,13 +13,14 @@
         "url": "git+https://github.com/Aoi-hosizora/GithubEventsExt.git"
     },
     "author": "Aoi-hosizora",
+    "copyright": "Copyright © 2020-2023 Aoi-hosizora",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/Aoi-hosizora/GithubEventsExt/issues"
     },
     "homepage": "https://github.com/Aoi-hosizora/GithubEventsExt#readme",
     "devDependencies": {
-        "@types/chrome": "0.0.93",
+        "@types/chrome": "0.0.208",
         "@types/jquery": "^3.3.0",
         "@types/jqueryui": "^1.12.10",
         "@types/lodash": "^4.14.149",
