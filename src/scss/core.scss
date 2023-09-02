@@ -16,7 +16,7 @@
     z-index: 91;
 
     &.ah-toggle-hide {
-        left: calc(100%);
+        left: calc(100% + 2px);
     }
 }
 
@@ -39,7 +39,7 @@
 }
 
 #ahid-header {
-    $head-height: 60px !global;
+    $head-height: 64px !global;
     height: $head-height;
 }
 

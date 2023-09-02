@@ -1,6 +1,6 @@
 # GithubEventsExt
 
-+ A Chrome extension that shows GitHub activity events in sidebar and improves several UI details.
++ A Chrome extension that shows GitHub activity events in sidebar, and improves several UI details.
 + For Userscript version, please visit [Aoi-hosizora/GithubEventsExt_Userscript](https://github.com/Aoi-hosizora/GithubEventsExt_Userscript).
 
 ### Features
