@@ -1,7 +1,7 @@
-import '@src/ts/extensions';
-import { Global, readStorageToGlobal } from '@src/ts/global';
+import '@src/ts/utils/extensions';
+import { Global, readStorageToGlobal } from '@src/ts/data/storage';
 import { adjustGitHubUI, injectSidebar } from '@src/ts/main';
-import { checkURL } from '@src/ts/utils';
+import { checkURL } from '@src/ts/utils/utils';
 
 document.addEventListener('DOMContentLoaded', () => {
     onLoaded();

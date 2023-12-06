@@ -1,4 +1,4 @@
-import { URLInfo } from '@src/ts/model';
+import { URLInfo } from '@src/ts/data/model';
 
 // ==============
 // global related
