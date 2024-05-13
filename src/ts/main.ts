@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { Global } from '@src/ts/data/storage';
+import { Global } from '@src/ts/data/global';
 import { URLType } from '@src/ts/data/model';
 import { adjustGitHubUiObservably } from '@src/ts/ui/github';
 import { observeChildChanged, handleGithubTurboProgressBar, checkURL } from '@src/ts/utils/utils';
