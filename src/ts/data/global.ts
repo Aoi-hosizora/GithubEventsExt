@@ -1,4 +1,4 @@
-import { URLInfo } from '@src/ts/data/model';
+import { URLInfo, RepoSizeData } from '@src/ts/data/model';
 import { getStorage, removeStorage, setStorage } from '@src/ts/data/storage';
 
 // ==============
@@ -24,9 +24,7 @@ export class Global {
     public static urlInfo: URLInfo;
     public static page: number = 1;
     public static isHovering: boolean = false;
-    public static contentsSizeCache: Map<string, number> | undefined;
-    public static contentsSizeCachedRef: string = '';
-    public static contentsSizeTruncated: boolean = false;
+    public static repoSize: RepoSizeData = { cache: undefined, ref: '', truncated: false };
 
     // Constants
     public static readonly FEEDBACK_URL: string = 'https://github.com/Aoi-hosizora/GithubEventsExt/issues';
