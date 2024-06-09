@@ -19,8 +19,8 @@
 }
 
 #ahid-title {
-  margin-top: 4.5px;
-  font-size: 12px;
+  margin-top: 4px;
+  font-size: 12.5px;
 }
 #ahid-title a:-webkit-any-link {
   color: white;
@@ -33,7 +33,7 @@
 
 #ahid-subtitle {
   margin-top: 6px;
-  font-size: 8px;
+  font-size: 9.5px;
 }
 #ahid-subtitle a:-webkit-any-link {
   color: #acacac;
@@ -197,10 +197,13 @@ hr.ah-hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e1e4e8;
+  background: #eaeef2;
   height: 26px;
   width: 26px;
   margin: -2px -2px 0 3px;
+}
+.ah-content-header-user .ah-content-header-old-icon {
+  background: #e1e4e8 !important;
 }
 .ah-content-header-info {
   display: flex;
