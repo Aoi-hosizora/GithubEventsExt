@@ -28,7 +28,7 @@
 ### License
 
 + GithubEventsExt is a free and open-source software, and is released under the **MIT License**.
-+ Copyright (c) 2020-2023 [AoiHosizora (青いほしぞら)](https://github.com/Aoi-hosizora). Visit [LICENSE](./LICENSE) for details.
++ Copyright (c) 2020-2024 [AoiHosizora (青いほしぞら)](https://github.com/Aoi-hosizora). Visit [LICENSE](./LICENSE) for details.
 
 ### Acknowledgements
 
