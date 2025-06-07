@@ -58,11 +58,14 @@
 }
 
 #ahid-subtitle {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 9.5px;
 }
 #ahid-subtitle a:-webkit-any-link {
   color: #acacac;
+}
+#ahid-subtitle a#ahid-data-icon {
+  text-decoration: none !important;
 }
 #ahid-subtitle svg {
   margin-top: -2px;
@@ -137,8 +140,9 @@
 }
 
 #ahid-setting {
-  left: 1px;
-  top: -2px;
+  position: absolute !important;
+  top: 1px;
+  left: 35px;
 }
 
 .ah-hover-underline {
@@ -157,14 +161,14 @@
   overflow: auto;
 }
 #ahid-body::-webkit-scrollbar {
-  width: 8px;
+  width: 6.5px;
 }
 #ahid-body::-webkit-scrollbar-track {
-  border-radius: 4px;
+  border-radius: 5px;
 }
 #ahid-body::-webkit-scrollbar-thumb {
   background-color: #a8a8a8;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 #ahid-body::-webkit-scrollbar-thumb:hover {
   background-color: gray;
@@ -269,6 +273,7 @@ hr.ah-hr {
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
+  line-clamp: 1;
   -webkit-line-clamp: 1;
   font-size: 11px;
   color: gray;
@@ -280,6 +285,7 @@ hr.ah-hr {
   border-left: 3px solid rgb(197, 197, 197);
 }
 .ah-content-body-subcontent {
+  line-clamp: 2 !important;
   -webkit-line-clamp: 2 !important;
 }
 .ah-content-body-commit-wiki {
